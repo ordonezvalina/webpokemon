@@ -1,29 +1,43 @@
 ---
-// 1. MODO HÍBRIDO/SERVIDOR: Astro leerá Supabase en vivo en cada visita
-
-import "../../styles/global.css"; // Ajusta la ruta según tu proyecto
+import "../../styles/global.css"; 
 import { supabase } from "../../lib/supabaseClient";
 import { getFigurePhotos } from "../../lib/figurePhotos";
 import { getLineaLabel } from "../../lib/figureTaxonomy";
 
-// Capturamos el ID de la URL en tiempo real
+// 1. FUNCIÓN OBLIGATORIA PARA MODO ESTÁTICO
+// Astro la ejecutará EN LA COMPILACIÓN para saber qué páginas HTML debe crear
+export async function getStaticPaths() {
+  const { data: figuras, error } = await supabase
+    .from("figuras")
+    .select("id_inventario");
+
+  if (error || !figuras) {
+    console.error("Error obteniendo IDs para rutas estáticas:", error);
+    return [];
+  }
+
+  // Devolvemos un array con todos los IDs mapeados
+  return figuras.map((figura) => ({
+    params: { id: String(figura.id_inventario) },
+  }));
+}
+
+// Capturamos el ID de la URL
 const { id } = Astro.params;
 
-// Consultamos Supabase en vivo
+// Consultamos Supabase (esto se ejecutará para cada figura durante el build)
 const { data: figura, error } = await supabase
   .from("figuras")
   .select("*")
   .eq("id_inventario", id)
   .single();
 
-// Si no existe la figura o hay un error, redirigimos a la página 404
 if (error || !figura) {
   return Astro.redirect("/404");
 }
 
 const fotos = getFigurePhotos(figura);
 
-// Diccionario tipado para evitar el error ts(7053) de indexación
 const mapeoAtributos: Record<string, string> = {
   brillante: "Brillante / Pearl",
   shiny: "Shiny / Variocolor",
