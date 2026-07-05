@@ -1,0 +1,14 @@
+# Dependencias
+node_modules/
+
+# Compilación (ya no la necesitamos en Git)
+dist/
+
+# Archivos de configuración local y secretos
+.env
+.env.production
+.directory
+*.local
+
+# Caché
+.astro/

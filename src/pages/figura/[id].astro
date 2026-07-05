@@ -1,0 +1,198 @@
+---
+// 1. MODO HÍBRIDO/SERVIDOR: Astro leerá Supabase en vivo en cada visita
+export const prerender = false;
+
+import "../../styles/global.css"; // Ajusta la ruta según tu proyecto
+import { supabase } from "../../lib/supabaseClient";
+import { getFigurePhotos } from "../../lib/figurePhotos";
+import { getLineaLabel } from "../../lib/figureTaxonomy";
+
+// Capturamos el ID de la URL en tiempo real
+const { id } = Astro.params;
+
+// Consultamos Supabase en vivo
+const { data: figura, error } = await supabase
+  .from("figuras")
+  .select("*")
+  .eq("id_inventario", id)
+  .single();
+
+// Si no existe la figura o hay un error, redirigimos a la página 404
+if (error || !figura) {
+  return Astro.redirect("/404");
+}
+
+const fotos = getFigurePhotos(figura);
+
+// Diccionario tipado para evitar el error ts(7053) de indexación
+const mapeoAtributos: Record<string, string> = {
+  brillante: "Brillante / Pearl",
+  shiny: "Shiny / Variocolor",
+  clear: "Translúcida / Clear",
+  mega: "Megaevolución",
+  "con-base": "Con Base / Peana"
+};
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>{figura.nombre} ({getLineaLabel(figura.linea)}) | Mi Colección</title>
+  </head>
+  <body class="bg-zinc-950 text-zinc-100 antialiased">
+    <main class="mx-auto min-h-screen w-full max-w-md px-4 pb-12 pt-4">
+      
+      <header class="mb-4 flex items-center justify-between border-b border-zinc-800 pb-4">
+        <a 
+          href="/" 
+          class="inline-flex min-h-11 items-center rounded-lg border border-zinc-700 px-4 text-sm font-semibold text-zinc-200 transition active:scale-95"
+        >
+          ← Volver al catálogo
+        </a>
+        <span class="text-xs font-mono font-semibold uppercase tracking-wider text-zinc-500">
+          {figura.id_inventario}
+        </span>
+      </header>
+
+      <section class="space-y-2">
+        {fotos.length > 0 ? (
+          <>
+            {/* Foto principal (añadido cursor-zoom-in para sugerir que se expande) */}
+            <div class="overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900 aspect-square shadow-xl shadow-black/20 cursor-zoom-in">
+              <img id="foto-principal" class="h-full w-full object-cover" src={fotos[0]} alt={figura.nombre} />
+            </div>
+            
+            {/* Miniaturas (tipadas explícitamente para cumplir las reglas de compilación) */}
+            {fotos.length > 1 && (
+              <div class="grid grid-cols-4 gap-2">
+                {fotos.map((url: string, index: number) => (
+                  <div class="overflow-hidden rounded-lg border border-zinc-800 bg-zinc-900 aspect-square">
+                    <img 
+                      class="foto-miniatura h-full w-full object-cover opacity-60 hover:opacity-100 transition cursor-pointer" 
+                      src={url} 
+                      alt={`Foto ${index + 1}`} 
+                      data-src={url}
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
+          </>
+        ) : (
+          <div class="grid aspect-square place-items-center rounded-xl border border-dashed border-zinc-800 bg-zinc-900 text-sm font-bold text-zinc-600">
+            Sin imágenes disponibles
+          </div>
+        )}
+      </section>
+
+      <section class="mt-5 space-y-4">
+        <div>
+          <p class="text-xs font-bold uppercase tracking-[0.2em] text-amber-300">
+            #{String(figura.num_pokedex).padStart(4, "0")} · Gen {figura.generacion}
+          </p>
+          <h1 class="mt-1 text-3xl font-bold text-white tracking-tight">{figura.nombre}</h1>
+          <p class="mt-1 inline-block rounded-md bg-zinc-800 px-2.5 py-1 text-sm font-bold text-zinc-300 border border-zinc-700">
+            {getLineaLabel(figura.linea)}
+          </p>
+        </div>
+
+        {figura.atributos && figura.atributos.length > 0 && (
+          <div class="flex flex-wrap gap-1.5">
+            {figura.atributos.map((attr: string) => (
+              <span class="rounded-full bg-amber-300/10 border border-amber-300/30 px-3 py-0.5 text-xs font-semibold text-amber-300">
+                {mapeoAtributos[attr] || attr}
+              </span>
+            ))}
+          </div>
+        )}
+
+        {figura.detalles && (
+          <div class="rounded-xl border border-zinc-800 bg-zinc-900 p-4 shadow-inner">
+            <h3 class="text-xs font-semibold uppercase tracking-wider text-zinc-500">Detalles de la pieza</h3>
+            <p class="mt-2 text-base text-zinc-300 leading-relaxed">{figura.detalles}</p>
+          </div>
+        )}
+
+        <div class="rounded-xl border border-zinc-800 bg-zinc-900/40 p-4 space-y-3">
+          <div class="flex justify-between items-center text-sm border-b border-zinc-800/60 pb-2">
+            <span class="text-zinc-500 font-medium">Año de lanzamiento</span>
+            <span class="text-zinc-200 font-semibold">{figura.anio ?? "Desconocido"}</span>
+          </div>
+          
+          {figura.mfc_id && (
+            <div class="flex justify-between items-center text-sm">
+              <span class="text-zinc-500 font-medium">MyFigureCollection</span>
+              <a 
+                href={`https://myfigurecollection.net/item/${figura.mfc_id}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="text-amber-300 hover:underline font-mono text-xs"
+              >
+                #{figura.mfc_id} ↗
+              </a>
+            </div>
+          )}
+        </div>
+      </section>
+
+    </main>
+
+    <div 
+      id="lightbox" 
+      class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/95 p-4 cursor-zoom-out"
+    >
+      <button class="absolute top-4 right-4 text-white text-3xl font-light active:scale-95" aria-label="Cerrar modal">&times;</button>
+      <img 
+        id="lightbox-img" 
+        class="max-h-[85vh] max-w-full rounded-lg object-contain shadow-2xl" 
+        src="" 
+        alt="Visualización a pantalla completa" 
+      />
+    </div>
+
+<script>
+  const fotoPrincipal = document.getElementById("foto-principal") as HTMLImageElement | null;
+  const miniaturas = document.querySelectorAll(".foto-miniatura");
+  
+  // Selectores del Lightbox
+  const lightbox = document.getElementById("lightbox");
+  const lightboxImg = document.getElementById("lightbox-img") as HTMLImageElement | null;
+
+  // 1. LÓGICA DEL LIGHTBOX: Funciona SIEMPRE (con 1 foto o con 20)
+  if (fotoPrincipal && lightbox && lightboxImg) {
+    fotoPrincipal.addEventListener("click", () => {
+      lightboxImg.src = fotoPrincipal.src; // Pasa la URL de la foto actual
+      lightbox.classList.remove("hidden"); // Muestra el modal
+      document.body.classList.add("overflow-hidden"); // Bloquea el scroll de la web
+    });
+  }
+
+  // 2. CERRAR EL LIGHTBOX: Al pulsar en cualquier parte del fondo negro
+  lightbox?.addEventListener("click", () => {
+    lightbox.classList.add("hidden");
+    document.body.classList.remove("overflow-hidden");
+  });
+
+  // 3. LÓGICA DE MINIATURAS: Solo se ejecuta si realmente existen miniaturas (> 0)
+  if (fotoPrincipal && miniaturas.length > 0) {
+    // Marcamos la primera como activa por defecto
+    (miniaturas[0] as HTMLElement).classList.replace("opacity-60", "opacity-100");
+
+    miniaturas.forEach((miniatura) => {
+      miniatura.addEventListener("click", () => {
+        const nuevaUrl = miniatura.getAttribute("data-src");
+        if (nuevaUrl) {
+          fotoPrincipal.src = nuevaUrl;
+          
+          // Cambiamos opacidades para dar feedback visual de cuál está seleccionada
+          miniaturas.forEach((m) => m.classList.replace("opacity-100", "opacity-60"));
+          miniatura.classList.replace("opacity-60", "opacity-100");
+        }
+      });
+    });
+  }
+</script>
+  </body>
+</html>
