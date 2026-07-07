@@ -39,9 +39,17 @@ export function getAtributoLabel(value) {
   return ATRIBUTOS.find((entry) => entry.value === value)?.label ?? value;
 }
 
-// Ahora es directo: si hay array de atributos, lo limpia; si no, devuelve array vacío
+// Ahora trabaja con las columnas booleanas de la BD (es_shiny, es_mega, es_clear, es_pearl, tiene_base)
 export function getFigureAtributos(figure) {
-  return Array.isArray(figure?.atributos) ? figure.atributos.filter(Boolean) : [];
+  const atributos = [];
+  
+  if (figure?.es_shiny) atributos.push("shiny");
+  if (figure?.es_mega) atributos.push("mega");
+  if (figure?.es_clear) atributos.push("clear");
+  if (figure?.es_pearl) atributos.push("brillante");
+  if (figure?.tiene_base) atributos.push("con-base");
+  
+  return atributos;
 }
 
 export function figureMatchesLineFilter(figure, lineFilter) {

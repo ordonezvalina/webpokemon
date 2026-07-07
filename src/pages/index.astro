@@ -140,6 +140,13 @@ import "../styles/global.css";
         </div>
 
         <div>
+          <p class="mb-2 text-xs font-semibold uppercase tracking-[0.16em] text-zinc-500">Coleccion</p>
+          <div id="coleccion-filters" class="flex flex-wrap gap-2">
+            <!-- Se llenará dinámicamente con JavaScript -->
+          </div>
+        </div>
+
+        <div>
           <p class="mb-2 text-xs font-semibold uppercase tracking-[0.16em] text-zinc-500">Atributos</p>
           <div id="atributo-filters" class="flex flex-wrap gap-2">
             <button
@@ -177,6 +184,13 @@ import "../styles/global.css";
             >
               Con Base / Peana / Diorama
             </button>
+          </div>
+        </div>
+
+        <div>
+          <p class="mb-2 text-xs font-semibold uppercase tracking-[0.16em] text-zinc-500">Etiquetas</p>
+          <div id="etiqueta-filters" class="flex flex-wrap gap-2">
+            <!-- Se llenará dinámicamente con JavaScript -->
           </div>
         </div>
       </section>
@@ -264,10 +278,14 @@ import "../styles/global.css";
 
       const state = {
         figures: [],
+        colecciones: [],
+        etiquetas: [],
         generation: "1",
         linea: null,
         atributos: [],
-        search: "", // MODIFICADO: Añadimos estado para la búsqueda
+        coleccion: null,
+        etiquetasSeleccionadas: [],
+        search: "",
         lightbox: {
           photos: [],
           index: 0,
@@ -310,7 +328,7 @@ import "../styles/global.css";
       }
 
       function getActiveFilterCount() {
-        return (state.linea ? 1 : 0) + state.atributos.length;
+        return (state.linea ? 1 : 0) + state.atributos.length + (state.coleccion ? 1 : 0) + state.etiquetasSeleccionadas.length;
       }
 
       function escapeHtml(value) {
@@ -330,14 +348,17 @@ import "../styles/global.css";
       }
 
       function getFilteredFigures() {
-        // MODIFICADO: Si hay texto en el buscador, filtramos sobre la colección entera (state.figures)
-        // Si no hay texto, respeta la pestaña de generación actual.
         const baseFigures = state.search ? state.figures : getGenerationFigures();
 
         return baseFigures.filter(
           (figure) =>
             figureMatchesLineFilter(figure, state.linea) &&
             figureMatchesAtributoFilters(figure, state.atributos) &&
+            (state.coleccion === null || figure.id_coleccion === state.coleccion) &&
+            (state.etiquetasSeleccionadas.length === 0 || 
+             state.etiquetasSeleccionadas.some(etiquetaId => 
+               figure.etiquetas?.includes(etiquetaId)
+             )) &&
             (state.search === "" ||
               figure.nombre.toLowerCase().includes(state.search) ||
               String(figure.num_pokedex).includes(state.search) ||
@@ -381,9 +402,63 @@ import "../styles/global.css";
         });
       }
 
+      function renderColeccionFilters() {
+        const coleccionFilters = document.querySelector("#coleccion-filters");
+        coleccionFilters.innerHTML = state.colecciones
+          .map((coleccion) => `
+            <button
+              class="coleccion-filter rounded-lg border px-3 py-2 text-sm font-semibold transition"
+              type="button"
+              data-coleccion="${coleccion.id}"
+            >
+              ${escapeHtml(coleccion.nombre)}
+            </button>
+          `)
+          .join("");
+        
+        // Actualizar estado visual
+        document.querySelectorAll(".coleccion-filter").forEach((button) => {
+          const isActive = state.coleccion === Number(button.dataset.coleccion);
+          button.className = [
+            "coleccion-filter rounded-lg border px-3 py-2 text-sm font-semibold transition",
+            isActive
+              ? "border-white bg-white text-zinc-950"
+              : "border-zinc-700 bg-zinc-950 text-zinc-200"
+          ].join(" ");
+        });
+      }
+
+      function renderEtiquetaFilters() {
+        const etiquetaFilters = document.querySelector("#etiqueta-filters");
+        etiquetaFilters.innerHTML = state.etiquetas
+          .map((etiqueta) => `
+            <button
+              class="etiqueta-filter rounded-lg border px-3 py-2 text-sm font-semibold transition"
+              type="button"
+              data-etiqueta="${etiqueta.id}"
+            >
+              ${escapeHtml(etiqueta.nombre)}
+            </button>
+          `)
+          .join("");
+        
+        // Actualizar estado visual
+        document.querySelectorAll(".etiqueta-filter").forEach((button) => {
+          const isActive = state.etiquetasSeleccionadas.includes(Number(button.dataset.etiqueta));
+          button.className = [
+            "etiqueta-filter rounded-lg border px-3 py-2 text-sm font-semibold transition",
+            isActive
+              ? "border-white bg-white text-zinc-950"
+              : "border-zinc-700 bg-zinc-950 text-zinc-200"
+          ].join(" ");
+        });
+      }
+
       function renderFilterState() {
         renderLineaFilters();
         renderAtributoFilters();
+        renderColeccionFilters();
+        renderEtiquetaFilters();
         filterCount.textContent = String(getActiveFilterCount());
       }
 
@@ -546,7 +621,10 @@ import "../styles/global.css";
 
         const { data, error } = await supabase
           .from("figuras")
-          .select("*")
+          .select(`
+            *,
+            colecciones(id, nombre)
+          `)
           .order("num_pokedex", { ascending: true })
           .order("id_inventario", { ascending: true });
 
@@ -558,9 +636,62 @@ import "../styles/global.css";
           return;
         }
 
-        state.figures = data ?? [];
+        const figures = data ?? [];
+        
+        // Cargar todas las relaciones de etiquetas en una sola query
+        const { data: relacionesData } = await supabase
+          .from("figuras_etiquetas")
+          .select("id_figura, id_etiqueta");
+        
+        // Crear un mapa de figura -> array de etiquetas
+        const etiquetasPorFigura = {};
+        if (relacionesData) {
+          relacionesData.forEach(rel => {
+            if (!etiquetasPorFigura[rel.id_figura]) {
+              etiquetasPorFigura[rel.id_figura] = [];
+            }
+            etiquetasPorFigura[rel.id_figura].push(rel.id_etiqueta);
+          });
+        }
+        
+        // Asignar las etiquetas a cada figura
+        figures.forEach(figure => {
+          figure.etiquetas = etiquetasPorFigura[figure.id] || [];
+        });
+
+        state.figures = figures;
         totalCount.textContent = String(state.figures.length);
         render();
+      }
+
+      async function loadColecciones() {
+        const { data, error } = await supabase
+          .from("colecciones")
+          .select("*")
+          .order("nombre", { ascending: true });
+
+        if (error) {
+          console.error("Error al cargar colecciones:", error);
+          return;
+        }
+
+        state.colecciones = data ?? [];
+        renderColeccionFilters();
+      }
+
+      async function loadEtiquetas() {
+        const { data, error } = await supabase
+          .from("etiquetas")
+          .select("*")
+          .order("nombre", { ascending: true });
+
+        if (error) {
+          console.error("Error al cargar etiquetas:", error);
+          return;
+        }
+
+        state.etiquetas = data ?? [];
+        renderEtiquetaFilters();
       }
 
       // MODIFICADO: Evento para capturar el texto escrito en el buscador
@@ -614,6 +745,33 @@ import "../styles/global.css";
         render();
       });
 
+      // Event listeners para filtros de colecciones
+      document.addEventListener("click", (event) => {
+        const button = event.target.closest("[data-coleccion]");
+        if (!button) return;
+
+        const coleccionId = Number(button.dataset.coleccion);
+        state.coleccion = state.coleccion === coleccionId ? null : coleccionId;
+        render();
+      });
+
+      // Event listeners para filtros de etiquetas
+      document.addEventListener("click", (event) => {
+        const button = event.target.closest("[data-etiqueta]");
+        if (!button) return;
+
+        const etiquetaId = Number(button.dataset.etiqueta);
+        const index = state.etiquetasSeleccionadas.indexOf(etiquetaId);
+
+        if (index >= 0) {
+          state.etiquetasSeleccionadas.splice(index, 1);
+        } else {
+          state.etiquetasSeleccionadas.push(etiquetaId);
+        }
+
+        render();
+      });
+
       catalogGrid.addEventListener("click", (event) => {
         const trigger = event.target.closest(".photo-trigger");
         if (!trigger) return;
@@ -640,6 +798,8 @@ import "../styles/global.css";
       });
 
       loadFigures();
+      loadColecciones();
+      loadEtiquetas();
     </script>
   </body>
 </html>

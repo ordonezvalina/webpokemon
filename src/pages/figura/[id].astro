@@ -2,7 +2,7 @@
 import "../../styles/global.css"; 
 import { supabase } from "../../lib/supabaseClient";
 import { getFigurePhotos } from "../../lib/figurePhotos";
-import { getLineaLabel } from "../../lib/figureTaxonomy";
+import { getLineaLabel, getFigureAtributos, getAtributoLabel } from "../../lib/figureTaxonomy";
 
 // 1. FUNCIÓN OBLIGATORIA PARA MODO ESTÁTICO
 // Astro la ejecutará EN LA COMPILACIÓN para saber qué páginas HTML debe crear
@@ -25,10 +25,13 @@ export async function getStaticPaths() {
 // Capturamos el ID de la URL
 const { id } = Astro.params;
 
-// Consultamos Supabase (esto se ejecutará para cada figura durante el build)
+// Consultamos Supabase con colecciones y etiquetas
 const { data: figura, error } = await supabase
   .from("figuras")
-  .select("*")
+  .select(`
+    *,
+    colecciones(id, nombre)
+  `)
   .eq("id_inventario", id)
   .single();
 
@@ -36,15 +39,16 @@ if (error || !figura) {
   return Astro.redirect("/404");
 }
 
-const fotos = getFigurePhotos(figura);
+// Cargar etiquetas de la figura (relación M:N)
+const { data: etiquetasRelacion } = await supabase
+  .from("figuras_etiquetas")
+  .select("etiquetas(id, nombre)")
+  .eq("id_figura", figura.id);
 
-const mapeoAtributos: Record<string, string> = {
-  brillante: "Brillante / Pearl",
-  shiny: "Shiny / Variocolor",
-  clear: "Translúcida / Clear",
-  mega: "Megaevolución",
-  "con-base": "Con Base / Peana"
-};
+const etiquetas = etiquetasRelacion?.map(e => e.etiquetas).filter(Boolean) || [];
+
+const fotos = getFigurePhotos(figura);
+const atributos = getFigureAtributos(figura);
 ---
 
 <!doctype html>
@@ -111,11 +115,29 @@ const mapeoAtributos: Record<string, string> = {
           </p>
         </div>
 
-        {figura.atributos && figura.atributos.length > 0 && (
+        {figura.colecciones && (
+          <div>
+            <span class="inline-block rounded-full bg-emerald-300/10 border border-emerald-300/30 px-3 py-1 text-xs font-semibold text-emerald-300">
+              📁 {figura.colecciones.nombre}
+            </span>
+          </div>
+        )}
+
+        {atributos.length > 0 && (
           <div class="flex flex-wrap gap-1.5">
-            {figura.atributos.map((attr: string) => (
+            {atributos.map((attr: string) => (
               <span class="rounded-full bg-amber-300/10 border border-amber-300/30 px-3 py-0.5 text-xs font-semibold text-amber-300">
-                {mapeoAtributos[attr] || attr}
+                {getAtributoLabel(attr)}
+              </span>
+            ))}
+          </div>
+        )}
+
+        {etiquetas.length > 0 && (
+          <div class="flex flex-wrap gap-1.5">
+            {etiquetas.map((etiqueta: any) => (
+              <span class="rounded-full bg-purple-300/10 border border-purple-300/30 px-3 py-0.5 text-xs font-semibold text-purple-300">
+                🏷️ {etiqueta.nombre}
               </span>
             ))}
           </div>
