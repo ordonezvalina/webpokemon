@@ -1,0 +1,67 @@
+DROP TABLE IF EXISTS figuras_etiquetas CASCADE;
+DROP TABLE IF EXISTS etiquetas CASCADE;
+DROP TABLE IF EXISTS figuras CASCADE;
+DROP TABLE IF EXISTS colecciones CASCADE;
+-- ====================================================================
+-- 1. TABLA INDEPENDIENTE: COLECCIONES
+-- ====================================================================
+CREATE TABLE colecciones (
+    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    nombre TEXT NOT NULL UNIQUE,
+    volumen SMALLINT NOT NULL,
+    imagen_portada TEXT NULL,
+    creado_en TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+-- ====================================================================
+-- 2. TABLA PRINCIPAL: FIGURAS (Con tus 13 columnas originales + mejoras)
+-- ====================================================================
+CREATE TABLE figuras (
+    -- Identificadores y claves
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    id_inventario TEXT NOT NULL UNIQUE,
+    id_coleccion BIGINT REFERENCES colecciones(id) ON DELETE SET NULL,
+    
+    -- Datos del Pokémon
+    num_pokedex INT4 NOT NULL,
+    nombre TEXT NOT NULL,
+    generacion INT4 NOT NULL,
+    
+    -- Detalles de la pieza
+    linea TEXT NOT NULL, -- Ej: Moncolle, Choco Egg...
+    anio INT4 NULL,
+    mfc_id TEXT NULL,
+    detalles TEXT NULL,
+    
+    -- Atributos Estructurales (Los antiguos 'atributos' ahora son casillas SI/NO)
+    es_shiny BOOLEAN NOT NULL DEFAULT FALSE,
+    es_mega BOOLEAN NOT NULL DEFAULT FALSE,
+    es_clear BOOLEAN NOT NULL DEFAULT FALSE,
+    es_pearl BOOLEAN NOT NULL DEFAULT FALSE,
+    tiene_base BOOLEAN NOT NULL DEFAULT FALSE,
+    
+    -- Gestión de Imágenes
+    foto_url TEXT NULL,       -- Foto principal
+    fotos_urls TEXT[] NULL,   -- Array para el resto de fotos de la galería
+    
+    -- Auditoría
+    creado_en TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+-- ====================================================================
+-- 3. TABLA INDEPENDIENTE: ETIQUETAS TEMÁTICAS (Poses, eventos...)
+-- ====================================================================
+CREATE TABLE etiquetas (
+    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    nombre TEXT NOT NULL UNIQUE,
+    creado_en TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+-- ====================================================================
+-- 4. TABLA INTERMEDIA: RELACIÓN MUCHOS A MUCHOS (Figuras <-> Etiquetas)
+-- ====================================================================
+CREATE TABLE figuras_etiquetas (
+    id_figura UUID REFERENCES figuras(id) ON DELETE CASCADE,
+    id_etiqueta BIGINT REFERENCES etiquetas(id) ON DELETE CASCADE,
+    PRIMARY KEY (id_figura, id_etiqueta)
+);
