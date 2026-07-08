@@ -1,0 +1,255 @@
+---
+import "../../../../styles/global.css";
+import { supabase } from "../../../../lib/supabaseClient";
+import { getFigurePhotos } from "../../../../lib/figurePhotos";
+import { getLineaLabel, getFigureAtributos, getAtributoLabel } from "../../../../lib/figureTaxonomy";
+
+function escapeHtml(value: string): string {
+  return String(value ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+function getAtributoClass(atributo: string): string {
+  const atributoClasses: { [key: string]: string } = {
+    brillante: "border-fuchsia-300/50 bg-fuchsia-300/12 text-fuchsia-100",
+    shiny: "border-amber-300/60 bg-amber-300/14 text-amber-100",
+    clear: "border-cyan-300/50 bg-cyan-300/12 text-cyan-100",
+    mega: "border-rose-300/55 bg-rose-300/12 text-rose-100",
+    "con-base": "border-emerald-300/55 bg-emerald-300/12 text-emerald-100"
+  };
+  return atributoClasses[atributo] || "border-indigo-300/50 bg-indigo-300/12 text-indigo-100";
+}
+
+export async function getStaticPaths() {
+  function createSlug(text: string): string {
+    return text
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-z0-9\s-]/g, "")
+      .trim()
+      .replace(/\s+/g, "-")
+      .replace(/-+/g, "-");
+  }
+
+  const { data: volumenes, error } = await supabase
+    .from("volumenes")
+    .select(`
+      id,
+      volumen,
+      nombre,
+      colecciones(id, nombre)
+    `);
+
+  if (error || !volumenes) {
+    console.error("Error obteniendo volúmenes para rutas estáticas:", error);
+    return [];
+  }
+
+  return volumenes.map((volumen: any) => {
+    const coleccionNombre = Array.isArray(volumen.colecciones) ? volumen.colecciones[0]?.nombre : volumen.colecciones?.nombre;
+    const coleccionSlug = createSlug(coleccionNombre);
+    const volumenSlug = volumen.nombre ? createSlug(volumen.nombre) : String(volumen.volumen);
+    return {
+      params: { 
+        slug: coleccionSlug,
+        numero: volumenSlug
+      },
+    };
+  });
+}
+
+function createSlug(text: string): string {
+  return text
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9\s-]/g, "")
+    .trim()
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-");
+}
+
+const { slug, numero } = Astro.params;
+
+// Buscar colección por slug
+const { data: colecciones, error: coleccionesError } = await supabase
+  .from("colecciones")
+  .select("*");
+
+if (coleccionesError || !colecciones) {
+  return Astro.redirect("/404");
+}
+
+const coleccion = colecciones.find((c: any) => createSlug(c.nombre) === slug);
+
+if (!coleccion) {
+  return Astro.redirect("/404");
+}
+
+// Obtener volúmenes de esta colección
+const { data: volumenes, error: volumenesError } = await supabase
+  .from("volumenes")
+  .select("*")
+  .eq("id_coleccion", coleccion.id)
+  .order("volumen", { ascending: true });
+
+if (volumenesError) {
+  console.error("Error obteniendo volúmenes:", volumenesError);
+}
+
+// Buscar el volumen específico por slug
+const volumen = volumenes?.find((v: any) => {
+  const volumenSlug = v.nombre ? createSlug(v.nombre) : String(v.volumen);
+  return volumenSlug === numero;
+});
+
+if (!volumen) {
+  return Astro.redirect("/404");
+}
+
+// Obtener figuras de este volumen
+const { data: figuras, error: figurasError } = await supabase
+  .from("figuras")
+  .select("*")
+  .eq("id_volumen", volumen.id)
+  .order("num_pokedex", { ascending: true })
+  .order("id_inventario", { ascending: true });
+
+if (figurasError) {
+  console.error("Error obteniendo figuras:", figurasError);
+}
+
+// Obtener etiquetas para las figuras
+const figuraIds = figuras?.map((f: any) => f.id) || [];
+const { data: etiquetasRelacion } = await supabase
+  .from("figuras_etiquetas")
+  .select("id_figura, etiquetas(id, nombre)")
+  .in("id_figura", figuraIds);
+
+const etiquetasPorFigura: { [key: string]: any[] } = {};
+if (etiquetasRelacion) {
+  etiquetasRelacion.forEach((rel: any) => {
+    if (!etiquetasPorFigura[rel.id_figura]) {
+      etiquetasPorFigura[rel.id_figura] = [];
+    }
+    if (rel.etiquetas) {
+      etiquetasPorFigura[rel.id_figura].push(rel.etiquetas);
+    }
+  });
+}
+
+const figurasConEtiquetas = figuras?.map((f: any) => ({
+  ...f,
+  etiquetas: etiquetasPorFigura[f.id] || []
+})) || [];
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{coleccion.nombre} - Vol. {volumen.volumen} | Mi Colección</title>
+  </head>
+  <body class="bg-zinc-950 text-zinc-100 antialiased">
+    <main class="mx-auto min-h-screen w-full max-w-7xl px-4 pb-24 pt-5 sm:px-6 lg:px-8">
+      
+      <header class="mb-5 flex flex-col gap-4 sm:mb-8 sm:flex-row sm:items-end sm:justify-between">
+        <div class="space-y-2">
+          <a 
+            href={`/coleccion/${slug}`}
+            class="inline-flex items-center gap-2 text-sm font-semibold text-zinc-400 hover:text-zinc-200 transition"
+          >
+            ← Volver a {coleccion.nombre}
+          </a>
+          <h1 class="max-w-3xl text-4xl font-semibold leading-tight text-white sm:text-6xl">
+            Vol. {volumen.volumen}
+          </h1>
+          <p class="max-w-2xl text-sm leading-6 text-zinc-400 sm:text-base">
+            {coleccion.nombre}
+            {volumen.nombre ? ` · ${volumen.nombre}` : ""} · {figurasConEtiquetas.length} figuras
+          </p>
+        </div>
+      </header>
+
+      {/* Imagen de portada del volumen */}
+      {volumen.imagen_portada && (
+        <section class="mb-8">
+          <div class="overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900">
+            <img
+              class="h-full w-full object-cover"
+              src={volumen.imagen_portada}
+              alt={`Portada Vol. ${volumen.volumen}`}
+            />
+          </div>
+        </section>
+      )}
+
+      {/* Figuras del volumen */}
+      <section>
+        <h2 class="mb-4 text-xl font-semibold text-white">Figuras de este volumen</h2>
+        {figurasConEtiquetas.length > 0 ? (
+          <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4 xl:grid-cols-5">
+            {figurasConEtiquetas.map((figura: any) => {
+              const fotos = getFigurePhotos(figura);
+              const atributos = getFigureAtributos(figura);
+
+              const image = fotos.length > 0 ? (
+                <img
+                  class="h-full w-full object-cover transition duration-300 group-hover:scale-[1.03]"
+                  src={fotos[0]}
+                  alt={figura.nombre}
+                  loading="lazy"
+                />
+              ) : (
+                <div class="grid h-full w-full place-items-center bg-zinc-800 text-sm font-semibold text-zinc-500">
+                  #{String(figura.num_pokedex).padStart(4, "0")}
+                </div>
+              );
+
+              return (
+                <a 
+                  href={`/figura/${escapeHtml(figura.id_inventario)}`} 
+                  class="group block overflow-hidden rounded-lg border border-zinc-800 bg-zinc-900 shadow-lg shadow-black/20 transition duration-300 hover:-translate-y-0.5 hover:border-zinc-600"
+                >
+                  <div class="aspect-[4/5] overflow-hidden bg-zinc-800">
+                    {image}
+                  </div>
+                  <div class="space-y-3 p-3">
+                    <div class="flex items-start justify-between gap-2">
+                      <div class="min-w-0">
+                        <h2 class="truncate text-sm font-semibold text-white sm:text-base">{escapeHtml(figura.nombre)}</h2>
+                        {figura.anio && <p class="mt-1 text-xs font-medium text-zinc-500">{escapeHtml(figura.anio)}</p>}
+                      </div>
+                      <div class="flex max-w-[52%] flex-wrap justify-end gap-1">
+                        <span class="shrink-0 rounded-md border border-zinc-600 bg-zinc-700/55 px-2 py-1 text-[11px] font-bold text-zinc-100">
+                          {escapeHtml(getLineaLabel(figura.linea))}
+                        </span>
+                        {atributos.map((atributo: string) => (
+                          <span class:list={["shrink-0 rounded-md border px-2 py-1 text-[11px] font-bold", getAtributoClass(atributo)]}>
+                            {escapeHtml(getAtributoLabel(atributo))}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                    {figura.detalles && <p class="line-clamp-2 text-xs leading-5 text-zinc-400">{escapeHtml(figura.detalles)}</p>}
+                  </div>
+                </a>
+              );
+            })}
+          </div>
+        ) : (
+          <div class="rounded-lg border border-dashed border-zinc-700 bg-zinc-900/50 p-8 text-center">
+            <p class="text-base font-semibold text-white">No hay figuras en este volumen.</p>
+          </div>
+        )}
+      </section>
+
+    </main>
+  </body>
+</html>
