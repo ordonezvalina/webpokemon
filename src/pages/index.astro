@@ -354,7 +354,7 @@ import "../styles/global.css";
           (figure) =>
             figureMatchesLineFilter(figure, state.linea) &&
             figureMatchesAtributoFilters(figure, state.atributos) &&
-            (state.coleccion === null || figure.id_coleccion === state.coleccion) &&
+            (state.coleccion === null || figure.volumenes?.colecciones?.id === state.coleccion) &&
             (state.etiquetasSeleccionadas.length === 0 || 
              state.etiquetasSeleccionadas.some(etiquetaId => 
                figure.etiquetas?.includes(etiquetaId)
@@ -464,6 +464,13 @@ import "../styles/global.css";
 
       function formatPokedexNumber(number) {
         return String(number).padStart(4, "0");
+      }
+
+      function getColeccionVolumenText(figure) {
+        if (!figure.volumenes?.colecciones) return "";
+        const coleccionNombre = figure.volumenes.colecciones.nombre;
+        const volumenNum = figure.volumenes.volumen;
+        return `${coleccionNombre} · Vol. ${volumenNum}`;
       }
 
       function getLightboxCaption(figure) {
@@ -582,6 +589,9 @@ import "../styles/global.css";
             const yearLine = figure.anio
               ? `<p class="mt-1 text-xs font-medium text-zinc-500">${escapeHtml(figure.anio)}</p>`
               : "";
+            const coleccionVolumenLine = getColeccionVolumenText(figure)
+              ? `<p class="mt-1 text-xs font-medium text-zinc-500">${escapeHtml(getColeccionVolumenText(figure))}</p>`
+              : "";
 
             return `
               <a 
@@ -596,6 +606,7 @@ import "../styles/global.css";
                     <div class="min-w-0">
                       <h2 class="truncate text-sm font-semibold text-white sm:text-base">${escapeHtml(figure.nombre)}</h2>
                       ${yearLine}
+                      ${coleccionVolumenLine}
                     </div>
                     <div class="flex max-w-[52%] flex-wrap justify-end gap-1">
                       ${lineaBadge}
@@ -623,7 +634,12 @@ import "../styles/global.css";
           .from("figuras")
           .select(`
             *,
-            colecciones(id, nombre)
+            volumenes(
+              id,
+              volumen,
+              nombre,
+              colecciones(id, nombre)
+            )
           `)
           .order("num_pokedex", { ascending: true })
           .order("id_inventario", { ascending: true });

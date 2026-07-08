@@ -25,12 +25,21 @@ export async function getStaticPaths() {
 // Capturamos el ID de la URL
 const { id } = Astro.params;
 
-// Consultamos Supabase con colecciones y etiquetas
+// Consultamos Supabase con volumen y colección
 const { data: figura, error } = await supabase
   .from("figuras")
   .select(`
     *,
-    colecciones(id, nombre)
+    volumenes(
+      id,
+      volumen,
+      nombre,
+      imagen_portada,
+      colecciones(
+        id,
+        nombre
+      )
+    )
   `)
   .eq("id_inventario", id)
   .single();
@@ -115,13 +124,14 @@ const atributos = getFigureAtributos(figura);
           </p>
         </div>
 
-        {figura.colecciones && (
-          <div>
-            <span class="inline-block rounded-full bg-emerald-300/10 border border-emerald-300/30 px-3 py-1 text-xs font-semibold text-emerald-300">
-              📁 {figura.colecciones.nombre}
-            </span>
-          </div>
-        )}
+		{figura.volumenes && figura.volumenes.colecciones && (
+		  <div>
+			<span class="inline-block rounded-full bg-emerald-300/10 border border-emerald-300/30 px-3 py-1 text-xs font-semibold text-emerald-300">
+			  📁 {figura.volumenes.colecciones.nombre} · Vol. {figura.volumenes.volumen}
+			  {figura.volumenes.nombre ? ` · ${figura.volumenes.nombre}` : ""}
+			</span>
+		  </div>
+		)}
 
         {atributos.length > 0 && (
           <div class="flex flex-wrap gap-1.5">
