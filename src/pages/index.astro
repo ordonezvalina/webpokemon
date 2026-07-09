@@ -422,7 +422,7 @@ import "../styles/global.css";
               type="button"
               data-coleccion="${coleccion.id}"
             >
-              ${escapeHtml(coleccion.nombre)}
+              ${escapeHtml(coleccion.name)}
             </button>
           `)
           .join("");
@@ -448,7 +448,7 @@ import "../styles/global.css";
               type="button"
               data-etiqueta="${etiqueta.id}"
             >
-              ${escapeHtml(etiqueta.nombre)}
+              ${escapeHtml(etiqueta.name)}
             </button>
           `)
           .join("");
@@ -606,7 +606,7 @@ import "../styles/global.css";
 
             return `
               <a
-                href="/figura/${escapeHtml(figure.id)}"
+                href="/figure/${escapeHtml(figure.slug ?? figure.id)}"
                 class="group block overflow-hidden rounded-lg border border-zinc-800 bg-zinc-900 shadow-lg shadow-black/20 transition duration-300 hover:-translate-y-0.5 hover:border-zinc-600"
               >
                 <div class="aspect-[4/5] overflow-hidden bg-zinc-800">

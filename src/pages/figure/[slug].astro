@@ -19,19 +19,21 @@ function createSlug(text: string): string {
 export async function getStaticPaths() {
   const { data: figuras, error } = await supabase
     .from("figures")
-    .select("id");
+    .select("slug");
 
   if (error || !figuras) {
-    console.error("Error obteniendo IDs para rutas estáticas:", error);
+    console.error("Error obteniendo slugs para rutas estáticas:", error);
     return [];
   }
 
-  return figuras.map((figura) => ({
-    params: { id: String(figura.id) },
-  }));
+  return figuras
+    .filter((figura) => figura.slug)
+    .map((figura) => ({
+      params: { slug: String(figura.slug) },
+    }));
 }
 
-const { id } = Astro.params;
+const { slug } = Astro.params;
 
 const { data: figura, error } = await supabase
   .from("figures")
@@ -49,7 +51,7 @@ const { data: figura, error } = await supabase
       )
     )
   `)
-  .eq("id", id)
+  .eq("slug", slug)
   .single();
 
 if (error || !figura) {
@@ -134,13 +136,13 @@ const volumenSlug = figura.volumes?.name_eng ? createSlug(figura.volumes.name_en
         {figura.volumes && figura.volumes.collections && (
           <div class="flex flex-wrap gap-1.5">
             <a
-              href={`/coleccion/${coleccionSlug}`}
+              href={`/collection/${coleccionSlug}`}
               class="inline-block rounded-full bg-emerald-300/10 border border-emerald-300/30 px-3 py-1 text-xs font-semibold text-emerald-300 hover:bg-emerald-300/20 transition"
             >
               📁 {figura.volumes.collections.name}
             </a>
             <a
-              href={`/coleccion/${coleccionSlug}/volumen/${volumenSlug}`}
+              href={`/collection/${coleccionSlug}/volume/${volumenSlug}`}
               class="inline-block rounded-full bg-blue-300/10 border border-blue-300/30 px-3 py-1 text-xs font-semibold text-blue-300 hover:bg-blue-300/20 transition"
             >
               📖 Vol. {figura.volumes.volume}
@@ -152,7 +154,7 @@ const volumenSlug = figura.volumes?.name_eng ? createSlug(figura.volumes.name_en
         {atributos.length > 0 && (
           <div class="flex flex-wrap gap-1.5">
             {atributos.map((attr: string) => (
-              <a href={`/atributo/${createSlug(attr)}`} class="rounded-full bg-amber-300/10 border border-amber-300/30 px-3 py-0.5 text-xs font-semibold text-amber-300 hover:bg-amber-300/20 transition">
+              <a href={`/attribute/${createSlug(attr)}`} class="rounded-full bg-amber-300/10 border border-amber-300/30 px-3 py-0.5 text-xs font-semibold text-amber-300 hover:bg-amber-300/20 transition">
                 {getAtributoLabel(attr)}
               </a>
             ))}

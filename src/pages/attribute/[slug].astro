@@ -185,7 +185,7 @@ const figurasConEtiquetas = figuras?.map((f: any) => ({
 
               return (
                 <a
-                  href={`/figura/${escapeHtml(figura.id)}`}
+                  href={`/figure/${escapeHtml(figura.slug ?? figura.id)}`}
                   class="group block overflow-hidden rounded-lg border border-zinc-800 bg-zinc-900 shadow-lg shadow-black/20 transition duration-300 hover:-translate-y-0.5 hover:border-zinc-600"
                 >
                   <div class="aspect-[4/5] overflow-hidden bg-zinc-800">
@@ -198,7 +198,7 @@ const figurasConEtiquetas = figuras?.map((f: any) => ({
                         {figura.year && <p class="mt-1 text-xs font-medium text-zinc-500">{escapeHtml(figura.year)}</p>}
                         {figura.volumes && figura.volumes.collections && (
                           <p class="mt-1 text-xs font-medium text-zinc-500">
-                            <a href={`/coleccion/${coleccionSlug}`} class="hover:text-zinc-300 transition">
+                            <a href={`/collection/${coleccionSlug}`} class="hover:text-zinc-300 transition">
                               {escapeHtml(figura.volumes.collections.name)}
                             </a>
                             {` · Vol. ${figura.volumes.volume}${figura.volumes.name_eng ? ` · ${figura.volumes.name_eng}` : ""}`}

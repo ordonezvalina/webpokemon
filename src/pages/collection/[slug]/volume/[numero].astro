@@ -164,7 +164,7 @@ const figurasConEtiquetas = figuras?.map((f: any) => ({
       <header class="mb-5 flex flex-col gap-4 sm:mb-8 sm:flex-row sm:items-end sm:justify-between">
         <div class="space-y-2">
           <a
-            href={`/coleccion/${slug}`}
+            href={`/collection/${slug}`}
             class="inline-flex items-center gap-2 text-sm font-semibold text-zinc-400 hover:text-zinc-200 transition"
           >
             ← Volver a {coleccion.name}
@@ -216,7 +216,7 @@ const figurasConEtiquetas = figuras?.map((f: any) => ({
 
               return (
                 <a
-                  href={`/figura/${escapeHtml(figura.id)}`}
+                  href={`/figure/${escapeHtml(figura.slug ?? figura.id)}`}
                   class="group block overflow-hidden rounded-lg border border-zinc-800 bg-zinc-900 shadow-lg shadow-black/20 transition duration-300 hover:-translate-y-0.5 hover:border-zinc-600"
                 >
                   <div class="aspect-[4/5] overflow-hidden bg-zinc-800">
@@ -233,7 +233,7 @@ const figurasConEtiquetas = figuras?.map((f: any) => ({
                           {escapeHtml(getLineaLabel(figura.line))}
                         </span>
                         {atributos.map((atributo: string) => (
-                          <a href={`/atributo/${createSlug(atributo)}`} class:list={["shrink-0 rounded-md border px-2 py-1 text-[11px] font-bold hover:opacity-80 transition", getAtributoClass(atributo)]}>
+                          <a href={`/attribute/${createSlug(atributo)}`} class:list={["shrink-0 rounded-md border px-2 py-1 text-[11px] font-bold hover:opacity-80 transition", getAtributoClass(atributo)]}>
                             {escapeHtml(getAtributoLabel(atributo))}
                           </a>
                         ))}
