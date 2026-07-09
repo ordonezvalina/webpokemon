@@ -1,0 +1,101 @@
+-- ====================================================================
+-- TOTAL CLEANUP
+-- ====================================================================
+DROP TABLE IF EXISTS figure_tags CASCADE;
+DROP TABLE IF EXISTS tags CASCADE;
+DROP TABLE IF EXISTS figures CASCADE;
+DROP TABLE IF EXISTS pokemon CASCADE; 
+DROP TABLE IF EXISTS volumes CASCADE;
+DROP TABLE IF EXISTS collections CASCADE;
+
+-- ====================================================================
+-- 1. TABLE: POKEMON MASTER CATALOG (JSONB Multi-language support)
+-- ====================================================================
+CREATE TABLE pokemon (
+    -- PokéAPI official slug (e.g., 'vulpix', 'vulpix-alola', 'charizard-mega-x')
+    id TEXT PRIMARY KEY,
+    pokedex_number INT4 NOT NULL,
+    form TEXT NOT NULL DEFAULT 'Base',
+    generation INT4 NOT NULL,
+    
+    -- Maps of languages, e.g., {"es": "Vulpix", "en": "Vulpix", "ja": "ロコン"}
+    names JSONB NOT NULL,          
+    full_names JSONB NOT NULL 
+);
+
+-- ====================================================================
+-- 2. TABLE: COLLECTIONS
+-- ====================================================================
+CREATE TABLE collections (
+    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    name TEXT NOT NULL UNIQUE,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+-- ====================================================================
+-- 3. TABLE: VOLUMES
+-- ====================================================================
+CREATE TABLE volumes (
+    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    collection_id BIGINT NOT NULL REFERENCES collections(id) ON DELETE CASCADE,
+    volume SMALLINT NOT NULL,
+    name_eng TEXT NULL,
+    name_jp TEXT NULL,
+    cover_image TEXT NULL,
+    release_date DATE NULL,
+    description TEXT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    CONSTRAINT volumes_collection_volume_unique UNIQUE (collection_id, volume)
+);
+
+-- ====================================================================
+-- 4. MAIN TABLE: FIGURES (The physical items)
+-- ====================================================================
+CREATE TABLE figures (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    inventory_id TEXT NOT NULL UNIQUE,
+
+    -- Relations
+    pokemon_id TEXT NOT NULL REFERENCES pokemon(id) ON DELETE RESTRICT,
+    volume_id BIGINT NULL REFERENCES volumes(id) ON DELETE SET NULL,
+
+    -- Figure details
+    line TEXT NOT NULL,             -- 'Principal', 'Arts', etc.
+    size TEXT NOT NULL DEFAULT 'Standard' CHECK (size IN ('Standard', 'Medium', 'Large')),
+    year INT4 NULL,
+    mfc_id TEXT NULL,
+    details TEXT NULL,
+
+    -- Visual sorting control per Pokémon
+    visual_order NUMERIC(6,2) NOT NULL DEFAULT 10.0,
+
+    -- Attributes
+    is_shiny BOOLEAN NOT NULL DEFAULT FALSE,
+    is_clear BOOLEAN NOT NULL DEFAULT FALSE,
+    is_pearl BOOLEAN NOT NULL DEFAULT FALSE,
+    has_base BOOLEAN NOT NULL DEFAULT FALSE,
+
+    -- Images
+    image_url TEXT NULL,
+    images_urls TEXT[] NULL,
+
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+-- ====================================================================
+-- 5. TABLE: TAGS
+-- ====================================================================
+CREATE TABLE tags (
+    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    name TEXT NOT NULL UNIQUE,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+-- ====================================================================
+-- 6. INTERMEDIATE TABLE: FIGURES <-> TAGS
+-- ====================================================================
+CREATE TABLE figure_tags (
+    figure_id UUID NOT NULL REFERENCES figures(id) ON DELETE CASCADE,
+    tag_id BIGINT NOT NULL REFERENCES tags(id) ON DELETE CASCADE,
+    PRIMARY KEY (figure_id, tag_id)
+);

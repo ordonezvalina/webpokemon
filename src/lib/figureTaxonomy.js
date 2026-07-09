@@ -1,54 +1,50 @@
 export const LINEAS = [
-  { value: "moncolle", label: "Moncolle" },
-  { value: "tomy-arts", label: "Tomy Arts" }
+  { value: "tomy", label: "Takara Tomy / Moncolle" },
+  { value: "t_arts", label: "Takara Tomy Arts (T-Arts)" }
 ];
 
-export const DEFAULT_LINEA = "tomy-arts";
+export const DEFAULT_LINEA = "tomy";
 
 export const ATRIBUTOS = [
   { value: "brillante", label: "Brillante / Pearl" },
   { value: "shiny", label: "Shiny / Variocolor" },
   { value: "clear", label: "Translucida / Clear" },
-  { value: "mega", label: "Megaevolucion" },
   { value: "con-base", label: "Con Base / Peana / Diorama" }
 ];
 
 export function normalizeLinea(value) {
-  const normalized = String(value ?? "")
-    .toLowerCase()
-    .trim()
-    .replace(/\s+/g, "-");
+  const normalized = String(value ?? "").toLowerCase().trim();
 
-  if (normalized === "tomy-arts" || normalized === "tomyarts") {
-    return "tomy-arts";
+  if (normalized === "tomy" || normalized === "moncolle") {
+    return "tomy";
   }
 
-  if (normalized === "moncolle") {
-    return "moncolle";
+  if (normalized === "t_arts" || normalized === "tomy-arts" || normalized === "tomyarts") {
+    return "t_arts";
   }
 
   return DEFAULT_LINEA;
 }
 
 export function getLineaLabel(value) {
-  const linea = normalizeLinea(value);
-  return LINEAS.find((entry) => entry.value === linea)?.label ?? linea;
+  const normalized = normalizeLinea(value);
+  const entry = LINEAS.find((e) => e.value === normalized);
+  return entry?.label ?? "Otras Líneas";
 }
 
 export function getAtributoLabel(value) {
   return ATRIBUTOS.find((entry) => entry.value === value)?.label ?? value;
 }
 
-// Ahora trabaja con las columnas booleanas de la BD (es_shiny, es_mega, es_clear, es_pearl, tiene_base)
+// Trabaja con las columnas booleanas de la BD (is_shiny, is_clear, is_pearl, has_base)
 export function getFigureAtributos(figure) {
   const atributos = [];
-  
-  if (figure?.es_shiny) atributos.push("shiny");
-  if (figure?.es_mega) atributos.push("mega");
-  if (figure?.es_clear) atributos.push("clear");
-  if (figure?.es_pearl) atributos.push("brillante");
-  if (figure?.tiene_base) atributos.push("con-base");
-  
+
+  if (figure?.is_shiny) atributos.push("shiny");
+  if (figure?.is_clear) atributos.push("clear");
+  if (figure?.is_pearl) atributos.push("brillante");
+  if (figure?.has_base) atributos.push("con-base");
+
   return atributos;
 }
 
@@ -56,7 +52,7 @@ export function figureMatchesLineFilter(figure, lineFilter) {
   if (!lineFilter) {
     return true;
   }
-  return normalizeLinea(figure?.linea) === lineFilter;
+  return normalizeLinea(figure?.line) === lineFilter;
 }
 
 export function figureMatchesAtributoFilters(figure, selectedAtributos) {

@@ -125,16 +125,16 @@ import "../styles/global.css";
             <button
               class="linea-filter rounded-lg border px-3 py-2 text-sm font-semibold transition"
               type="button"
-              data-linea="moncolle"
+              data-linea="tomy"
             >
-              Moncolle
+              Takara Tomy / Moncolle
             </button>
             <button
               class="linea-filter rounded-lg border px-3 py-2 text-sm font-semibold transition"
               type="button"
-              data-linea="tomy-arts"
+              data-linea="t_arts"
             >
-              Tomy Arts
+              Takara Tomy Arts (T-Arts)
             </button>
           </div>
         </div>
@@ -276,6 +276,17 @@ import "../styles/global.css";
         getLineaLabel
       } from "../lib/figureTaxonomy";
 
+      function createSlug(text: string): string {
+        return text
+          .toLowerCase()
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .replace(/[^a-z0-9\s-]/g, "")
+          .trim()
+          .replace(/\s+/g, "-")
+          .replace(/-+/g, "-");
+      }
+
       const state = {
         figures: [],
         colecciones: [],
@@ -344,7 +355,7 @@ import "../styles/global.css";
         if (state.generation === "all") {
           return state.figures;
         }
-        return state.figures.filter((figure) => String(figure.generacion) === state.generation);
+        return state.figures.filter((figure) => String(figure.pokemon?.generation) === state.generation);
       }
 
       function getFilteredFigures() {
@@ -354,15 +365,15 @@ import "../styles/global.css";
           (figure) =>
             figureMatchesLineFilter(figure, state.linea) &&
             figureMatchesAtributoFilters(figure, state.atributos) &&
-            (state.coleccion === null || figure.volumenes?.colecciones?.id === state.coleccion) &&
+            (state.coleccion === null || figure.volumes?.collections?.id === state.coleccion) &&
             (state.etiquetasSeleccionadas.length === 0 || 
              state.etiquetasSeleccionadas.some(etiquetaId => 
                figure.etiquetas?.includes(etiquetaId)
              )) &&
             (state.search === "" ||
-              figure.nombre.toLowerCase().includes(state.search) ||
-              String(figure.num_pokedex).includes(state.search) ||
-              String(figure.num_pokedex).padStart(4, "0").includes(state.search))
+              figure.pokemon?.full_names?.es?.toLowerCase().includes(state.search) ||
+              String(figure.pokemon?.pokedex_number).includes(state.search) ||
+              String(figure.pokemon?.pokedex_number).padStart(4, "0").includes(state.search))
         );
       }
 
@@ -467,16 +478,16 @@ import "../styles/global.css";
       }
 
       function getColeccionVolumenText(figure) {
-        if (!figure.volumenes?.colecciones) return "";
-        const coleccionNombre = figure.volumenes.colecciones.nombre;
-        const volumenNum = figure.volumenes.volumen;
+        if (!figure.volumes?.collections) return "";
+        const coleccionNombre = figure.volumes.collections.name;
+        const volumenNum = figure.volumes.volume;
         return `${coleccionNombre} · Vol. ${volumenNum}`;
       }
 
       function getLightboxCaption(figure) {
-        const parts = [figure.nombre];
-        if (figure.anio) {
-          parts.push(String(figure.anio));
+        const parts = [figure.pokemon?.full_names?.es || "Unknown"];
+        if (figure.year) {
+          parts.push(String(figure.year));
         }
         return parts.join(" · ");
       }
@@ -485,7 +496,7 @@ import "../styles/global.css";
         const photos = getFigurePhotos(figure);
 
         if (photos.length === 0) {
-          return `<div class="grid h-full w-full place-items-center bg-zinc-800 text-sm font-semibold text-zinc-500">#${escapeHtml(formatPokedexNumber(figure.num_pokedex))}</div>`;
+          return `<div class="grid h-full w-full place-items-center bg-zinc-800 text-sm font-semibold text-zinc-500">#${escapeHtml(formatPokedexNumber(figure.pokemon?.pokedex_number))}</div>`;
         }
 
         const photoCountBadge =
@@ -498,7 +509,7 @@ import "../styles/global.css";
             <img
               class="h-full w-full object-cover transition duration-300 group-hover:scale-[1.03]"
               src="${escapeHtml(photos[0])}"
-              alt="${escapeHtml(figure.nombre)}"
+              alt="${escapeHtml(figure.pokemon?.full_names?.es)}"
               loading="lazy"
             />
             ${photoCountBadge}
@@ -582,20 +593,20 @@ import "../styles/global.css";
               .join("");
             const lineaBadge = `
               <span class="shrink-0 rounded-md border border-zinc-600 bg-zinc-700/55 px-2 py-1 text-[11px] font-bold text-zinc-100">
-                ${escapeHtml(getLineaLabel(figure.linea))}
+                ${escapeHtml(getLineaLabel(figure.line))}
               </span>
             `;
             const image = renderPhotoArea(figure);
-            const yearLine = figure.anio
-              ? `<p class="mt-1 text-xs font-medium text-zinc-500">${escapeHtml(figure.anio)}</p>`
+            const yearLine = figure.year
+              ? `<p class="mt-1 text-xs font-medium text-zinc-500">${escapeHtml(figure.year)}</p>`
               : "";
             const coleccionVolumenLine = getColeccionVolumenText(figure)
               ? `<p class="mt-1 text-xs font-medium text-zinc-500">${escapeHtml(getColeccionVolumenText(figure))}</p>`
               : "";
 
             return `
-              <a 
-                href="/figura/${escapeHtml(figure.id_inventario)}" 
+              <a
+                href="/figura/${escapeHtml(figure.id)}"
                 class="group block overflow-hidden rounded-lg border border-zinc-800 bg-zinc-900 shadow-lg shadow-black/20 transition duration-300 hover:-translate-y-0.5 hover:border-zinc-600"
               >
                 <div class="aspect-[4/5] overflow-hidden bg-zinc-800">
@@ -604,7 +615,7 @@ import "../styles/global.css";
                 <div class="space-y-3 p-3">
                   <div class="flex items-start justify-between gap-2">
                     <div class="min-w-0">
-                      <h2 class="truncate text-sm font-semibold text-white sm:text-base">${escapeHtml(figure.nombre)}</h2>
+                      <h2 class="truncate text-sm font-semibold text-white sm:text-base">${escapeHtml(figure.pokemon?.full_names?.es)}</h2>
                       ${yearLine}
                       ${coleccionVolumenLine}
                     </div>
@@ -613,7 +624,7 @@ import "../styles/global.css";
                       ${atributoBadges}
                     </div>
                   </div>
-                  ${figure.detalles ? `<p class="line-clamp-2 text-xs leading-5 text-zinc-400">${escapeHtml(figure.detalles)}</p>` : ""}
+                  ${figure.details ? `<p class="line-clamp-2 text-xs leading-5 text-zinc-400">${escapeHtml(figure.details)}</p>` : ""}
                 </div>
               </a>
             `;
@@ -631,18 +642,18 @@ import "../styles/global.css";
         loadingState.classList.remove("hidden");
 
         const { data, error } = await supabase
-          .from("figuras")
+          .from("figures")
           .select(`
             *,
-            volumenes(
+            pokemon(*),
+            volumes(
               id,
-              volumen,
-              nombre,
-              colecciones(id, nombre)
+              volume,
+              name_eng,
+              collections(id, name)
             )
           `)
-          .order("num_pokedex", { ascending: true })
-          .order("id_inventario", { ascending: true });
+          .order("visual_order", { ascending: true });
 
         loadingState.classList.add("hidden");
 
@@ -653,26 +664,42 @@ import "../styles/global.css";
         }
 
         const figures = data ?? [];
-        
+
         // Cargar todas las relaciones de etiquetas en una sola query
         const { data: relacionesData } = await supabase
-          .from("figuras_etiquetas")
-          .select("id_figura, id_etiqueta");
-        
+          .from("figure_tags")
+          .select("figure_id, tag_id");
+
         // Crear un mapa de figura -> array de etiquetas
         const etiquetasPorFigura = {};
         if (relacionesData) {
           relacionesData.forEach(rel => {
-            if (!etiquetasPorFigura[rel.id_figura]) {
-              etiquetasPorFigura[rel.id_figura] = [];
+            if (!etiquetasPorFigura[rel.figure_id]) {
+              etiquetasPorFigura[rel.figure_id] = [];
             }
-            etiquetasPorFigura[rel.id_figura].push(rel.id_etiqueta);
+            etiquetasPorFigura[rel.figure_id].push(rel.tag_id);
           });
         }
-        
+
         // Asignar las etiquetas a cada figura
         figures.forEach(figure => {
           figure.etiquetas = etiquetasPorFigura[figure.id] || [];
+        });
+
+        // Ordenar: pokedex_number ASC, luego line (tomy < t_arts < resto), luego visual_order ASC
+        const linePriority = (line) => {
+          if (line === "tomy") return 0;
+          if (line === "t_arts") return 1;
+          return 2;
+        };
+        figures.sort((a, b) => {
+          const numA = a.pokemon?.pokedex_number ?? 0;
+          const numB = b.pokemon?.pokedex_number ?? 0;
+          if (numA !== numB) return numA - numB;
+          const lpA = linePriority(a.line);
+          const lpB = linePriority(b.line);
+          if (lpA !== lpB) return lpA - lpB;
+          return (a.visual_order ?? 0) - (b.visual_order ?? 0);
         });
 
         state.figures = figures;
@@ -682,9 +709,9 @@ import "../styles/global.css";
 
       async function loadColecciones() {
         const { data, error } = await supabase
-          .from("colecciones")
+          .from("collections")
           .select("*")
-          .order("nombre", { ascending: true });
+          .order("name", { ascending: true });
 
         if (error) {
           console.error("Error al cargar colecciones:", error);
@@ -697,9 +724,9 @@ import "../styles/global.css";
 
       async function loadEtiquetas() {
         const { data, error } = await supabase
-          .from("etiquetas")
+          .from("tags")
           .select("*")
-          .order("nombre", { ascending: true });
+          .order("name", { ascending: true });
 
         if (error) {
           console.error("Error al cargar etiquetas:", error);

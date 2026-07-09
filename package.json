@@ -14,6 +14,7 @@
     "@tailwindcss/vite": "latest",
     "astro": "latest",
     "browser-image-compression": "^2.0.2",
+    "sharp": "^0.35.3",
     "tailwindcss": "latest"
   },
   "devDependencies": {

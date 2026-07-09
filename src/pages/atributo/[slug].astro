@@ -4,6 +4,17 @@ import { supabase } from "../../lib/supabaseClient";
 import { getFigurePhotos } from "../../lib/figurePhotos";
 import { getLineaLabel, getFigureAtributos, getAtributoLabel } from "../../lib/figureTaxonomy";
 
+function createSlug(text: string): string {
+  return text
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9\s-]/g, "")
+    .trim()
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-");
+}
+
 function escapeHtml(value: string): string {
   return String(value ?? "")
     .replaceAll("&", "&amp;")
@@ -36,60 +47,48 @@ export async function getStaticPaths() {
       .replace(/-+/g, "-");
   }
 
-  const { data: colecciones, error } = await supabase
-    .from("collections")
-    .select("id, name");
+  // Obtener todas las figuras con sus columnas booleanas
+  const { data: figuras, error } = await supabase
+    .from("figures")
+    .select("is_shiny, is_clear, is_pearl, has_base");
 
-  if (error || !colecciones) {
-    console.error("Error obteniendo colecciones para rutas estáticas:", error);
+  if (error || !figuras) {
+    console.error("Error obteniendo figuras para rutas estáticas:", error);
     return [];
   }
 
-  return colecciones.map((coleccion: any) => ({
-    params: { slug: createSlug(coleccion.name) },
-  }));
-}
+  // Extraer todos los atributos únicos usando la misma lógica que getFigureAtributos
+  const atributosUnicos = new Set<string>();
+  figuras.forEach((figura: any) => {
+    if (figura?.is_shiny) atributosUnicos.add("shiny");
+    if (figura?.is_clear) atributosUnicos.add("clear");
+    if (figura?.is_pearl) atributosUnicos.add("brillante");
+    if (figura?.has_base) atributosUnicos.add("con-base");
+  });
 
-function createSlug(text: string): string {
-  return text
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/[^a-z0-9\s-]/g, "")
-    .trim()
-    .replace(/\s+/g, "-")
-    .replace(/-+/g, "-");
+  return Array.from(atributosUnicos).map((atributo) => ({
+    params: { slug: createSlug(atributo) },
+  }));
 }
 
 const { slug } = Astro.params;
 
-// Buscar colección por slug (comparando con el slug generado del nombre)
-const { data: colecciones, error: coleccionesError } = await supabase
-  .from("collections")
-  .select("*");
+// Mapeo de slugs a valores de atributos y columnas correspondientes
+const atributosMap: { [key: string]: { valor: string, columna: string } } = {
+  "brillante": { valor: "brillante", columna: "is_pearl" },
+  "shiny": { valor: "shiny", columna: "is_shiny" },
+  "clear": { valor: "clear", columna: "is_clear" },
+  "con-base": { valor: "con-base", columna: "has_base" }
+};
 
-if (coleccionesError || !colecciones) {
+// Buscar el atributo correspondiente al slug
+const atributoInfo = atributosMap[slug] || Object.values(atributosMap).find(v => createSlug(v.valor) === slug);
+
+if (!atributoInfo) {
   return Astro.redirect("/404");
 }
 
-const coleccion = colecciones.find((c: any) => createSlug(c.name) === slug);
-
-if (!coleccion) {
-  return Astro.redirect("/404");
-}
-
-// Obtener volúmenes de esta colección
-const { data: volumenes, error: volumenesError } = await supabase
-  .from("volumes")
-  .select("id, volume, name_eng, cover_image, collection_id")
-  .eq("collection_id", coleccion.id)
-  .order("volume", { ascending: true });
-
-if (volumenesError) {
-  console.error("Error obteniendo volúmenes:", volumenesError);
-}
-
-// Obtener figuras de esta colección (a través de volúmenes)
+// Obtener figuras con este atributo usando la columna booleana correspondiente
 const { data: figuras, error: figurasError } = await supabase
   .from("figures")
   .select(`
@@ -98,10 +97,11 @@ const { data: figuras, error: figurasError } = await supabase
     volumes(
       id,
       volume,
-      name_eng
+      name_eng,
+      collections(id, name)
     )
   `)
-  .in("volume_id", volumenes?.map((v: any) => v.id) || [])
+  .eq(atributoInfo.columna, true)
   .order("visual_order", { ascending: true });
 
 if (figurasError) {
@@ -138,69 +138,30 @@ const figurasConEtiquetas = figuras?.map((f: any) => ({
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{coleccion.name} | Mi Colección</title>
+    <title>{getAtributoLabel(atributoInfo.valor)} | Mi Colección</title>
   </head>
   <body class="bg-zinc-950 text-zinc-100 antialiased">
     <main class="mx-auto min-h-screen w-full max-w-7xl px-4 pb-24 pt-5 sm:px-6 lg:px-8">
-      
+
       <header class="mb-5 flex flex-col gap-4 sm:mb-8 sm:flex-row sm:items-end sm:justify-between">
         <div class="space-y-2">
-          <a 
-            href="/" 
+          <a
+            href="/"
             class="inline-flex items-center gap-2 text-sm font-semibold text-zinc-400 hover:text-zinc-200 transition"
           >
             ← Volver al catálogo
           </a>
           <h1 class="max-w-3xl text-4xl font-semibold leading-tight text-white sm:text-6xl">
-            {coleccion.name}
+            {getAtributoLabel(atributoInfo.valor)}
           </h1>
           <p class="max-w-2xl text-sm leading-6 text-zinc-400 sm:text-base">
-            {volumenes?.length || 0} volúmenes · {figurasConEtiquetas.length} figuras
+            {figurasConEtiquetas.length} figuras con este atributo
           </p>
         </div>
       </header>
 
-      {/* Volúmenes de la colección */}
-      {volumenes && volumenes.length > 0 && (
-        <section class="mb-8">
-          <h2 class="mb-4 text-xl font-semibold text-white">Volúmenes</h2>
-          <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
-            {volumenes.map((volumen: any) => {
-              const volumenSlug = volumen.name_eng ? createSlug(volumen.name_eng) : String(volumen.volume);
-              return (
-                <a
-                  href={`/coleccion/${slug}/volumen/${volumenSlug}`}
-                  class="group block overflow-hidden rounded-lg border border-zinc-800 bg-zinc-900 transition hover:border-zinc-600 hover:-translate-y-0.5"
-                >
-                  <div class="aspect-[4/5] overflow-hidden bg-zinc-800">
-                    {volumen.cover_image ? (
-                      <img
-                        class="h-full w-full object-cover transition group-hover:scale-105"
-                        src={volumen.cover_image}
-                        alt={`Vol. ${volumen.volume}`}
-                      />
-                    ) : (
-                      <div class="grid h-full w-full place-items-center text-sm font-bold text-zinc-600">
-                        Vol. {volumen.volume}
-                      </div>
-                    )}
-                  </div>
-                  <div class="p-3">
-                    <p class="truncate text-sm font-semibold text-white">Vol. {volumen.volume}</p>
-                    {volumen.name_eng && (
-                      <p class="mt-1 truncate text-xs text-zinc-400">{volumen.name_eng}</p>
-                    )}
-                  </div>
-                </a>
-              );
-            })}
-          </div>
-        </section>
-      )}
-
-      {/* Figuras de la colección */}
+      {/* Figuras con este atributo */}
       <section>
-        <h2 class="mb-4 text-xl font-semibold text-white">Todas las figuras</h2>
         {figurasConEtiquetas.length > 0 ? (
           <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4 xl:grid-cols-5">
             {figurasConEtiquetas.map((figura: any) => {
@@ -220,6 +181,8 @@ const figurasConEtiquetas = figuras?.map((f: any) => ({
                 </div>
               );
 
+              const coleccionSlug = figura.volumes?.collections ? createSlug(figura.volumes.collections.name) : "";
+
               return (
                 <a
                   href={`/figura/${escapeHtml(figura.id)}`}
@@ -233,16 +196,23 @@ const figurasConEtiquetas = figuras?.map((f: any) => ({
                       <div class="min-w-0">
                         <h2 class="truncate text-sm font-semibold text-white sm:text-base">{escapeHtml(figura.pokemon?.full_names?.es)}</h2>
                         {figura.year && <p class="mt-1 text-xs font-medium text-zinc-500">{escapeHtml(figura.year)}</p>}
-                        {figura.volumes && <p class="mt-1 text-xs font-medium text-zinc-500">Vol. {figura.volumes.volume}{figura.volumes.name_eng ? ` · ${figura.volumes.name_eng}` : ""}</p>}
+                        {figura.volumes && figura.volumes.collections && (
+                          <p class="mt-1 text-xs font-medium text-zinc-500">
+                            <a href={`/coleccion/${coleccionSlug}`} class="hover:text-zinc-300 transition">
+                              {escapeHtml(figura.volumes.collections.name)}
+                            </a>
+                            {` · Vol. ${figura.volumes.volume}${figura.volumes.name_eng ? ` · ${figura.volumes.name_eng}` : ""}`}
+                          </p>
+                        )}
                       </div>
                       <div class="flex max-w-[52%] flex-wrap justify-end gap-1">
                         <span class="shrink-0 rounded-md border border-zinc-600 bg-zinc-700/55 px-2 py-1 text-[11px] font-bold text-zinc-100">
                           {escapeHtml(getLineaLabel(figura.line))}
                         </span>
                         {atributos.map((atributo: string) => (
-                          <a href={`/atributo/${createSlug(atributo)}`} class:list={["shrink-0 rounded-md border px-2 py-1 text-[11px] font-bold hover:opacity-80 transition", getAtributoClass(atributo)]}>
+                          <span class:list={["shrink-0 rounded-md border px-2 py-1 text-[11px] font-bold", getAtributoClass(atributo)]}>
                             {escapeHtml(getAtributoLabel(atributo))}
-                          </a>
+                          </span>
                         ))}
                       </div>
                     </div>
@@ -254,7 +224,7 @@ const figurasConEtiquetas = figuras?.map((f: any) => ({
           </div>
         ) : (
           <div class="rounded-lg border border-dashed border-zinc-700 bg-zinc-900/50 p-8 text-center">
-            <p class="text-base font-semibold text-white">No hay figuras en esta colección.</p>
+            <p class="text-base font-semibold text-white">No hay figuras con este atributo.</p>
           </div>
         )}
       </section>
