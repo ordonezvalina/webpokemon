@@ -17,51 +17,49 @@ import "../styles/global.css";
     <!-- Ambient background glow -->
     <div class="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(ellipse_80%_50%_at_50%_-10%,rgba(120,100,60,0.12),transparent)]"></div>
     <main class="mx-auto flex min-h-screen w-full max-w-7xl flex-col px-4 pb-24 pt-5 sm:px-6 lg:px-8">
-      <header class="mb-5 flex flex-col gap-4 sm:mb-8 sm:flex-row sm:items-end sm:justify-between">
-        <div class="space-y-2">
-          <p class="text-xs font-semibold uppercase tracking-[0.22em] text-amber-300">
-            Tomy Moncolle Archive
-          </p>
-          <h1 class="max-w-3xl text-4xl font-semibold leading-tight tracking-tight sm:text-6xl">
-            <span class="bg-gradient-to-br from-white via-zinc-100 to-zinc-400 bg-clip-text text-transparent">Coleccion Pokemon</span>
-          </h1>
-          <p class="max-w-2xl text-sm leading-6 text-zinc-400 sm:text-base">
-            Catálogo de mi coleccion personal de figuras Tomy.
-          </p>
-        </div>
+      <header class="mb-5 sm:mb-8">
+        <p class="text-xs font-semibold uppercase tracking-[0.22em] text-amber-300">
+          Tomy Moncolle Archive
+        </p>
+        <h1 class="mt-1 text-4xl font-semibold leading-tight tracking-tight sm:text-6xl">
+          <span class="bg-gradient-to-br from-white via-zinc-100 to-zinc-400 bg-clip-text text-transparent">Coleccion Pokemon</span>
+        </h1>
+        <p class="mt-1 max-w-2xl text-sm leading-6 text-zinc-400 sm:text-base">
+          Catálogo de mi coleccion personal de figuras Tomy.
+        </p>
 
-        <div class="grid grid-cols-3 gap-2 rounded-xl border border-zinc-800/60 bg-zinc-900/60 p-2 text-center shadow-2xl shadow-black/40 backdrop-blur-sm">
-          <div class="px-3 py-2">
-            <p id="total-count" class="text-xl font-semibold text-white">0</p>
-            <p class="text-[11px] uppercase tracking-[0.16em] text-zinc-500">Figuras</p>
-          </div>
-          <div class="border-x border-zinc-800 px-3 py-2">
-            <p id="visible-count" class="text-xl font-semibold text-white">0</p>
-            <p class="text-[11px] uppercase tracking-[0.16em] text-zinc-500">Visibles</p>
-          </div>
-          <div class="px-3 py-2">
-            <p id="filter-count" class="text-xl font-semibold text-white">0</p>
-            <p class="text-[11px] uppercase tracking-[0.16em] text-zinc-500">Filtros</p>
-          </div>
-        </div>
-      </header>
-
-      <div class="mb-5 max-w-md">
-        <div class="relative">
-          <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-zinc-500">
+        <!-- Buscador -->
+        <div class="relative mt-4 max-w-md">
+          <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-zinc-500">
             <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
               <circle cx="11" cy="11" r="8"></circle>
               <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
             </svg>
           </span>
-          <input 
-            type="text" 
-            id="buscador-principal" 
-            placeholder="Buscar por nombre o número (ej: Pikachu o 0025)..." 
-            class="w-full rounded-lg border border-zinc-800/70 bg-zinc-900/60 py-2 pl-9 pr-4 text-sm text-zinc-100 placeholder-zinc-500 backdrop-blur-sm transition-all duration-200 focus:border-amber-400/70 focus:bg-zinc-900 focus:outline-none focus:ring-1 focus:ring-amber-400/50"
+          <input
+            type="text"
+            id="buscador-principal"
+            placeholder="Buscar Pokémon o #001"
+            class="w-full rounded-lg border border-zinc-800/70 bg-zinc-900/60 py-2 pl-9 pr-9 text-sm text-zinc-100 placeholder-zinc-500 backdrop-blur-sm transition-all duration-200 focus:border-amber-400/70 focus:bg-zinc-900 focus:outline-none focus:ring-1 focus:ring-amber-400/50"
           />
+          <button
+            id="buscador-clear"
+            class="absolute inset-y-0 right-0 hidden items-center pr-3 text-zinc-400 hover:text-white"
+            type="button"
+            aria-label="Limpiar búsqueda"
+          >
+            <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
         </div>
-      </div>
+      </header>
+
+      <!-- ids ocultos para JS de estadísticas -->
+      <span id="total-count" class="hidden">0</span>
+      <span id="visible-count" class="hidden">0</span>
+      <span id="filter-count" class="hidden">0</span>
 
       <nav class="sticky top-0 z-20 -mx-4 border-y border-zinc-800/60 bg-zinc-950/90 px-4 py-3 backdrop-blur-md sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
         <div
@@ -74,18 +72,23 @@ import "../styles/global.css";
             type="button"
             data-generation="all"
           >
-            Todas
+            <span class="block font-semibold">Todas</span>
+            <span class="block text-[10px] font-normal opacity-70">Todas</span>
           </button>
           {
-            Array.from({ length: 9 }, (_, index) => index + 1).map((generation) => (
-              <button
-                class="tab-button shrink-0 rounded-lg border px-4 py-2 text-sm font-medium transition"
-                type="button"
-                data-generation={String(generation)}
-              >
-                Gen {generation}
-              </button>
-            ))
+            (() => {
+              const regions = ["","Kanto","Johto","Hoenn","Sinnoh","Unova","Kalos","Alola","Galar","Paldea"];
+              return Array.from({ length: 9 }, (_, i) => i + 1).map((generation) => (
+                <button
+                  class="tab-button shrink-0 rounded-lg border px-4 py-2 text-sm font-medium transition"
+                  type="button"
+                  data-generation={String(generation)}
+                >
+                  <span class="block font-semibold">Gen {generation}</span>
+                  <span class="block text-[10px] font-normal opacity-70">{regions[generation]}</span>
+                </button>
+              ));
+            })()
           }
         </div>
       </nav>
@@ -95,13 +98,25 @@ import "../styles/global.css";
           <p id="active-label" class="text-sm font-medium text-zinc-300">Gen 1</p>
           <p id="active-subtitle" class="text-xs text-zinc-500">Mostrando figuras disponibles</p>
         </div>
-        <button
-          id="filter-toggle"
-          class="inline-flex min-h-11 items-center gap-2 rounded-lg border border-zinc-700/80 bg-zinc-900/60 px-4 py-2 text-sm font-semibold text-zinc-200 shadow-lg shadow-black/30 backdrop-blur-sm transition-all duration-200 hover:border-zinc-500 hover:bg-zinc-800 hover:text-white"
-          type="button"
-          aria-expanded="false"
-          aria-controls="filter-panel"
-        >
+        <div class="flex items-center gap-2">
+          <button
+            id="reset-filters"
+            class="hidden items-center gap-1.5 rounded-lg border border-zinc-700/80 bg-zinc-900/60 px-3 py-2 text-sm font-semibold text-zinc-400 shadow-lg shadow-black/30 backdrop-blur-sm transition-all duration-200 hover:border-zinc-500 hover:text-white"
+            type="button"
+            aria-label="Resetear filtros"
+          >
+            <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"></path>
+            </svg>
+            Resetear
+          </button>
+          <button
+            id="filter-toggle"
+            class="inline-flex min-h-11 items-center gap-2 rounded-lg border border-zinc-700/80 bg-zinc-900/60 px-4 py-2 text-sm font-semibold text-zinc-200 shadow-lg shadow-black/30 backdrop-blur-sm transition-all duration-200 hover:border-zinc-500 hover:bg-zinc-800 hover:text-white"
+            type="button"
+            aria-expanded="false"
+            aria-controls="filter-panel"
+          >
           <span class="grid h-5 w-5 place-items-center">
             <svg viewBox="0 0 24 24" class="h-5 w-5" aria-hidden="true">
               <path
@@ -115,6 +130,7 @@ import "../styles/global.css";
           </span>
           Filtros
         </button>
+        </div>
       </section>
 
       <section
@@ -308,7 +324,9 @@ import "../styles/global.css";
       const lightboxClose = document.querySelector("#lightbox-close");
       const lightboxPrev = document.querySelector("#lightbox-prev");
       const lightboxNext = document.querySelector("#lightbox-next");
-      const buscadorPrincipal = document.querySelector("#buscador-principal"); // MODIFICADO: Selector del input
+      const buscadorPrincipal = document.querySelector("#buscador-principal");
+      const buscadorClear = document.querySelector("#buscador-clear");
+      const resetFiltersBtn = document.querySelector("#reset-filters");
 
       const atributoClasses = {
         brillante: "border-fuchsia-300/50 bg-fuchsia-300/12 text-fuchsia-100",
@@ -437,12 +455,20 @@ import "../styles/global.css";
         });
       }
 
+      function hasActiveFilters() {
+        return state.linea !== null || state.atributos.length > 0 || state.coleccion !== null || state.etiquetasSeleccionadas.length > 0;
+      }
+
       function renderFilterState() {
         renderLineaFilters();
         renderAtributoFilters();
         renderColeccionFilters();
         renderEtiquetaFilters();
         filterCount.textContent = String(getActiveFilterCount());
+        if (resetFiltersBtn) {
+          resetFiltersBtn.classList.toggle("hidden", !hasActiveFilters());
+          resetFiltersBtn.classList.toggle("inline-flex", hasActiveFilters());
+        }
       }
 
       function formatPokedexNumber(number) {
@@ -694,9 +720,28 @@ import "../styles/global.css";
         renderEtiquetaFilters();
       }
 
-      // MODIFICADO: Evento para capturar el texto escrito en el buscador
       buscadorPrincipal?.addEventListener("input", (event) => {
         state.search = event.target.value.toLowerCase().trim();
+        if (buscadorClear) {
+          buscadorClear.classList.toggle("hidden", state.search === "");
+          buscadorClear.classList.toggle("flex", state.search !== "");
+        }
+        render();
+      });
+
+      buscadorClear?.addEventListener("click", () => {
+        state.search = "";
+        if (buscadorPrincipal) buscadorPrincipal.value = "";
+        buscadorClear.classList.add("hidden");
+        buscadorClear.classList.remove("flex");
+        render();
+      });
+
+      resetFiltersBtn?.addEventListener("click", () => {
+        state.linea = null;
+        state.atributos = [];
+        state.coleccion = null;
+        state.etiquetasSeleccionadas = [];
         render();
       });
 
