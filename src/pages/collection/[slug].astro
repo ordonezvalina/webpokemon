@@ -1,6 +1,7 @@
 ---
 import "../../styles/global.css";
-import { supabase } from "../../lib/supabaseClient";
+import { getCatalog, getTagsForFigure } from "../../lib/catalogCache";
+import { createSlug } from "../../lib/slug";
 import { getFigurePhotos } from "../../lib/figurePhotos";
 import { getLineaLabel, getFigureAtributos, getAtributoLabel } from "../../lib/figureTaxonomy";
 
@@ -25,112 +26,37 @@ function getAtributoClass(atributo: string): string {
 }
 
 export async function getStaticPaths() {
-  function createSlug(text: string): string {
-    return text
-      .toLowerCase()
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .replace(/[^a-z0-9\s-]/g, "")
-      .trim()
-      .replace(/\s+/g, "-")
-      .replace(/-+/g, "-");
-  }
+  const { collections } = await getCatalog();
 
-  const { data: colecciones, error } = await supabase
-    .from("collections")
-    .select("id, name");
-
-  if (error || !colecciones) {
-    console.error("Error obteniendo colecciones para rutas estáticas:", error);
-    return [];
-  }
-
-  return colecciones.map((coleccion: any) => ({
+  return collections.map((coleccion: any) => ({
     params: { slug: createSlug(coleccion.name) },
   }));
 }
 
-function createSlug(text: string): string {
-  return text
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/[^a-z0-9\s-]/g, "")
-    .trim()
-    .replace(/\s+/g, "-")
-    .replace(/-+/g, "-");
-}
-
 const { slug } = Astro.params;
 
-// Buscar colección por slug (comparando con el slug generado del nombre)
-const { data: colecciones, error: coleccionesError } = await supabase
-  .from("collections")
-  .select("*");
+const { figures, collections, volumes, figureTags } = await getCatalog();
 
-if (coleccionesError || !colecciones) {
-  return Astro.redirect("/404");
-}
-
-const coleccion = colecciones.find((c: any) => createSlug(c.name) === slug);
+const coleccion = collections.find((c: any) => createSlug(c.name) === slug);
 
 if (!coleccion) {
   return Astro.redirect("/404");
 }
 
-// Obtener volúmenes de esta colección
-const { data: volumenes, error: volumenesError } = await supabase
-  .from("volumes")
-  .select("id, volume, name_eng, cover_image, collection_id")
-  .eq("collection_id", coleccion.id)
-  .order("volume", { ascending: true });
+const volumenes = volumes
+  .filter((v: any) => v.collection_id === coleccion.id)
+  .sort((a: any, b: any) => (a.volume ?? 0) - (b.volume ?? 0));
 
-if (volumenesError) {
-  console.error("Error obteniendo volúmenes:", volumenesError);
-}
+const volumenIds = new Set(volumenes.map((v: any) => v.id));
 
-// Obtener figuras de esta colección (a través de volúmenes)
-const { data: figuras, error: figurasError } = await supabase
-  .from("figures")
-  .select(`
-    *,
-    pokemon(*),
-    volumes(
-      id,
-      volume,
-      name_eng
-    )
-  `)
-  .in("volume_id", volumenes?.map((v: any) => v.id) || [])
-  .order("visual_order", { ascending: true });
+const figuras = figures
+  .filter((f: any) => volumenIds.has(f.volume_id))
+  .sort((a: any, b: any) => (a.visual_order ?? 0) - (b.visual_order ?? 0));
 
-if (figurasError) {
-  console.error("Error obteniendo figuras:", figurasError);
-}
-
-// Obtener etiquetas para las figuras
-const figuraIds = figuras?.map((f: any) => f.id) || [];
-const { data: etiquetasRelacion } = await supabase
-  .from("figure_tags")
-  .select("figure_id, tags(id, name)")
-  .in("figure_id", figuraIds);
-
-const etiquetasPorFigura: { [key: string]: any[] } = {};
-if (etiquetasRelacion) {
-  etiquetasRelacion.forEach((rel: any) => {
-    if (!etiquetasPorFigura[rel.figure_id]) {
-      etiquetasPorFigura[rel.figure_id] = [];
-    }
-    if (rel.tags) {
-      etiquetasPorFigura[rel.figure_id].push(rel.tags);
-    }
-  });
-}
-
-const figurasConEtiquetas = figuras?.map((f: any) => ({
+const figurasConEtiquetas = figuras.map((f: any) => ({
   ...f,
-  etiquetas: etiquetasPorFigura[f.id] || []
-})) || [];
+  etiquetas: getTagsForFigure(f.id, figureTags)
+}));
 ---
 
 <!doctype html>

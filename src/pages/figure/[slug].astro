@@ -1,69 +1,30 @@
 ---
-import "../../styles/global.css"; 
-import { supabase } from "../../lib/supabaseClient";
+import "../../styles/global.css";
+import { getCatalog, getTagsForFigure } from "../../lib/catalogCache";
+import { createSlug } from "../../lib/slug";
 import { getFigurePhotos } from "../../lib/figurePhotos";
 import { getLineaLabel, getFigureAtributos, getAtributoLabel } from "../../lib/figureTaxonomy";
 
-function createSlug(text: string): string {
-  return text
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/[^a-z0-9\s-]/g, "")
-    .trim()
-    .replace(/\s+/g, "-")
-    .replace(/-+/g, "-");
-}
-
-// 1. FUNCIÓN OBLIGATORIA PARA MODO ESTÁTICO
 export async function getStaticPaths() {
-  const { data: figuras, error } = await supabase
-    .from("figures")
-    .select("slug");
+  const { figures } = await getCatalog();
 
-  if (error || !figuras) {
-    console.error("Error obteniendo slugs para rutas estáticas:", error);
-    return [];
-  }
-
-  return figuras
-    .filter((figura) => figura.slug)
-    .map((figura) => ({
+  return figures
+    .filter((figura: any) => figura.slug)
+    .map((figura: any) => ({
       params: { slug: String(figura.slug) },
     }));
 }
 
 const { slug } = Astro.params;
 
-const { data: figura, error } = await supabase
-  .from("figures")
-  .select(`
-    *,
-    pokemon(*),
-    volumes(
-      id,
-      volume,
-      name_eng,
-      cover_image,
-      collections(
-        id,
-        name
-      )
-    )
-  `)
-  .eq("slug", slug)
-  .single();
+const { figures, figureTags } = await getCatalog();
+const figura = figures.find((f: any) => f.slug === slug);
 
-if (error || !figura) {
+if (!figura) {
   return Astro.redirect("/404");
 }
 
-const { data: etiquetasRelacion } = await supabase
-  .from("figure_tags")
-  .select("tags(id, name)")
-  .eq("figure_id", figura.id);
-
-const etiquetas = etiquetasRelacion?.map(e => e.tags).filter(Boolean) || [];
+const etiquetas = getTagsForFigure(figura.id, figureTags);
 
 const fotos = getFigurePhotos(figura);
 const atributos = getFigureAtributos(figura);

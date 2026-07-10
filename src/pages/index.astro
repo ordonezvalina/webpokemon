@@ -1,5 +1,36 @@
 ---
 import "../styles/global.css";
+import { getCatalog, getTagsForFigure } from "../lib/catalogCache";
+
+const { figures: rawFigures, collections, tags, figureTags } = await getCatalog();
+
+const figures = rawFigures.map((figure: any) => ({ ...figure }));
+
+const linePriority = (line: string): number => {
+  if (line === "tomy") return 0;
+  if (line === "t_arts") return 1;
+  return 2;
+};
+
+figures.forEach((figure: any) => {
+  figure.etiquetas = getTagsForFigure(figure.id, figureTags).map((tag: any) =>
+    Number(tag.id)
+  );
+});
+
+figures.sort((a: any, b: any) => {
+  const numA = a.pokemon?.pokedex_number ?? 0;
+  const numB = b.pokemon?.pokedex_number ?? 0;
+  if (numA !== numB) return numA - numB;
+  const lpA = linePriority(a.line);
+  const lpB = linePriority(b.line);
+  if (lpA !== lpB) return lpA - lpB;
+  return (a.visual_order ?? 0) - (b.visual_order ?? 0);
+});
+
+const initialFigures = figures;
+const initialColecciones = collections;
+const initialEtiquetas = tags;
 ---
 
 <!doctype html>
@@ -264,9 +295,14 @@ import "../styles/global.css";
       </figure>
     </div>
 
+    <script is:inline define:vars={{ initialFigures, initialColecciones, initialEtiquetas }}>
+      window.__FIGURES__ = initialFigures;
+      window.__COLECCIONES__ = initialColecciones;
+      window.__ETIQUETAS__ = initialEtiquetas;
+    </script>
+
     <script>
       // @ts-nocheck
-      import { supabase } from "../lib/supabaseClient";
       import { getFigurePhotos } from "../lib/figurePhotos";
       import {
         figureMatchesAtributoFilters,
@@ -622,102 +658,57 @@ import "../styles/global.css";
       }
 
       async function loadFigures() {
-        loadingState.classList.remove("hidden");
-
-        const { data, error } = await supabase
-          .from("figures")
-          .select(`
-            *,
-            pokemon(*),
-            volumes(
-              id,
-              volume,
-              name_eng,
-              collections(id, name)
-            )
-          `)
-          .order("visual_order", { ascending: true });
-
         loadingState.classList.add("hidden");
-
-        if (error) {
-          emptyState.classList.remove("hidden");
-          emptyState.querySelector("p").textContent = "No se pudo cargar la coleccion.";
-          return;
-        }
-
-        const figures = data ?? [];
-
-        // Cargar todas las relaciones de etiquetas en una sola query
-        const { data: relacionesData } = await supabase
-          .from("figure_tags")
-          .select("figure_id, tag_id");
-
-        // Crear un mapa de figura -> array de etiquetas
-        const etiquetasPorFigura = {};
-        if (relacionesData) {
-          relacionesData.forEach(rel => {
-            if (!etiquetasPorFigura[rel.figure_id]) {
-              etiquetasPorFigura[rel.figure_id] = [];
-            }
-            etiquetasPorFigura[rel.figure_id].push(rel.tag_id);
-          });
-        }
-
-        // Asignar las etiquetas a cada figura
-        figures.forEach(figure => {
-          figure.etiquetas = etiquetasPorFigura[figure.id] || [];
-        });
-
-        // Ordenar: pokedex_number ASC, luego line (tomy < t_arts < resto), luego visual_order ASC
-        const linePriority = (line) => {
-          if (line === "tomy") return 0;
-          if (line === "t_arts") return 1;
-          return 2;
-        };
-        figures.sort((a, b) => {
-          const numA = a.pokemon?.pokedex_number ?? 0;
-          const numB = b.pokemon?.pokedex_number ?? 0;
-          if (numA !== numB) return numA - numB;
-          const lpA = linePriority(a.line);
-          const lpB = linePriority(b.line);
-          if (lpA !== lpB) return lpA - lpB;
-          return (a.visual_order ?? 0) - (b.visual_order ?? 0);
-        });
-
-        state.figures = figures;
+        state.figures = window.__FIGURES__ || [];
         totalCount.textContent = String(state.figures.length);
-        render();
       }
 
       async function loadColecciones() {
-        const { data, error } = await supabase
-          .from("collections")
-          .select("*")
-          .order("name", { ascending: true });
-
-        if (error) {
-          console.error("Error al cargar colecciones:", error);
-          return;
-        }
-
-        state.colecciones = data ?? [];
+        state.colecciones = window.__COLECCIONES__ || [];
         renderColeccionFilters();
       }
 
       async function loadEtiquetas() {
-        const { data, error } = await supabase
-          .from("tags")
-          .select("*")
-          .order("name", { ascending: true });
-
-        if (error) {
-          console.error("Error al cargar etiquetas:", error);
-          return;
-        }
-
-        state.etiquetas = data ?? [];
+        state.etiquetas = window.__ETIQUETAS__ || [];
         renderEtiquetaFilters();
+      }
+
+      const STORAGE_KEY = "catalogState";
+
+      function saveCatalogState() {
+        try {
+          sessionStorage.setItem(
+            STORAGE_KEY,
+            JSON.stringify({
+              generation: state.generation,
+              linea: state.linea,
+              atributos: state.atributos,
+              coleccion: state.coleccion,
+              etiquetasSeleccionadas: state.etiquetasSeleccionadas,
+              search: state.search,
+              scrollY: window.scrollY
+            })
+          );
+        } catch (e) {
+          console.error("Error guardando estado:", e);
+        }
+      }
+
+      function loadCatalogState() {
+        try {
+          const raw = sessionStorage.getItem(STORAGE_KEY);
+          if (!raw) return null;
+          return JSON.parse(raw);
+        } catch (e) {
+          console.error("Error cargando estado:", e);
+          return null;
+        }
+      }
+
+      function clearCatalogState() {
+        try {
+          sessionStorage.removeItem(STORAGE_KEY);
+        } catch (e) {}
       }
 
       buscadorPrincipal?.addEventListener("input", (event) => {
@@ -840,9 +831,43 @@ import "../styles/global.css";
         if (event.key === "ArrowRight") showNextPhoto(1);
       });
 
-      loadFigures();
-      loadColecciones();
-      loadEtiquetas();
+      function init() {
+        const savedState = loadCatalogState();
+        if (savedState) {
+          state.generation = savedState.generation ?? state.generation;
+          state.linea = savedState.linea ?? null;
+          state.atributos = Array.isArray(savedState.atributos)
+            ? savedState.atributos
+            : [];
+          state.coleccion = savedState.coleccion ?? null;
+          state.etiquetasSeleccionadas = Array.isArray(savedState.etiquetasSeleccionadas)
+            ? savedState.etiquetasSeleccionadas
+            : [];
+          state.search = typeof savedState.search === "string" ? savedState.search : "";
+          if (buscadorPrincipal) buscadorPrincipal.value = state.search;
+          if (buscadorClear) {
+            buscadorClear.classList.toggle("hidden", state.search === "");
+            buscadorClear.classList.toggle("flex", state.search !== "");
+          }
+          clearCatalogState();
+        }
+
+        loadFigures();
+        loadColecciones();
+        loadEtiquetas();
+        render();
+
+        if (savedState && typeof savedState.scrollY === "number") {
+          requestAnimationFrame(() => {
+            window.scrollTo({ top: savedState.scrollY, behavior: "instant" });
+          });
+        }
+      }
+
+      init();
+
+      window.addEventListener("beforeunload", saveCatalogState);
+      window.addEventListener("pagehide", saveCatalogState);
     </script>
   </body>
 </html>

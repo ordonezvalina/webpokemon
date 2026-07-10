@@ -1,6 +1,7 @@
 ---
 import "../../../../styles/global.css";
-import { supabase } from "../../../../lib/supabaseClient";
+import { getCatalog, getTagsForFigure } from "../../../../lib/catalogCache";
+import { createSlug } from "../../../../lib/slug";
 import { getFigurePhotos } from "../../../../lib/figurePhotos";
 import { getLineaLabel, getFigureAtributos, getAtributoLabel } from "../../../../lib/figureTaxonomy";
 
@@ -25,34 +26,11 @@ function getAtributoClass(atributo: string): string {
 }
 
 export async function getStaticPaths() {
-  function createSlug(text: string): string {
-    return text
-      .toLowerCase()
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .replace(/[^a-z0-9\s-]/g, "")
-      .trim()
-      .replace(/\s+/g, "-")
-      .replace(/-+/g, "-");
-  }
+  const { collections, volumes } = await getCatalog();
 
-  const { data: volumenes, error } = await supabase
-    .from("volumes")
-    .select(`
-      id,
-      volume,
-      name_eng,
-      collections(id, name)
-    `);
-
-  if (error || !volumenes) {
-    console.error("Error obteniendo volúmenes para rutas estáticas:", error);
-    return [];
-  }
-
-  return volumenes.map((volumen: any) => {
-    const coleccionNombre = Array.isArray(volumen.collections) ? volumen.collections[0]?.name : volumen.collections?.name;
-    const coleccionSlug = createSlug(coleccionNombre);
+  return volumes.map((volumen: any) => {
+    const coleccion = collections.find((c: any) => c.id === volumen.collection_id);
+    const coleccionSlug = createSlug(coleccion?.name ?? "");
     const volumenSlug = volumen.name_eng ? createSlug(volumen.name_eng) : String(volumen.volume);
     return {
       params: {
@@ -63,92 +41,33 @@ export async function getStaticPaths() {
   });
 }
 
-function createSlug(text: string): string {
-  return text
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/[^a-z0-9\s-]/g, "")
-    .trim()
-    .replace(/\s+/g, "-")
-    .replace(/-+/g, "-");
-}
-
 const { slug, numero } = Astro.params;
 
-// Buscar colección por slug
-const { data: colecciones, error: coleccionesError } = await supabase
-  .from("collections")
-  .select("*");
+const { figures, collections, volumes, figureTags } = await getCatalog();
 
-if (coleccionesError || !colecciones) {
-  return Astro.redirect("/404");
-}
-
-const coleccion = colecciones.find((c: any) => createSlug(c.name) === slug);
+const coleccion = collections.find((c: any) => createSlug(c.name) === slug);
 
 if (!coleccion) {
   return Astro.redirect("/404");
 }
 
-// Obtener volúmenes de esta colección
-const { data: volumenes, error: volumenesError } = await supabase
-  .from("volumes")
-  .select("id, volume, name_eng, cover_image, collection_id")
-  .eq("collection_id", coleccion.id)
-  .order("volume", { ascending: true });
-
-if (volumenesError) {
-  console.error("Error obteniendo volúmenes:", volumenesError);
-}
-
-// Buscar el volumen específico por slug
-const volumen = volumenes?.find((v: any) => {
+const volumen = volumes.find((v: any) => {
   const volumenSlug = v.name_eng ? createSlug(v.name_eng) : String(v.volume);
-  return volumenSlug === numero;
+  return v.collection_id === coleccion.id && volumenSlug === numero;
 });
 
 if (!volumen) {
   return Astro.redirect("/404");
 }
 
-// Obtener figuras de este volumen
-const { data: figuras, error: figurasError } = await supabase
-  .from("figures")
-  .select(`
-    *,
-    pokemon(*)
-  `)
-  .eq("volume_id", volumen.id)
-  .order("visual_order", { ascending: true });
+const figuras = figures
+  .filter((f: any) => f.volume_id === volumen.id)
+  .sort((a: any, b: any) => (a.visual_order ?? 0) - (b.visual_order ?? 0));
 
-if (figurasError) {
-  console.error("Error obteniendo figuras:", figurasError);
-}
-
-// Obtener etiquetas para las figuras
-const figuraIds = figuras?.map((f: any) => f.id) || [];
-const { data: etiquetasRelacion } = await supabase
-  .from("figure_tags")
-  .select("figure_id, tags(id, name)")
-  .in("figure_id", figuraIds);
-
-const etiquetasPorFigura: { [key: string]: any[] } = {};
-if (etiquetasRelacion) {
-  etiquetasRelacion.forEach((rel: any) => {
-    if (!etiquetasPorFigura[rel.figure_id]) {
-      etiquetasPorFigura[rel.figure_id] = [];
-    }
-    if (rel.tags) {
-      etiquetasPorFigura[rel.figure_id].push(rel.tags);
-    }
-  });
-}
-
-const figurasConEtiquetas = figuras?.map((f: any) => ({
+const figurasConEtiquetas = figuras.map((f: any) => ({
   ...f,
-  etiquetas: etiquetasPorFigura[f.id] || []
-})) || [];
+  etiquetas: getTagsForFigure(f.id, figureTags)
+}));
 ---
 
 <!doctype html>

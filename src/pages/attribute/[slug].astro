@@ -1,19 +1,9 @@
 ---
 import "../../styles/global.css";
-import { supabase } from "../../lib/supabaseClient";
+import { getCatalog, getTagsForFigure } from "../../lib/catalogCache";
+import { createSlug } from "../../lib/slug";
 import { getFigurePhotos } from "../../lib/figurePhotos";
 import { getLineaLabel, getFigureAtributos, getAtributoLabel } from "../../lib/figureTaxonomy";
-
-function createSlug(text: string): string {
-  return text
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/[^a-z0-9\s-]/g, "")
-    .trim()
-    .replace(/\s+/g, "-")
-    .replace(/-+/g, "-");
-}
 
 function escapeHtml(value: string): string {
   return String(value ?? "")
@@ -36,30 +26,10 @@ function getAtributoClass(atributo: string): string {
 }
 
 export async function getStaticPaths() {
-  function createSlug(text: string): string {
-    return text
-      .toLowerCase()
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .replace(/[^a-z0-9\s-]/g, "")
-      .trim()
-      .replace(/\s+/g, "-")
-      .replace(/-+/g, "-");
-  }
+  const { figures } = await getCatalog();
 
-  // Obtener todas las figuras con sus columnas booleanas
-  const { data: figuras, error } = await supabase
-    .from("figures")
-    .select("is_shiny, is_clear, is_pearl, has_base");
-
-  if (error || !figuras) {
-    console.error("Error obteniendo figuras para rutas estáticas:", error);
-    return [];
-  }
-
-  // Extraer todos los atributos únicos usando la misma lógica que getFigureAtributos
   const atributosUnicos = new Set<string>();
-  figuras.forEach((figura: any) => {
+  figures.forEach((figura: any) => {
     if (figura?.is_shiny) atributosUnicos.add("shiny");
     if (figura?.is_clear) atributosUnicos.add("clear");
     if (figura?.is_pearl) atributosUnicos.add("brillante");
@@ -73,7 +43,6 @@ export async function getStaticPaths() {
 
 const { slug } = Astro.params;
 
-// Mapeo de slugs a valores de atributos y columnas correspondientes
 const atributosMap: { [key: string]: { valor: string, columna: string } } = {
   "brillante": { valor: "brillante", columna: "is_pearl" },
   "shiny": { valor: "shiny", columna: "is_shiny" },
@@ -81,56 +50,22 @@ const atributosMap: { [key: string]: { valor: string, columna: string } } = {
   "con-base": { valor: "con-base", columna: "has_base" }
 };
 
-// Buscar el atributo correspondiente al slug
 const atributoInfo = atributosMap[slug] || Object.values(atributosMap).find(v => createSlug(v.valor) === slug);
 
 if (!atributoInfo) {
   return Astro.redirect("/404");
 }
 
-// Obtener figuras con este atributo usando la columna booleana correspondiente
-const { data: figuras, error: figurasError } = await supabase
-  .from("figures")
-  .select(`
-    *,
-    pokemon(*),
-    volumes(
-      id,
-      volume,
-      name_eng,
-      collections(id, name)
-    )
-  `)
-  .eq(atributoInfo.columna, true)
-  .order("visual_order", { ascending: true });
+const { figures, figureTags } = await getCatalog();
 
-if (figurasError) {
-  console.error("Error obteniendo figuras:", figurasError);
-}
+const figuras = figures
+  .filter((f: any) => f[atributoInfo.columna] === true)
+  .sort((a: any, b: any) => (a.visual_order ?? 0) - (b.visual_order ?? 0));
 
-// Obtener etiquetas para las figuras
-const figuraIds = figuras?.map((f: any) => f.id) || [];
-const { data: etiquetasRelacion } = await supabase
-  .from("figure_tags")
-  .select("figure_id, tags(id, name)")
-  .in("figure_id", figuraIds);
-
-const etiquetasPorFigura: { [key: string]: any[] } = {};
-if (etiquetasRelacion) {
-  etiquetasRelacion.forEach((rel: any) => {
-    if (!etiquetasPorFigura[rel.figure_id]) {
-      etiquetasPorFigura[rel.figure_id] = [];
-    }
-    if (rel.tags) {
-      etiquetasPorFigura[rel.figure_id].push(rel.tags);
-    }
-  });
-}
-
-const figurasConEtiquetas = figuras?.map((f: any) => ({
+const figurasConEtiquetas = figuras.map((f: any) => ({
   ...f,
-  etiquetas: etiquetasPorFigura[f.id] || []
-})) || [];
+  etiquetas: getTagsForFigure(f.id, figureTags)
+}));
 ---
 
 <!doctype html>
