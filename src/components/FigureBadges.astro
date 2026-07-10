@@ -1,0 +1,44 @@
+---
+import { createSlug } from "../lib/slug";
+import { getLineaLabel, getFigureAtributos, getAtributoLabel } from "../lib/figureTaxonomy";
+
+interface Props {
+  figure: any;
+  linkAttributes?: boolean;
+}
+
+const { figure, linkAttributes = false } = Astro.props;
+const atributos = getFigureAtributos(figure);
+
+function getAtributoClass(atributo: string): string {
+  const atributoClasses: { [key: string]: string } = {
+    brillante: "border-fuchsia-300/50 bg-fuchsia-300/12 text-fuchsia-100",
+    shiny: "border-amber-300/60 bg-amber-300/14 text-amber-100",
+    clear: "border-cyan-300/50 bg-cyan-300/12 text-cyan-100",
+    mega: "border-rose-300/55 bg-rose-300/12 text-rose-100",
+    "con-base": "border-emerald-300/55 bg-emerald-300/12 text-emerald-100"
+  };
+  return atributoClasses[atributo] || "border-indigo-300/50 bg-indigo-300/12 text-indigo-100";
+}
+---
+
+<div class="flex max-w-[52%] flex-wrap justify-end gap-1">
+  <span class="shrink-0 rounded-md border border-zinc-600 bg-zinc-700/55 px-2 py-1 text-[11px] font-bold text-zinc-100">
+    {getLineaLabel(figure.line)}
+  </span>
+  {atributos.map((atributo: string) => {
+    const className = [
+      "shrink-0 rounded-md border px-2 py-1 text-[11px] font-bold",
+      linkAttributes ? "hover:opacity-80 transition" : "",
+      getAtributoClass(atributo)
+    ].join(" ");
+    const label = getAtributoLabel(atributo);
+    return linkAttributes ? (
+      <a href={`/attribute/${createSlug(atributo)}`} class={className}>
+        {label}
+      </a>
+    ) : (
+      <span class={className}>{label}</span>
+    );
+  })}
+</div>

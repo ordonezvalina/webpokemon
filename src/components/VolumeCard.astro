@@ -1,0 +1,34 @@
+---
+import { createSlug } from "../lib/slug";
+
+interface Props {
+  collectionSlug: string;
+  volume: any;
+}
+
+const { collectionSlug, volume } = Astro.props;
+const volumenSlug = volume.name_eng ? createSlug(volume.name_eng) : String(volume.volume);
+---
+
+<a
+  href={`/collection/${collectionSlug}/volume/${volumenSlug}`}
+  class="group block overflow-hidden rounded-lg border border-zinc-800 bg-zinc-900 transition hover:border-zinc-600 hover:-translate-y-0.5"
+>
+  <div class="aspect-[4/5] overflow-hidden bg-zinc-800">
+    {volume.cover_image ? (
+      <img
+        class="h-full w-full object-cover transition group-hover:scale-105"
+        src={volume.cover_image}
+        alt={`Vol. ${volume.volume}`}
+      />
+    ) : (
+      <div class="grid h-full w-full place-items-center text-sm font-bold text-zinc-600">
+        Vol. {volume.volume}
+      </div>
+    )}
+  </div>
+  <div class="p-3">
+    <p class="truncate text-sm font-semibold text-white">Vol. {volume.volume}</p>
+    {volume.name_eng && <p class="mt-1 truncate text-xs text-zinc-400">{volume.name_eng}</p>}
+  </div>
+</a>

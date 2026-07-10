@@ -1,5 +1,5 @@
 ---
-import "../styles/global.css";
+import BaseLayout from "../components/BaseLayout.astro";
 import { getCatalog, getTagsForFigure } from "../lib/catalogCache";
 
 const { figures: rawFigures, collections, tags, figureTags } = await getCatalog();
@@ -33,19 +33,11 @@ const initialColecciones = collections;
 const initialEtiquetas = tags;
 ---
 
-<!doctype html>
-<html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta
-      name="description"
-      content="Catalogo personal de figuras Pokemon Tomy Moncolle y variantes."
-    />
-    <title>Catalogo Tomy Pokemon</title>
-  </head>
-  <body class="bg-zinc-950 text-zinc-100 antialiased">
-    <!-- Ambient background glow -->
+<BaseLayout
+  title="Catalogo Tomy Pokemon"
+  description="Catalogo personal de figuras Pokemon Tomy Moncolle y variantes."
+>
+  <!-- Ambient background glow -->
     <div class="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(ellipse_80%_50%_at_50%_-10%,rgba(120,100,60,0.12),transparent)]"></div>
     <main class="mx-auto flex min-h-screen w-full max-w-7xl flex-col px-4 pb-24 pt-5 sm:px-6 lg:px-8">
       <header class="mb-5 sm:mb-8">
@@ -93,34 +85,56 @@ const initialEtiquetas = tags;
       <span id="filter-count" class="hidden">0</span>
 
       <nav class="sticky top-0 z-20 -mx-4 border-y border-zinc-800/60 bg-zinc-950/90 px-4 py-3 backdrop-blur-md sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
-        <div
-          id="generation-tabs"
-          class="scrollbar-none flex gap-2 overflow-x-auto"
-          aria-label="Filtro por generacion"
-        >
-          <button
-            class="tab-button shrink-0 rounded-lg border px-4 py-2 text-sm font-medium transition"
-            type="button"
-            data-generation="all"
+        <div class="flex items-center gap-3">
+          <div
+            id="generation-tabs"
+            class="scrollbar-none flex flex-1 gap-2 overflow-x-auto"
+            aria-label="Filtro por generacion"
           >
-            <span class="block font-semibold">Todas</span>
-            <span class="block text-[10px] font-normal opacity-70">Todas</span>
+            <button
+              class="tab-button shrink-0 rounded-lg border px-4 py-2 text-sm font-medium transition"
+              type="button"
+              data-generation="all"
+            >
+              <span class="block font-semibold">Todas</span>
+              <span class="block text-[10px] font-normal opacity-70">Todas</span>
+            </button>
+            {
+              (() => {
+                const regions = ["","Kanto","Johto","Hoenn","Sinnoh","Unova","Kalos","Alola","Galar","Paldea"];
+                return Array.from({ length: 9 }, (_, i) => i + 1).map((generation) => (
+                  <button
+                    class="tab-button shrink-0 rounded-lg border px-4 py-2 text-sm font-medium transition"
+                    type="button"
+                    data-generation={String(generation)}
+                  >
+                    <span class="block font-semibold">Gen {generation}</span>
+                    <span class="block text-[10px] font-normal opacity-70">{regions[generation]}</span>
+                  </button>
+                ));
+              })()
+            }
+          </div>
+          <button
+            id="filter-toggle"
+            class="inline-flex shrink-0 items-center gap-2 self-stretch rounded-lg border border-zinc-700/80 bg-zinc-900/60 px-4 py-2 text-sm font-semibold text-zinc-200 shadow-lg shadow-black/30 backdrop-blur-sm transition-all duration-200 hover:border-zinc-500 hover:bg-zinc-800 hover:text-white"
+            type="button"
+            aria-expanded="false"
+            aria-controls="filter-panel"
+          >
+            <span class="grid h-5 w-5 place-items-center">
+              <svg viewBox="0 0 24 24" class="h-5 w-5" aria-hidden="true">
+                <path
+                  d="M4 7h16M7 12h10M10 17h4"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-width="2"
+                ></path>
+              </svg>
+            </span>
+            <span class="hidden sm:inline">Filtros</span>
           </button>
-          {
-            (() => {
-              const regions = ["","Kanto","Johto","Hoenn","Sinnoh","Unova","Kalos","Alola","Galar","Paldea"];
-              return Array.from({ length: 9 }, (_, i) => i + 1).map((generation) => (
-                <button
-                  class="tab-button shrink-0 rounded-lg border px-4 py-2 text-sm font-medium transition"
-                  type="button"
-                  data-generation={String(generation)}
-                >
-                  <span class="block font-semibold">Gen {generation}</span>
-                  <span class="block text-[10px] font-normal opacity-70">{regions[generation]}</span>
-                </button>
-              ));
-            })()
-          }
         </div>
       </nav>
 
@@ -129,39 +143,17 @@ const initialEtiquetas = tags;
           <p id="active-label" class="text-sm font-medium text-zinc-300">Gen 1</p>
           <p id="active-subtitle" class="text-xs text-zinc-500">Mostrando figuras disponibles</p>
         </div>
-        <div class="flex items-center gap-2">
-          <button
-            id="reset-filters"
-            class="hidden items-center gap-1.5 rounded-lg border border-zinc-700/80 bg-zinc-900/60 px-3 py-2 text-sm font-semibold text-zinc-400 shadow-lg shadow-black/30 backdrop-blur-sm transition-all duration-200 hover:border-zinc-500 hover:text-white"
-            type="button"
-            aria-label="Resetear filtros"
-          >
-            <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-              <path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"></path>
-            </svg>
-            Resetear
-          </button>
-          <button
-            id="filter-toggle"
-            class="inline-flex min-h-11 items-center gap-2 rounded-lg border border-zinc-700/80 bg-zinc-900/60 px-4 py-2 text-sm font-semibold text-zinc-200 shadow-lg shadow-black/30 backdrop-blur-sm transition-all duration-200 hover:border-zinc-500 hover:bg-zinc-800 hover:text-white"
-            type="button"
-            aria-expanded="false"
-            aria-controls="filter-panel"
-          >
-          <span class="grid h-5 w-5 place-items-center">
-            <svg viewBox="0 0 24 24" class="h-5 w-5" aria-hidden="true">
-              <path
-                d="M4 7h16M7 12h10M10 17h4"
-                fill="none"
-                stroke="currentColor"
-                stroke-linecap="round"
-                stroke-width="2"
-              ></path>
-            </svg>
-          </span>
-          Filtros
+        <button
+          id="reset-filters"
+          class="hidden items-center gap-1.5 rounded-lg border border-zinc-700/80 bg-zinc-900/60 px-3 py-2 text-sm font-semibold text-zinc-400 shadow-lg shadow-black/30 backdrop-blur-sm transition-all duration-200 hover:border-zinc-500 hover:text-white"
+          type="button"
+          aria-label="Resetear filtros"
+        >
+          <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"></path>
+          </svg>
+          Resetear
         </button>
-        </div>
       </section>
 
       <section
@@ -869,5 +861,4 @@ const initialEtiquetas = tags;
       window.addEventListener("beforeunload", saveCatalogState);
       window.addEventListener("pagehide", saveCatalogState);
     </script>
-  </body>
-</html>
+</BaseLayout>
