@@ -66,10 +66,10 @@ const schemas = breadcrumbSchema(breadcrumbItems, siteUrl);
     <header class="mb-5 flex flex-col gap-4 sm:mb-8 sm:flex-row sm:items-end sm:justify-between">
       <div class="space-y-2">
         <BackLink href="/" text="Volver al catálogo" />
-        <h1 class="max-w-3xl text-4xl font-semibold leading-tight text-white sm:text-6xl">
+        <h1 class="max-w-3xl text-4xl font-semibold leading-tight text-zinc-900 sm:text-6xl dark:text-white">
           {getAtributoLabel(atributoInfo.valor)}
         </h1>
-        <p class="max-w-2xl text-sm leading-6 text-zinc-400 sm:text-base">
+        <p class="max-w-2xl text-sm leading-6 text-zinc-600 sm:text-base dark:text-zinc-400">
           {figurasConEtiquetas.length} figuras con este atributo
         </p>
       </div>

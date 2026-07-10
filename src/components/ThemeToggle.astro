@@ -1,0 +1,58 @@
+---
+const { id = "theme-toggle" } = Astro.props;
+---
+
+<button
+  id={id}
+  type="button"
+  class="theme-toggle inline-flex h-10 w-10 items-center justify-center rounded-full border border-zinc-300 bg-zinc-100 text-zinc-700 shadow-sm transition hover:border-zinc-400 hover:bg-white hover:text-zinc-900 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:ring-offset-2 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:border-zinc-600 dark:hover:bg-zinc-700 dark:hover:text-white dark:focus:ring-offset-zinc-900"
+  aria-label="Toggle dark mode"
+  title="Toggle dark mode"
+>
+  <span class="sr-only">Toggle dark mode</span>
+  <svg class="icon-moon h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+  </svg>
+  <svg class="icon-sun h-5 w-5 hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <circle cx="12" cy="12" r="5"></circle>
+    <line x1="12" y1="1" x2="12" y2="3"></line>
+    <line x1="12" y1="21" x2="12" y2="23"></line>
+    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+    <line x1="1" y1="12" x2="3" y2="12"></line>
+    <line x1="21" y1="12" x2="23" y2="12"></line>
+    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+  </svg>
+</button>
+
+<script is:inline>
+  (function () {
+    function updateThemeMeta(isDark) {
+      const meta = document.getElementById("theme-color-meta");
+      if (meta) {
+        meta.setAttribute("content", isDark ? "#111111" : "#fafafa");
+      }
+    }
+
+    document.querySelectorAll(".theme-toggle").forEach((button) => {
+      button.addEventListener("click", () => {
+        const isDark = document.documentElement.classList.toggle("dark");
+        localStorage.setItem("theme", isDark ? "dark" : "light");
+        updateThemeMeta(isDark);
+      });
+    });
+  })();
+</script>
+
+<style>
+  .theme-toggle .icon-moon,
+  html.dark .theme-toggle .icon-sun {
+    display: none;
+  }
+
+  html.dark .theme-toggle .icon-moon,
+  .theme-toggle .icon-sun {
+    display: block;
+  }
+</style>

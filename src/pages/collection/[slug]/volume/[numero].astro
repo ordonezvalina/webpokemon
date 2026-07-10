@@ -74,10 +74,10 @@ const schemas = [
     <header class="mb-5 flex flex-col gap-4 sm:mb-8 sm:flex-row sm:items-end sm:justify-between">
       <div class="space-y-2">
         <BackLink href={`/collection/${slug}`} text={`Volver a ${coleccion.name}`} />
-        <h1 class="max-w-3xl text-4xl font-semibold leading-tight text-white sm:text-6xl">
+        <h1 class="max-w-3xl text-4xl font-semibold leading-tight text-zinc-900 sm:text-6xl dark:text-white">
           Vol. {volumen.volume}
         </h1>
-        <p class="max-w-2xl text-sm leading-6 text-zinc-400 sm:text-base">
+        <p class="max-w-2xl text-sm leading-6 text-zinc-600 sm:text-base dark:text-zinc-400">
           {coleccion.name}
           {volumen.name_eng ? ` · ${volumen.name_eng}` : ""} · {figurasConEtiquetas.length} figuras
         </p>
@@ -87,7 +87,7 @@ const schemas = [
     {/* Imagen de portada del volumen */}
     {volumen.cover_image && (
       <section class="mb-8">
-        <div class="max-w-xs overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900">
+        <div class="max-w-xs overflow-hidden rounded-xl border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
           <img
             class="h-full w-full object-cover"
             src={volumen.cover_image}
@@ -101,7 +101,7 @@ const schemas = [
 
     {/* Figuras del volumen */}
     <section>
-      <h2 class="mb-4 text-xl font-semibold text-white">Figuras de este volumen</h2>
+      <h2 class="mb-4 text-xl font-semibold text-zinc-900 dark:text-white">Figuras de este volumen</h2>
       {figurasConEtiquetas.length > 0 ? (
         <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
           {figurasConEtiquetas.map((figura: any) => (

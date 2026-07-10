@@ -66,10 +66,10 @@ const schemas = [
     <header class="mb-5 flex flex-col gap-4 sm:mb-8 sm:flex-row sm:items-end sm:justify-between">
       <div class="space-y-2">
         <BackLink href="/" text="Volver al catálogo" />
-        <h1 class="max-w-3xl text-4xl font-semibold leading-tight text-white sm:text-6xl">
+        <h1 class="max-w-3xl text-4xl font-semibold leading-tight text-zinc-900 sm:text-6xl dark:text-white">
           {coleccion.name}
         </h1>
-        <p class="max-w-2xl text-sm leading-6 text-zinc-400 sm:text-base">
+        <p class="max-w-2xl text-sm leading-6 text-zinc-600 sm:text-base dark:text-zinc-400">
           {volumenes?.length || 0} volúmenes · {figurasConEtiquetas.length} figuras
         </p>
       </div>
@@ -78,7 +78,7 @@ const schemas = [
     {/* Volúmenes de la colección */}
     {volumenes && volumenes.length > 0 && (
       <section class="mb-8">
-        <h2 class="mb-4 text-xl font-semibold text-white">Volúmenes</h2>
+        <h2 class="mb-4 text-xl font-semibold text-zinc-900 dark:text-white">Volúmenes</h2>
         <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
           {volumenes.map((volumen: any) => (
             <VolumeCard collectionSlug={slug} volume={volumen} />
@@ -89,7 +89,7 @@ const schemas = [
 
     {/* Figuras de la colección */}
     <section>
-      <h2 class="mb-4 text-xl font-semibold text-white">Todas las figuras</h2>
+      <h2 class="mb-4 text-xl font-semibold text-zinc-900 dark:text-white">Todas las figuras</h2>
       {figurasConEtiquetas.length > 0 ? (
         <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
           {figurasConEtiquetas.map((figura: any) => (

@@ -16,9 +16,9 @@ const hasMeta = figure.year || (showCollection && figure.volumes?.collections) |
 
 <a
   href={`/figure/${figure.slug ?? figure.id}`}
-  class="group flex h-full flex-col overflow-hidden rounded-xl border border-zinc-800/50 bg-zinc-900/60 shadow-lg shadow-black/50 backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-zinc-600 hover:shadow-xl hover:shadow-amber-500/5"
+  class="group flex h-full flex-col overflow-hidden rounded-xl border border-zinc-200/80 bg-white/80 shadow-lg shadow-zinc-900/10 backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-zinc-400 hover:shadow-xl hover:shadow-zinc-900/10 dark:border-zinc-800/50 dark:bg-zinc-900/60 dark:shadow-black/50 dark:hover:border-zinc-600 dark:hover:shadow-amber-500/5"
 >
-  <div class="relative aspect-square overflow-hidden bg-zinc-800/50">
+  <div class="relative aspect-square overflow-hidden bg-zinc-100 dark:bg-zinc-800/50">
     {fotos.length > 0 ? (
       <img
         class="h-full w-full object-cover transition duration-300 group-hover:scale-[1.03]"
@@ -28,20 +28,20 @@ const hasMeta = figure.year || (showCollection && figure.volumes?.collections) |
         decoding="async"
       />
     ) : (
-      <div class="grid h-full w-full place-items-center bg-zinc-800/50 text-sm font-semibold text-zinc-500">
+      <div class="grid h-full w-full place-items-center bg-zinc-100 text-sm font-semibold text-zinc-400 dark:bg-zinc-800/50 dark:text-zinc-500">
         #{String(figure.pokemon?.pokedex_number).padStart(4, "0")}
       </div>
     )}
-    <span class="absolute top-2 right-2 rounded-md bg-black/60 px-1.5 py-0.5 font-mono text-[10px] text-zinc-300 backdrop-blur-sm">
+    <span class="absolute top-2 right-2 rounded-md bg-black/60 px-1.5 py-0.5 font-mono text-[10px] text-white backdrop-blur-sm dark:bg-black/60 dark:text-zinc-300">
       #{String(figure.pokemon?.pokedex_number).padStart(4, "0")}
     </span>
   </div>
-  <div class="flex min-h-[4.5rem] flex-col gap-2 border-t border-zinc-800/60 bg-zinc-900/80 p-3">
-    <h2 class="truncate text-sm font-semibold leading-tight text-white sm:text-base">
+  <div class="flex min-h-[4.5rem] flex-col gap-2 border-t border-zinc-200/80 bg-white/90 p-3 dark:border-zinc-800/60 dark:bg-zinc-900/80">
+    <h2 class="truncate text-sm font-semibold leading-tight text-zinc-900 sm:text-base dark:text-white">
       {figure.pokemon?.full_names?.es || `Figura #${String(figure.pokemon?.pokedex_number).padStart(4, "0")}`}
     </h2>
     {hasMeta && (
-      <p class="truncate text-xs font-medium text-zinc-500">
+      <p class="truncate text-xs font-medium text-zinc-500 dark:text-zinc-500">
         {figure.year && <span>{figure.year}</span>}
         {showCollection && figure.volumes?.collections && (
           <>

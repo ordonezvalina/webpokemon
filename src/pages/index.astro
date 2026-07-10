@@ -48,19 +48,19 @@ const initialEtiquetas = tags;
     <div class="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(ellipse_80%_50%_at_50%_-10%,rgba(120,100,60,0.12),transparent)]"></div>
     <main class="mx-auto flex min-h-screen w-full max-w-7xl flex-col px-4 pb-24 pt-5 sm:px-6 lg:px-8">
       <header class="mb-5 sm:mb-8">
-        <p class="text-xs font-semibold uppercase tracking-[0.22em] text-amber-300">
+        <p class="text-xs font-semibold uppercase tracking-[0.22em] text-amber-600 dark:text-amber-300">
           Tomy Moncolle Archive
         </p>
         <h1 class="mt-1 text-4xl font-semibold leading-tight tracking-tight sm:text-6xl">
-          <span class="bg-gradient-to-br from-white via-zinc-100 to-zinc-400 bg-clip-text text-transparent">Coleccion Pokemon</span>
+          <span class="bg-gradient-to-br from-zinc-900 via-zinc-700 to-zinc-500 bg-clip-text text-transparent dark:from-white dark:via-zinc-100 dark:to-zinc-400">Coleccion Pokemon</span>
         </h1>
-        <p class="mt-1 max-w-2xl text-sm leading-6 text-zinc-400 sm:text-base">
+        <p class="mt-1 max-w-2xl text-sm leading-6 text-zinc-600 dark:text-zinc-400 sm:text-base">
           Catálogo de mi coleccion personal de figuras Tomy.
         </p>
 
         <!-- Buscador -->
         <div class="relative mt-4 max-w-md">
-          <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-zinc-500">
+          <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-zinc-400 dark:text-zinc-500">
             <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
               <circle cx="11" cy="11" r="8"></circle>
               <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
@@ -70,11 +70,11 @@ const initialEtiquetas = tags;
             type="text"
             id="buscador-principal"
             placeholder="Buscar Pokémon o #001"
-            class="w-full rounded-lg border border-zinc-800/70 bg-zinc-900/60 py-2 pl-9 pr-9 text-sm text-zinc-100 placeholder-zinc-400 backdrop-blur-sm transition-all duration-200 focus:border-amber-400/70 focus:bg-zinc-900 focus:outline-none focus:ring-1 focus:ring-amber-400/50"
+            class="w-full rounded-lg border border-zinc-300/80 bg-zinc-100/60 py-2 pl-9 pr-9 text-sm text-zinc-900 placeholder-zinc-500 backdrop-blur-sm transition-all duration-200 focus:border-amber-500/70 focus:bg-white focus:outline-none focus:ring-1 focus:ring-amber-500/50 dark:border-zinc-800/70 dark:bg-zinc-900/60 dark:text-zinc-100 dark:placeholder-zinc-400 dark:focus:border-amber-400/70 dark:focus:bg-zinc-900"
           />
           <button
             id="buscador-clear"
-            class="absolute inset-y-0 right-0 hidden items-center pr-3 text-zinc-400 hover:text-white"
+            class="absolute inset-y-0 right-0 hidden items-center pr-3 text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white"
             type="button"
             aria-label="Limpiar búsqueda"
           >
@@ -91,7 +91,7 @@ const initialEtiquetas = tags;
       <span id="visible-count" class="hidden">0</span>
       <span id="filter-count" class="hidden">0</span>
 
-      <nav class="sticky top-0 z-20 -mx-4 border-y border-zinc-800/60 bg-zinc-950/90 px-4 py-3 backdrop-blur-md sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 relative">
+      <nav class="sticky top-0 z-20 -mx-4 border-y border-zinc-200/80 bg-white/90 px-4 py-3 backdrop-blur-md sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 relative dark:border-zinc-800/60 dark:bg-zinc-950/90">
         <div class="flex items-center gap-3">
           <div
             id="generation-tabs"
@@ -99,7 +99,7 @@ const initialEtiquetas = tags;
             aria-label="Filtro por generacion"
           >
             <button
-              class="tab-button shrink-0 rounded-lg border px-4 py-2 text-sm font-medium transition"
+              class="tab-button shrink-0 rounded-lg border px-4 py-2 text-sm font-medium transition border-zinc-200 bg-zinc-100 text-zinc-700 hover:border-zinc-400 hover:bg-zinc-200 hover:text-zinc-900 dark:border-zinc-800 dark:bg-zinc-900/40 dark:text-zinc-400 dark:hover:border-zinc-600 dark:hover:bg-zinc-800/60 dark:hover:text-zinc-200"
               type="button"
               data-generation="all"
             >
@@ -111,7 +111,7 @@ const initialEtiquetas = tags;
                 const regions = ["","Kanto","Johto","Hoenn","Sinnoh","Unova","Kalos","Alola","Galar","Paldea"];
                 return Array.from({ length: 9 }, (_, i) => i + 1).map((generation) => (
                   <button
-                    class="tab-button shrink-0 rounded-lg border px-4 py-2 text-sm font-medium transition"
+                    class="tab-button shrink-0 rounded-lg border px-4 py-2 text-sm font-medium transition border-zinc-200 bg-zinc-100 text-zinc-700 hover:border-zinc-400 hover:bg-zinc-200 hover:text-zinc-900 dark:border-zinc-800 dark:bg-zinc-900/40 dark:text-zinc-400 dark:hover:border-zinc-600 dark:hover:bg-zinc-800/60 dark:hover:text-zinc-200"
                     type="button"
                     data-generation={String(generation)}
                   >
@@ -124,7 +124,7 @@ const initialEtiquetas = tags;
           </div>
           <button
             id="filter-toggle"
-            class="inline-flex shrink-0 items-center gap-2 self-stretch rounded-lg border border-zinc-700/80 bg-zinc-900/60 px-4 py-2 text-sm font-semibold text-zinc-200 shadow-lg shadow-black/30 backdrop-blur-sm transition-all duration-200 hover:border-zinc-500 hover:bg-zinc-800 hover:text-white"
+            class="inline-flex shrink-0 items-center gap-2 self-stretch rounded-lg border border-zinc-300/80 bg-white/60 px-4 py-2 text-sm font-semibold text-zinc-700 shadow-lg shadow-zinc-900/10 backdrop-blur-sm transition-all duration-200 hover:border-zinc-400 hover:bg-zinc-100 hover:text-zinc-900 dark:border-zinc-700/80 dark:bg-zinc-900/60 dark:text-zinc-200 dark:shadow-black/30 dark:hover:border-zinc-500 dark:hover:bg-zinc-800 dark:hover:text-white"
             type="button"
             aria-expanded="false"
             aria-controls="filter-panel"
@@ -147,7 +147,7 @@ const initialEtiquetas = tags;
 
         <section
           id="filter-panel"
-          class="hidden absolute left-0 right-0 top-full z-30 -mx-4 sm:-mx-6 lg:-mx-8 rounded-b-xl border-b border-zinc-800/60 bg-zinc-900/95 px-4 py-4 shadow-2xl shadow-black/50 backdrop-blur-md sm:px-6 lg:px-8"
+          class="hidden absolute left-0 right-0 top-full z-30 -mx-4 sm:-mx-6 lg:-mx-8 rounded-b-xl border-b border-zinc-200/70 bg-white/95 px-4 py-4 shadow-2xl shadow-zinc-900/10 backdrop-blur-md sm:px-6 lg:px-8 dark:border-zinc-800/60 dark:bg-zinc-900/95 dark:shadow-black/50"
         >
           <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
 
@@ -188,7 +188,7 @@ const initialEtiquetas = tags;
               <p class="mb-2 text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-400">Colección</p>
               <select
                 id="coleccion-select"
-                class="w-full rounded-lg border border-zinc-700 bg-zinc-950 px-3 py-2 text-sm font-semibold text-zinc-200 focus:border-amber-400 focus:outline-none focus:ring-1 focus:ring-amber-400"
+                class="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm font-semibold text-zinc-900 focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500 dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-200 dark:focus:border-amber-400 dark:focus:ring-amber-400"
               >
                 <option value="">— Todas las colecciones —</option>
               </select>
@@ -210,12 +210,12 @@ const initialEtiquetas = tags;
 
       <section class="mt-5 flex items-center justify-between gap-3">
         <div>
-          <p id="active-label" class="text-sm font-medium text-zinc-300">Gen 1</p>
+          <p id="active-label" class="text-sm font-medium text-zinc-700 dark:text-zinc-300">Gen 1</p>
           <p id="active-subtitle" class="text-xs text-zinc-400">Mostrando figuras disponibles</p>
         </div>
         <button
           id="reset-filters"
-          class="hidden items-center gap-1.5 rounded-lg border border-zinc-700/80 bg-zinc-900/60 px-3 py-2 text-sm font-semibold text-zinc-400 shadow-lg shadow-black/30 backdrop-blur-sm transition-all duration-200 hover:border-zinc-500 hover:text-white"
+          class="hidden items-center gap-1.5 rounded-lg border border-zinc-300/80 bg-white/60 px-3 py-2 text-sm font-semibold text-zinc-500 shadow-lg shadow-zinc-900/10 backdrop-blur-sm transition-all duration-200 hover:border-zinc-400 hover:text-zinc-900 dark:border-zinc-700/80 dark:bg-zinc-900/60 dark:text-zinc-400 dark:shadow-black/30 dark:hover:border-zinc-500 dark:hover:text-white"
           type="button"
           aria-label="Resetear filtros"
         >
@@ -234,19 +234,19 @@ const initialEtiquetas = tags;
 
       <section
         id="empty-state"
-        class="mt-10 hidden rounded-lg border border-dashed border-zinc-700 bg-zinc-900/50 p-8 text-center"
+        class="mt-10 hidden rounded-lg border border-dashed border-zinc-300 bg-zinc-100/60 p-8 text-center dark:border-zinc-700 dark:bg-zinc-900/50"
       >
-        <p class="text-base font-semibold text-white">No hay figuras para este filtro.</p>
-        <p class="mt-2 text-sm text-zinc-400">
+        <p class="text-base font-semibold text-zinc-900 dark:text-white">No hay figuras para este filtro.</p>
+        <p class="mt-2 text-sm text-zinc-500 dark:text-zinc-400">
           Cambia la generacion, la linea o los atributos para ver mas resultados.
         </p>
       </section>
 
       <section
         id="loading-state"
-        class="mt-10 rounded-lg border border-zinc-800 bg-zinc-900/70 p-8 text-center"
+        class="mt-10 rounded-lg border border-zinc-200 bg-white/70 p-8 text-center dark:border-zinc-800 dark:bg-zinc-900/70"
       >
-        <p class="text-sm font-medium text-zinc-300">Cargando coleccion...</p>
+        <p class="text-sm font-medium text-zinc-700 dark:text-zinc-300">Cargando coleccion...</p>
       </section>
     </main>
 
@@ -259,7 +259,7 @@ const initialEtiquetas = tags;
     >
       <button
         id="lightbox-close"
-        class="absolute right-4 top-4 z-10 grid h-11 w-11 place-items-center rounded-full border border-zinc-600 bg-zinc-900/80 text-2xl text-white transition hover:border-zinc-400"
+        class="absolute right-4 top-4 z-10 grid h-11 w-11 place-items-center rounded-full border border-zinc-400 bg-white/90 text-2xl text-zinc-900 transition hover:border-zinc-600 dark:border-zinc-600 dark:bg-zinc-900/80 dark:text-white dark:hover:border-zinc-400"
         type="button"
         aria-label="Cerrar"
       >
@@ -268,7 +268,7 @@ const initialEtiquetas = tags;
 
       <button
         id="lightbox-prev"
-        class="absolute left-2 top-1/2 z-10 hidden h-11 w-11 -translate-y-1/2 place-items-center rounded-full border border-zinc-600 bg-zinc-900/80 text-2xl text-white transition hover:border-zinc-400 sm:left-4"
+        class="absolute left-2 top-1/2 z-10 hidden h-11 w-11 -translate-y-1/2 place-items-center rounded-full border border-zinc-400 bg-white/90 text-2xl text-zinc-900 transition hover:border-zinc-600 dark:border-zinc-600 dark:bg-zinc-900/80 dark:text-white dark:hover:border-zinc-400 sm:left-4"
         type="button"
         aria-label="Foto anterior"
       >
@@ -277,7 +277,7 @@ const initialEtiquetas = tags;
 
       <button
         id="lightbox-next"
-        class="absolute right-2 top-1/2 z-10 hidden h-11 w-11 -translate-y-1/2 place-items-center rounded-full border border-zinc-600 bg-zinc-900/80 text-2xl text-white transition hover:border-zinc-400 sm:right-4"
+        class="absolute right-2 top-1/2 z-10 hidden h-11 w-11 -translate-y-1/2 place-items-center rounded-full border border-zinc-400 bg-white/90 text-2xl text-zinc-900 transition hover:border-zinc-600 dark:border-zinc-600 dark:bg-zinc-900/80 dark:text-white dark:hover:border-zinc-400 sm:right-4"
         type="button"
         aria-label="Foto siguiente"
       >
@@ -290,8 +290,8 @@ const initialEtiquetas = tags;
           class="max-h-[78vh] max-w-full rounded-lg object-contain shadow-2xl shadow-black/50"
           alt=""
         />
-        <figcaption id="lightbox-caption" class="text-center text-sm font-medium text-zinc-300"></figcaption>
-        <p id="lightbox-counter" class="text-xs text-zinc-500"></p>
+        <figcaption id="lightbox-caption" class="text-center text-sm font-medium text-zinc-700 dark:text-zinc-300"></figcaption>
+        <p id="lightbox-counter" class="text-xs text-zinc-500 dark:text-zinc-500"></p>
       </figure>
     </div>
 
@@ -365,15 +365,15 @@ const initialEtiquetas = tags;
       const resetFiltersBtn = document.querySelector("#reset-filters");
 
       const atributoClasses = {
-        brillante: "border-fuchsia-300/50 bg-fuchsia-300/12 text-fuchsia-100",
-        shiny: "border-amber-300/60 bg-amber-300/14 text-amber-100",
-        clear: "border-cyan-300/50 bg-cyan-300/12 text-cyan-100",
-        mega: "border-rose-300/55 bg-rose-300/12 text-rose-100",
-        "con-base": "border-emerald-300/55 bg-emerald-300/12 text-emerald-100"
+        brillante: "border-fuchsia-600/40 bg-fuchsia-500/10 text-fuchsia-800 dark:border-fuchsia-300/50 dark:bg-fuchsia-300/12 dark:text-fuchsia-100",
+        shiny: "border-amber-600/40 bg-amber-500/10 text-amber-800 dark:border-amber-300/60 dark:bg-amber-300/14 dark:text-amber-100",
+        clear: "border-cyan-600/40 bg-cyan-500/10 text-cyan-800 dark:border-cyan-300/50 dark:bg-cyan-300/12 dark:text-cyan-100",
+        mega: "border-rose-600/40 bg-rose-500/10 text-rose-800 dark:border-rose-300/55 dark:bg-rose-300/12 dark:text-rose-100",
+        "con-base": "border-emerald-600/40 bg-emerald-500/10 text-emerald-800 dark:border-emerald-300/55 dark:bg-emerald-300/12 dark:text-emerald-100"
       };
 
       function getAtributoClass(atributo) {
-        return atributoClasses[atributo] ?? "border-indigo-300/50 bg-indigo-300/12 text-indigo-100";
+        return atributoClasses[atributo] ?? "border-indigo-600/40 bg-indigo-500/10 text-indigo-800 dark:border-indigo-300/50 dark:bg-indigo-300/12 dark:text-indigo-100";
       }
 
       function getActiveFilterCount() {
@@ -422,7 +422,7 @@ const initialEtiquetas = tags;
             "tab-button shrink-0 rounded-lg border px-4 py-2 text-sm font-semibold transition-all duration-200",
             isActive
               ? "border-amber-500/60 bg-gradient-to-r from-amber-500 to-yellow-400 text-zinc-950 shadow-md shadow-amber-500/20 ring-1 ring-amber-400/30"
-              : "border-zinc-800 bg-zinc-900/40 text-zinc-400 hover:border-zinc-600 hover:bg-zinc-800/60 hover:text-zinc-200"
+              : "border-zinc-200 bg-zinc-100 text-zinc-700 hover:border-zinc-400 hover:bg-zinc-200 hover:text-zinc-900 dark:border-zinc-800 dark:bg-zinc-900/40 dark:text-zinc-400 dark:hover:border-zinc-600 dark:hover:bg-zinc-800/60 dark:hover:text-zinc-200"
           ].join(" ");
         });
       }
@@ -433,8 +433,8 @@ const initialEtiquetas = tags;
           button.className = [
             "linea-filter text-left rounded-lg border px-3 py-2 text-sm font-semibold transition-all duration-200",
             isActive
-              ? "border-amber-500/60 bg-gradient-to-r from-amber-500/20 to-yellow-500/10 text-amber-300 ring-1 ring-amber-400/40 shadow-sm shadow-amber-500/10"
-              : "border-zinc-700/80 bg-zinc-800/40 text-zinc-400 hover:border-zinc-500 hover:bg-zinc-800 hover:text-zinc-200"
+              ? "border-amber-500/60 bg-gradient-to-r from-amber-500/20 to-yellow-500/10 text-amber-700 ring-1 ring-amber-400/40 shadow-sm shadow-amber-500/10 dark:text-amber-300"
+              : "border-zinc-200/80 bg-zinc-100/40 text-zinc-600 hover:border-zinc-400 hover:bg-zinc-200 hover:text-zinc-900 dark:border-zinc-700/80 dark:bg-zinc-800/40 dark:text-zinc-400 dark:hover:border-zinc-500 dark:hover:bg-zinc-800 dark:hover:text-zinc-200"
           ].join(" ");
         });
       }
@@ -445,8 +445,8 @@ const initialEtiquetas = tags;
           button.className = [
             "atributo-filter text-left rounded-lg border px-3 py-2 text-sm font-semibold transition-all duration-200",
             isActive
-              ? "border-amber-500/60 bg-gradient-to-r from-amber-500/20 to-yellow-500/10 text-amber-300 ring-1 ring-amber-400/40 shadow-sm shadow-amber-500/10"
-              : "border-zinc-700/80 bg-zinc-800/40 text-zinc-400 hover:border-zinc-500 hover:bg-zinc-800 hover:text-zinc-200"
+              ? "border-amber-500/60 bg-gradient-to-r from-amber-500/20 to-yellow-500/10 text-amber-700 ring-1 ring-amber-400/40 shadow-sm shadow-amber-500/10 dark:text-amber-300"
+              : "border-zinc-200/80 bg-zinc-100/40 text-zinc-600 hover:border-zinc-400 hover:bg-zinc-200 hover:text-zinc-900 dark:border-zinc-700/80 dark:bg-zinc-800/40 dark:text-zinc-400 dark:hover:border-zinc-500 dark:hover:bg-zinc-800 dark:hover:text-zinc-200"
           ].join(" ");
         });
       }
@@ -462,8 +462,8 @@ const initialEtiquetas = tags;
         select.className = [
           "w-full rounded-lg border px-3 py-2 text-sm font-semibold transition focus:outline-none focus:ring-1",
           state.coleccion
-            ? "border-amber-400 bg-amber-400/10 text-amber-300 focus:border-amber-400 focus:ring-amber-400/50"
-            : "border-zinc-700 bg-zinc-950 text-zinc-200 focus:border-amber-400 focus:ring-amber-400"
+            ? "border-amber-500 bg-amber-500/10 text-amber-700 focus:border-amber-500 focus:ring-amber-500/50 dark:border-amber-400 dark:bg-amber-400/10 dark:text-amber-300 dark:focus:border-amber-400 dark:focus:ring-amber-400/50"
+            : "border-zinc-300 bg-white text-zinc-900 focus:border-amber-500 focus:ring-amber-500 dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-200 dark:focus:border-amber-400 dark:focus:ring-amber-400"
         ].join(" ");
       }
 
@@ -485,8 +485,8 @@ const initialEtiquetas = tags;
           button.className = [
             "etiqueta-filter rounded-lg border px-3 py-2 text-sm font-semibold transition-all duration-200",
             isActive
-              ? "border-amber-500/60 bg-gradient-to-r from-amber-500/20 to-yellow-500/10 text-amber-300 ring-1 ring-amber-400/40 shadow-sm shadow-amber-500/10"
-              : "border-zinc-700/80 bg-zinc-800/40 text-zinc-400 hover:border-zinc-500 hover:bg-zinc-800 hover:text-zinc-200"
+              ? "border-amber-500/60 bg-gradient-to-r from-amber-500/20 to-yellow-500/10 text-amber-700 ring-1 ring-amber-400/40 shadow-sm shadow-amber-500/10 dark:text-amber-300"
+              : "border-zinc-200/80 bg-zinc-100/40 text-zinc-600 hover:border-zinc-400 hover:bg-zinc-200 hover:text-zinc-900 dark:border-zinc-700/80 dark:bg-zinc-800/40 dark:text-zinc-400 dark:hover:border-zinc-500 dark:hover:bg-zinc-800 dark:hover:text-zinc-200"
           ].join(" ");
         });
       }
@@ -530,12 +530,12 @@ const initialEtiquetas = tags;
         const photos = getFigurePhotos(figure);
 
         if (photos.length === 0) {
-          return `<div class="grid h-full w-full place-items-center bg-zinc-800 text-sm font-semibold text-zinc-500">#${escapeHtml(formatPokedexNumber(figure.pokemon?.pokedex_number))}</div>`;
+          return `<div class="grid h-full w-full place-items-center bg-zinc-100 text-sm font-semibold text-zinc-400 dark:bg-zinc-800 dark:text-zinc-500">#${escapeHtml(formatPokedexNumber(figure.pokemon?.pokedex_number))}</div>`;
         }
 
         const photoCountBadge =
           photos.length > 1
-            ? `<span class="absolute bottom-2 right-2 rounded-md bg-black/65 px-2 py-1 text-[11px] font-bold text-white backdrop-blur-sm">${photos.length} fotos</span>`
+            ? `<span class="absolute bottom-2 right-2 rounded-md bg-black/65 px-2 py-1 text-[11px] font-bold text-white backdrop-blur-sm dark:bg-black/65 dark:text-white">${photos.length} fotos</span>`
             : "";
 
         return `
@@ -627,11 +627,11 @@ const initialEtiquetas = tags;
               )
               .join("");
             const overflowBadge = overflowCount > 0
-              ? `<span class="rounded-md border border-zinc-700 bg-zinc-800/60 px-1.5 py-0.5 text-[10px] font-bold text-zinc-400">+${overflowCount}</span>`
+              ? `<span class="rounded-md border border-zinc-300 bg-zinc-200/70 px-1.5 py-0.5 text-[10px] font-bold text-zinc-600 dark:border-zinc-700 dark:bg-zinc-800/60 dark:text-zinc-400">+${overflowCount}</span>`
               : "";
-            const lineaBadge = `<span class="rounded-md border border-zinc-600 bg-zinc-700/60 px-1.5 py-0.5 text-[10px] font-bold text-zinc-300">${escapeHtml(getLineaLabel(figure.line))}</span>`;
+            const lineaBadge = `<span class="rounded-md border border-zinc-300 bg-zinc-200/70 px-1.5 py-0.5 text-[10px] font-bold text-zinc-700 dark:border-zinc-600 dark:bg-zinc-700/60 dark:text-zinc-300">${escapeHtml(getLineaLabel(figure.line))}</span>`;
             const image = renderPhotoArea(figure);
-            const pokedexBadge = `<span class="absolute top-2 right-2 rounded-md bg-black/60 px-1.5 py-0.5 font-mono text-[10px] text-zinc-300 backdrop-blur-sm">#${escapeHtml(formatPokedexNumber(figure.pokemon?.pokedex_number))}</span>`;
+            const pokedexBadge = `<span class="absolute top-2 right-2 rounded-md bg-black/60 px-1.5 py-0.5 font-mono text-[10px] text-white backdrop-blur-sm dark:bg-black/60 dark:text-zinc-300">#${escapeHtml(formatPokedexNumber(figure.pokemon?.pokedex_number))}</span>`;
 
             const metaParts = [];
             if (figure.year) metaParts.push(escapeHtml(figure.year));
@@ -646,14 +646,14 @@ const initialEtiquetas = tags;
             return `
               <a
                 href="/figure/${escapeHtml(figure.slug ?? figure.id)}"
-                class="group flex h-full flex-col overflow-hidden rounded-xl border border-zinc-800/50 bg-zinc-900/60 shadow-lg shadow-black/50 backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-zinc-600 hover:shadow-xl hover:shadow-amber-500/5"
+                class="group flex h-full flex-col overflow-hidden rounded-xl border border-zinc-200/80 bg-white/80 shadow-lg shadow-zinc-900/10 backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-zinc-400 hover:shadow-xl hover:shadow-zinc-900/10 dark:border-zinc-800/50 dark:bg-zinc-900/60 dark:shadow-black/50 dark:hover:border-zinc-600 dark:hover:shadow-amber-500/5"
               >
-                <div class="relative aspect-square overflow-hidden bg-zinc-800/50">
+                <div class="relative aspect-square overflow-hidden bg-zinc-100 dark:bg-zinc-800/50">
                   ${image}
                   ${pokedexBadge}
                 </div>
-                <div class="flex min-h-[4.5rem] flex-col gap-2 border-t border-zinc-800/60 bg-zinc-900/80 p-3">
-                  <h2 class="truncate text-sm font-semibold leading-tight text-white sm:text-base">${figureName}</h2>
+                <div class="flex min-h-[4.5rem] flex-col gap-2 border-t border-zinc-200/80 bg-white/90 p-3 dark:border-zinc-800/60 dark:bg-zinc-900/80">
+                  <h2 class="truncate text-sm font-semibold leading-tight text-zinc-900 sm:text-base dark:text-white">${figureName}</h2>
                   ${metaLine}
                   <div class="flex flex-wrap items-center gap-1">
                     ${lineaBadge}

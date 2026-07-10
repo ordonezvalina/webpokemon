@@ -2,6 +2,7 @@
 import "../styles/global.css";
 import type { SeoMeta } from "../lib/seo";
 import JsonLd from "./JsonLd.astro";
+import ThemeToggle from "./ThemeToggle.astro";
 
 interface Props {
   title: string;
@@ -30,8 +31,24 @@ const twitterImage = twitter?.image ?? defaultOgImage;
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta name="color-scheme" content="dark" />
-    <meta name="theme-color" content="#111111" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#111111" id="theme-color-meta" />
+    <script is:inline>
+      (function () {
+        const stored = localStorage.getItem("theme");
+        const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        const isDark = stored ? stored === "dark" : prefersDark;
+        if (isDark) {
+          document.documentElement.classList.add("dark");
+        } else {
+          document.documentElement.classList.remove("dark");
+        }
+        const meta = document.getElementById("theme-color-meta");
+        if (meta) {
+          meta.setAttribute("content", isDark ? "#111111" : "#fafafa");
+        }
+      })();
+    </script>
     <title>{pageTitle}</title>
     {pageDescription && <meta name="description" content={pageDescription} />}
     <link rel="canonical" href={canonical} />
@@ -62,7 +79,10 @@ const twitterImage = twitter?.image ?? defaultOgImage;
 
     {schemas && <JsonLd schema={schemas} />}
   </head>
-  <body class="bg-zinc-950 text-zinc-100 antialiased">
+  <body class="antialiased">
+    <div class="fixed top-3 right-3 z-50 sm:top-4 sm:right-4">
+      <ThemeToggle />
+    </div>
     <slot />
   </body>
 </html>
