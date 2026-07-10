@@ -5,10 +5,17 @@ import { getLineaLabel, getFigureAtributos, getAtributoLabel } from "../lib/figu
 interface Props {
   figure: any;
   linkAttributes?: boolean;
+  limit?: number;
 }
 
-const { figure, linkAttributes = false } = Astro.props;
-const atributos = getFigureAtributos(figure);
+const { figure, linkAttributes = false, limit = 3 } = Astro.props;
+const allAtributos = getFigureAtributos(figure);
+const lineaBadge = {
+  label: getLineaLabel(figure.line),
+  class: "rounded-md border border-zinc-600 bg-zinc-700/60 px-1.5 py-0.5 text-[10px] font-bold text-zinc-300"
+};
+const visibleAtributos = allAtributos.slice(0, Math.max(0, limit - 1));
+const overflowCount = allAtributos.length - visibleAtributos.length;
 
 function getAtributoClass(atributo: string): string {
   const atributoClasses: { [key: string]: string } = {
@@ -20,25 +27,26 @@ function getAtributoClass(atributo: string): string {
   };
   return atributoClasses[atributo] || "border-indigo-300/50 bg-indigo-300/12 text-indigo-100";
 }
+
+function baseClass(atributo: string): string {
+  return `rounded-md border px-1.5 py-0.5 text-[10px] font-bold ${getAtributoClass(atributo)}`;
+}
 ---
 
-<div class="flex max-w-[52%] flex-wrap justify-end gap-1">
-  <span class="shrink-0 rounded-md border border-zinc-600 bg-zinc-700/55 px-2 py-1 text-[11px] font-bold text-zinc-100">
-    {getLineaLabel(figure.line)}
-  </span>
-  {atributos.map((atributo: string) => {
-    const className = [
-      "shrink-0 rounded-md border px-2 py-1 text-[11px] font-bold",
-      linkAttributes ? "hover:opacity-80 transition" : "",
-      getAtributoClass(atributo)
-    ].join(" ");
+<div class="flex flex-wrap items-center gap-1">
+  <span class={lineaBadge.class}>{lineaBadge.label}</span>
+  {visibleAtributos.map((atributo: string) => {
     const label = getAtributoLabel(atributo);
+    const classes = baseClass(atributo) + (linkAttributes ? " hover:opacity-80 transition" : "");
     return linkAttributes ? (
-      <a href={`/attribute/${createSlug(atributo)}`} class={className}>
-        {label}
-      </a>
+      <a href={`/attribute/${createSlug(atributo)}`} class={classes}>{label}</a>
     ) : (
-      <span class={className}>{label}</span>
+      <span class={classes}>{label}</span>
     );
   })}
+  {overflowCount > 0 && (
+    <span class="rounded-md border border-zinc-700 bg-zinc-800/60 px-1.5 py-0.5 text-[10px] font-bold text-zinc-400">
+      +{overflowCount}
+    </span>
+  )}
 </div>

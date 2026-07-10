@@ -1,12 +1,28 @@
 ---
 import "../styles/global.css";
+import type { SeoMeta } from "../lib/seo";
+import JsonLd from "./JsonLd.astro";
 
 interface Props {
   title: string;
   description?: string;
+  seo?: SeoMeta;
+  schemas?: Record<string, any> | Record<string, any>[];
+  preconnectDomains?: string[];
 }
 
-const { title, description } = Astro.props;
+const { title, description, seo, schemas, preconnectDomains = [] } = Astro.props;
+
+const pageTitle = seo?.title ?? title;
+const pageDescription = seo?.description ?? description ?? "";
+const canonical = seo?.canonical ?? Astro.url.href;
+const og = seo?.og;
+const twitter = seo?.twitter;
+
+const siteUrl = Astro.site?.toString() ?? "";
+const defaultOgImage = siteUrl ? `${siteUrl.replace(/\/$/, "")}/og-default.svg` : undefined;
+const ogImage = og?.image ?? defaultOgImage;
+const twitterImage = twitter?.image ?? defaultOgImage;
 ---
 
 <!doctype html>
@@ -14,8 +30,37 @@ const { title, description } = Astro.props;
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    {description && <meta name="description" content={description} />}
-    <title>{title}</title>
+    <meta name="color-scheme" content="dark" />
+    <meta name="theme-color" content="#111111" />
+    <title>{pageTitle}</title>
+    {pageDescription && <meta name="description" content={pageDescription} />}
+    <link rel="canonical" href={canonical} />
+
+    <!-- Open Graph -->
+    <meta property="og:title" content={og?.title ?? pageTitle} />
+    <meta property="og:description" content={og?.description ?? pageDescription} />
+    <meta property="og:type" content={og?.type ?? "website"} />
+    <meta property="og:url" content={og?.url ?? canonical} />
+    <meta property="og:locale" content="es_ES" />
+    {ogImage && <meta property="og:image" content={ogImage} />}
+
+    <!-- Twitter Cards -->
+    <meta name="twitter:card" content={twitter?.card ?? "summary_large_image"} />
+    <meta name="twitter:title" content={twitter?.title ?? pageTitle} />
+    <meta name="twitter:description" content={twitter?.description ?? pageDescription} />
+    {twitterImage && <meta name="twitter:image" content={twitterImage} />}
+
+    {preconnectDomains.map((domain) => (
+      <>
+        <link rel="preconnect" href={`https://${domain}`} />
+        <link rel="dns-prefetch" href={`https://${domain}`} />
+      </>
+    ))}
+
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/favicon.svg" />
+
+    {schemas && <JsonLd schema={schemas} />}
   </head>
   <body class="bg-zinc-950 text-zinc-100 antialiased">
     <slot />

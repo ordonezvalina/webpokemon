@@ -1,11 +1,13 @@
 ---
 import BaseLayout from "../../components/BaseLayout.astro";
+import Breadcrumb from "../../components/Breadcrumb.astro";
 import BackLink from "../../components/BackLink.astro";
 import FigureCard from "../../components/FigureCard.astro";
 import EmptyState from "../../components/EmptyState.astro";
 import { getCatalog, getTagsForFigure } from "../../lib/catalogCache";
 import { createSlug } from "../../lib/slug";
 import { getAtributoLabel } from "../../lib/figureTaxonomy";
+import { attributeMeta, breadcrumbSchema } from "../../lib/seo";
 
 export async function getStaticPaths() {
   const { figures } = await getCatalog();
@@ -48,10 +50,18 @@ const figurasConEtiquetas = figuras.map((f: any) => ({
   ...f,
   etiquetas: getTagsForFigure(f.id, figureTags)
 }));
+
+const siteUrl = Astro.site?.toString() || "https://example.com";
+const attributeLabel = getAtributoLabel(atributoInfo.valor);
+const breadcrumbItems = [{ label: attributeLabel }];
+const seo = attributeMeta(attributeLabel, slug, figurasConEtiquetas.length, siteUrl);
+const schemas = breadcrumbSchema(breadcrumbItems, siteUrl);
 ---
 
-<BaseLayout title={`${getAtributoLabel(atributoInfo.valor)} | Mi Colección`}>
+<BaseLayout title={seo.title} description={seo.description} seo={seo} schemas={schemas}>
   <main class="mx-auto min-h-screen w-full max-w-7xl px-4 pb-24 pt-5 sm:px-6 lg:px-8">
+
+    <Breadcrumb items={breadcrumbItems} />
 
     <header class="mb-5 flex flex-col gap-4 sm:mb-8 sm:flex-row sm:items-end sm:justify-between">
       <div class="space-y-2">
@@ -68,7 +78,7 @@ const figurasConEtiquetas = figuras.map((f: any) => ({
     {/* Figuras con este atributo */}
     <section>
       {figurasConEtiquetas.length > 0 ? (
-        <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4 xl:grid-cols-5">
+        <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
           {figurasConEtiquetas.map((figura: any) => (
             <FigureCard figure={figura} showCollection />
           ))}

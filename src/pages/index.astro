@@ -1,8 +1,13 @@
 ---
 import BaseLayout from "../components/BaseLayout.astro";
 import { getCatalog, getTagsForFigure } from "../lib/catalogCache";
+import { homeMeta, webSiteSchema } from "../lib/seo";
 
 const { figures: rawFigures, collections, tags, figureTags } = await getCatalog();
+
+const siteUrl = Astro.site?.toString() || "https://example.com";
+const seo = homeMeta(rawFigures.length, siteUrl);
+const schemas = webSiteSchema(siteUrl, seo.description);
 
 const figures = rawFigures.map((figure: any) => ({ ...figure }));
 
@@ -34,8 +39,10 @@ const initialEtiquetas = tags;
 ---
 
 <BaseLayout
-  title="Catalogo Tomy Pokemon"
-  description="Catalogo personal de figuras Pokemon Tomy Moncolle y variantes."
+  title={seo.title}
+  description={seo.description}
+  seo={seo}
+  schemas={schemas}
 >
   <!-- Ambient background glow -->
     <div class="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(ellipse_80%_50%_at_50%_-10%,rgba(120,100,60,0.12),transparent)]"></div>
@@ -220,7 +227,7 @@ const initialEtiquetas = tags;
 
       <section
         id="catalog-grid"
-        class="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4 xl:grid-cols-5"
+        class="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4"
         aria-live="polite"
       ></section>
 
@@ -537,6 +544,7 @@ const initialEtiquetas = tags;
               src="${escapeHtml(photos[0])}"
               alt="${escapeHtml(figure.pokemon?.full_names?.es)}"
               loading="lazy"
+              decoding="async"
             />
             ${photoCountBadge}
           </div>
@@ -608,33 +616,48 @@ const initialEtiquetas = tags;
         catalogGrid.innerHTML = figures
           .map((figure) => {
             const atributos = getFigureAtributos(figure);
-            const atributoBadges = atributos
+            const maxBadges = 3;
+            const visibleAtributos = atributos.slice(0, Math.max(0, maxBadges - 1));
+            const overflowCount = atributos.length - visibleAtributos.length;
+
+            const atributoBadges = visibleAtributos
               .map((atributo) =>
                 `<span class="rounded-md border px-1.5 py-0.5 text-[10px] font-bold ${getAtributoClass(atributo)}">${escapeHtml(getAtributoLabel(atributo))}</span>`
               )
               .join("");
+            const overflowBadge = overflowCount > 0
+              ? `<span class="rounded-md border border-zinc-700 bg-zinc-800/60 px-1.5 py-0.5 text-[10px] font-bold text-zinc-400">+${overflowCount}</span>`
+              : "";
             const lineaBadge = `<span class="rounded-md border border-zinc-600 bg-zinc-700/60 px-1.5 py-0.5 text-[10px] font-bold text-zinc-300">${escapeHtml(getLineaLabel(figure.line))}</span>`;
             const image = renderPhotoArea(figure);
-            const pokedexBadge = `<span class="absolute top-2 right-2 rounded-md bg-black/60 px-1.5 py-0.5 font-mono text-[10px] text-zinc-400 backdrop-blur-sm">#${escapeHtml(formatPokedexNumber(figure.pokemon?.pokedex_number))}</span>`;
-            const coleccionLine = getColeccionVolumenText(figure)
-              ? `<p class="mt-1 truncate text-[11px] text-zinc-500">${escapeHtml(getColeccionVolumenText(figure))}</p>`
+            const pokedexBadge = `<span class="absolute top-2 right-2 rounded-md bg-black/60 px-1.5 py-0.5 font-mono text-[10px] text-zinc-300 backdrop-blur-sm">#${escapeHtml(formatPokedexNumber(figure.pokemon?.pokedex_number))}</span>`;
+
+            const metaParts = [];
+            if (figure.year) metaParts.push(escapeHtml(figure.year));
+            const coleccionText = getColeccionVolumenText(figure);
+            if (coleccionText) metaParts.push(escapeHtml(coleccionText));
+            const metaLine = metaParts.length > 0
+              ? `<p class="truncate text-xs font-medium text-zinc-500">${metaParts.join(" · ")}</p>`
               : "";
+
+            const figureName = escapeHtml(figure.pokemon?.full_names?.es) || `Figura #${escapeHtml(formatPokedexNumber(figure.pokemon?.pokedex_number))}`;
 
             return `
               <a
                 href="/figure/${escapeHtml(figure.slug ?? figure.id)}"
-                class="group flex flex-col overflow-hidden rounded-xl border border-zinc-800/50 bg-zinc-900/60 shadow-lg shadow-black/50 backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-zinc-600 hover:shadow-xl hover:shadow-amber-500/5"
+                class="group flex h-full flex-col overflow-hidden rounded-xl border border-zinc-800/50 bg-zinc-900/60 shadow-lg shadow-black/50 backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-zinc-600 hover:shadow-xl hover:shadow-amber-500/5"
               >
                 <div class="relative aspect-square overflow-hidden bg-zinc-800/50">
                   ${image}
                   ${pokedexBadge}
                 </div>
-                <div class="flex flex-col gap-1.5 border-t border-zinc-800/60 bg-zinc-900/80 p-2.5">
-                  <h2 class="truncate text-sm font-semibold leading-tight text-white">${escapeHtml(figure.pokemon?.full_names?.es)}</h2>
-                  ${coleccionLine}
-                  <div class="flex flex-wrap gap-1">
+                <div class="flex min-h-[4.5rem] flex-col gap-2 border-t border-zinc-800/60 bg-zinc-900/80 p-3">
+                  <h2 class="truncate text-sm font-semibold leading-tight text-white sm:text-base">${figureName}</h2>
+                  ${metaLine}
+                  <div class="flex flex-wrap items-center gap-1">
                     ${lineaBadge}
                     ${atributoBadges}
+                    ${overflowBadge}
                   </div>
                 </div>
               </a>

@@ -1,10 +1,12 @@
 ---
 import BaseLayout from "../../../../components/BaseLayout.astro";
+import Breadcrumb from "../../../../components/Breadcrumb.astro";
 import BackLink from "../../../../components/BackLink.astro";
 import FigureCard from "../../../../components/FigureCard.astro";
 import EmptyState from "../../../../components/EmptyState.astro";
 import { getCatalog, getTagsForFigure } from "../../../../lib/catalogCache";
 import { createSlug } from "../../../../lib/slug";
+import { volumeMeta, collectionSchema, breadcrumbSchema, absoluteImageUrl, addImage } from "../../../../lib/seo";
 
 export async function getStaticPaths() {
   const { collections, volumes } = await getCatalog();
@@ -49,11 +51,26 @@ const figurasConEtiquetas = figuras.map((f: any) => ({
   ...f,
   etiquetas: getTagsForFigure(f.id, figureTags)
 }));
+
+const siteUrl = Astro.site?.toString() || "https://example.com";
+const coverImageUrl = volumen.cover_image ? absoluteImageUrl(siteUrl, volumen.cover_image) : undefined;
+const breadcrumbItems = [
+  { label: coleccion.name, href: `/collection/${slug}` },
+  { label: `Vol. ${volumen.volume}` }
+];
+const seo = volumeMeta(coleccion, volumen, figurasConEtiquetas.length, siteUrl);
+const imageSeo = coverImageUrl ? addImage(seo, coverImageUrl) : seo;
+const schemas = [
+  collectionSchema(coleccion, siteUrl, figurasConEtiquetas.length, coverImageUrl ? [coverImageUrl] : undefined),
+  breadcrumbSchema(breadcrumbItems, siteUrl),
+];
 ---
 
-<BaseLayout title={`${coleccion.name} - Vol. ${volumen.volume} | Mi Colección`}>
+<BaseLayout title={imageSeo.title} description={imageSeo.description} seo={imageSeo} schemas={schemas}>
   <main class="mx-auto min-h-screen w-full max-w-7xl px-4 pb-24 pt-5 sm:px-6 lg:px-8">
     
+    <Breadcrumb items={breadcrumbItems} />
+
     <header class="mb-5 flex flex-col gap-4 sm:mb-8 sm:flex-row sm:items-end sm:justify-between">
       <div class="space-y-2">
         <BackLink href={`/collection/${slug}`} text={`Volver a ${coleccion.name}`} />
@@ -74,7 +91,9 @@ const figurasConEtiquetas = figuras.map((f: any) => ({
           <img
             class="h-full w-full object-cover"
             src={volumen.cover_image}
-            alt={`Portada Vol. ${volumen.volume}`}
+            alt={`Portada del volumen ${volumen.volume}${volumen.name_eng ? ` · ${volumen.name_eng}` : ""}`}
+            loading="lazy"
+            decoding="async"
           />
         </div>
       </section>
@@ -84,9 +103,9 @@ const figurasConEtiquetas = figuras.map((f: any) => ({
     <section>
       <h2 class="mb-4 text-xl font-semibold text-white">Figuras de este volumen</h2>
       {figurasConEtiquetas.length > 0 ? (
-        <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4 xl:grid-cols-5">
+        <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
           {figurasConEtiquetas.map((figura: any) => (
-            <FigureCard figure={figura} linkAttributes />
+            <FigureCard figure={figura} />
           ))}
         </div>
       ) : (

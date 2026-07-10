@@ -19,7 +19,9 @@ const volumenSlug = volume.name_eng ? createSlug(volume.name_eng) : String(volum
       <img
         class="h-full w-full object-cover transition group-hover:scale-105"
         src={volume.cover_image}
-        alt={`Vol. ${volume.volume}`}
+        alt={`Portada del volumen ${volume.volume}${volume.name_eng ? ` · ${volume.name_eng}` : ""}`}
+        loading="lazy"
+        decoding="async"
       />
     ) : (
       <div class="grid h-full w-full place-items-center text-sm font-bold text-zinc-600">
