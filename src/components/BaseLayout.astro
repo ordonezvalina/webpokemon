@@ -10,9 +10,10 @@ interface Props {
   seo?: SeoMeta;
   schemas?: Record<string, any> | Record<string, any>[];
   preconnectDomains?: string[];
+  showThemeToggle?: boolean;
 }
 
-const { title, description, seo, schemas, preconnectDomains = [] } = Astro.props;
+const { title, description, seo, schemas, preconnectDomains = [], showThemeToggle = true } = Astro.props;
 
 const pageTitle = seo?.title ?? title;
 const pageDescription = seo?.description ?? description ?? "";
@@ -80,9 +81,11 @@ const twitterImage = twitter?.image ?? defaultOgImage;
     {schemas && <JsonLd schema={schemas} />}
   </head>
   <body class="antialiased">
-    <div class="fixed top-3 right-3 z-50 sm:top-4 sm:right-4">
-      <ThemeToggle />
-    </div>
+    {showThemeToggle && (
+      <div class="fixed top-3 right-3 z-50 sm:top-4 sm:right-4">
+        <ThemeToggle />
+      </div>
+    )}
     <slot />
   </body>
 </html>

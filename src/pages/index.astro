@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "../components/BaseLayout.astro";
+import ThemeToggle from "../components/ThemeToggle.astro";
 import { getCatalog, getTagsForFigure } from "../lib/catalogCache";
 import { homeMeta, webSiteSchema } from "../lib/seo";
 
@@ -43,6 +44,7 @@ const initialEtiquetas = tags;
   description={seo.description}
   seo={seo}
   schemas={schemas}
+  showThemeToggle={false}
 >
   <!-- Ambient background glow -->
     <div class="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(ellipse_80%_50%_at_50%_-10%,rgba(120,100,60,0.12),transparent)]"></div>
@@ -143,6 +145,9 @@ const initialEtiquetas = tags;
             </span>
             <span class="hidden sm:inline">Filtros</span>
           </button>
+          <div class="flex shrink-0">
+            <ThemeToggle />
+          </div>
         </div>
 
         <section

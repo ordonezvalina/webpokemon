@@ -3,7 +3,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 
 // CONFIGURACIÓN: Pega aquí tu clave de SerpApi
-const SERPAPI_KEY = '472c179baec6f75a6ef338e0a9d35da9556e58a319a6d0bae63d6187813f2077';
+const SERPAPI_KEY = 'xxx';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
