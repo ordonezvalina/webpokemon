@@ -210,8 +210,36 @@ const initialEtiquetas = tags;
             </div>
 
           </div>
+
+          <!-- Apply / Clear action row -->
+          <div class="mt-5 flex items-center justify-end gap-3 border-t border-zinc-200/70 pt-4 dark:border-zinc-800/60">
+            <button
+              id="filter-clear-btn"
+              class="inline-flex items-center gap-1.5 rounded-lg border border-zinc-300/80 bg-white/60 px-4 py-2 text-sm font-semibold text-zinc-500 shadow-sm backdrop-blur-sm transition-all duration-200 hover:border-zinc-400 hover:text-zinc-900 dark:border-zinc-700/80 dark:bg-zinc-900/60 dark:text-zinc-400 dark:hover:border-zinc-500 dark:hover:text-white"
+              type="button"
+            >
+              <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"></path>
+              </svg>
+              Clear
+            </button>
+            <button
+              id="filter-apply-btn"
+              class="inline-flex items-center gap-1.5 rounded-lg border border-amber-500/60 bg-gradient-to-r from-amber-500 to-yellow-400 px-5 py-2 text-sm font-semibold text-zinc-950 shadow-md shadow-amber-500/20 ring-1 ring-amber-400/30 transition-all duration-200 hover:from-amber-400 hover:to-yellow-300"
+              type="button"
+            >
+              <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+              Apply Filters
+            </button>
+          </div>
+
         </section>
       </nav>
+
+      <!-- Filter panel overlay (click-outside to close) -->
+      <div id="filter-overlay" class="fixed inset-0 z-10 hidden" aria-hidden="true"></div>
 
       <section class="mt-5 flex items-center justify-between gap-3">
         <div>
@@ -353,6 +381,9 @@ const initialEtiquetas = tags;
       const lineFilters = document.querySelector("#linea-filters");
       const attributeFilters = document.querySelector("#atributo-filters");
       const filterToggle = document.querySelector("#filter-toggle");
+      const filterOverlay = document.querySelector("#filter-overlay");
+      const filterApplyBtn = document.querySelector("#filter-apply-btn");
+      const filterClearBtn = document.querySelector("#filter-clear-btn");
       const activeLabel = document.querySelector("#active-label");
       const activeSubtitle = document.querySelector("#active-subtitle");
       const totalCount = document.querySelector("#total-count");
@@ -771,9 +802,44 @@ const initialEtiquetas = tags;
         render();
       });
 
+      function openFilterPanel() {
+        filterPanel.classList.remove("hidden");
+        filterOverlay.classList.remove("hidden");
+        filterToggle.setAttribute("aria-expanded", "true");
+      }
+
+      function closeFilterPanel() {
+        filterPanel.classList.add("hidden");
+        filterOverlay.classList.add("hidden");
+        filterToggle.setAttribute("aria-expanded", "false");
+      }
+
       filterToggle.addEventListener("click", () => {
-        const isHidden = filterPanel.classList.toggle("hidden");
-        filterToggle.setAttribute("aria-expanded", String(!isHidden));
+        const isHidden = filterPanel.classList.contains("hidden");
+        if (isHidden) {
+          openFilterPanel();
+        } else {
+          closeFilterPanel();
+        }
+      });
+
+      filterOverlay.addEventListener("click", () => {
+        closeFilterPanel();
+      });
+
+      filterApplyBtn.addEventListener("click", () => {
+        render();
+        closeFilterPanel();
+      });
+
+      filterClearBtn.addEventListener("click", () => {
+        state.line = null;
+        state.attributes = [];
+        state.collection = null;
+        state.selectedTags = [];
+        renderFilterState();
+        render();
+        closeFilterPanel();
       });
 
       lineFilters.addEventListener("click", (event) => {
