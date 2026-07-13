@@ -1,4 +1,4 @@
-import { getLineaLabel, getFigureAtributos, getAtributoLabel } from "./figureTaxonomy";
+import { getLineLabel, getFigureAttributes, getAttributeLabel } from "./figureTaxonomy";
 import { createSlug } from "./slug";
 
 export interface SeoMeta {
@@ -20,8 +20,8 @@ export interface SeoMeta {
   };
 }
 
-const DEFAULT_TITLE = "Colección Pokémon Tomy";
-const DEFAULT_DESCRIPTION = "Catálogo personal de figuras Pokémon Tomy, Moncolle, T-Arts y variantes. Explora por generación, colección, volumen y atributos especiales.";
+const DEFAULT_TITLE = "Pokémon Tomy Collection";
+const DEFAULT_DESCRIPTION = "Personal catalogue of Pokémon Tomy, Moncolle, T-Arts figures and variants. Browse by generation, collection, volume and special attributes.";
 const SEPARATOR = " | ";
 
 export function makeTitle(pageTitle: string): string {
@@ -36,42 +36,42 @@ export function truncateDescription(text: string, max = 160): string {
 }
 
 export function figureMeta(figure: any, siteUrl: string): SeoMeta {
-  const name = figure.pokemon?.full_names?.es || `Figura #${String(figure.pokemon?.pokedex_number).padStart(4, "0")}`;
-  const line = getLineaLabel(figure.line);
-  const atributos = getFigureAtributos(figure).map((a: string) => getAtributoLabel(a));
-  const coleccion = figure.volumes?.collections?.name;
-  const volumen = figure.volumes ? `Vol. ${figure.volumes.volume}${figure.volumes.name_eng ? ` · ${figure.volumes.name_eng}` : ""}` : "";
-  const year = figure.year ? `Año ${figure.year}` : "";
+  const name = figure.pokemon?.full_names?.es || `Figure #${String(figure.pokemon?.pokedex_number).padStart(4, "0")}`;
+  const line = getLineLabel(figure.line);
+  const attributes = getFigureAttributes(figure).map((a: string) => getAttributeLabel(a));
+  const collection = figure.volumes?.collections?.name;
+  const volume = figure.volumes ? `Vol. ${figure.volumes.volume}${figure.volumes.name_eng ? ` · ${figure.volumes.name_eng}` : ""}` : "";
+  const year = figure.year ? `Year ${figure.year}` : "";
 
-  const parts = [name, line, coleccion, volumen, year, ...atributos].filter(Boolean);
+  const parts = [name, line, collection, volume, year, ...attributes].filter(Boolean);
   const description = truncateDescription(parts.join(" · ")) || DEFAULT_DESCRIPTION;
   const title = makeTitle(`${name} (${line})`);
 
   return baseMeta(title, description, `/figure/${figure.slug ?? figure.id}`, siteUrl);
 }
 
-export function collectionMeta(coleccion: any, volumesCount: number, figuresCount: number, siteUrl: string): SeoMeta {
-  const title = makeTitle(coleccion.name);
+export function collectionMeta(collection: any, volumesCount: number, figuresCount: number, siteUrl: string): SeoMeta {
+  const title = makeTitle(collection.name);
   const description = truncateDescription(
-    `${coleccion.name}. Colección de Pokémon Tomy con ${volumesCount} volúmenes y ${figuresCount} figuras. Explora el catálogo completo.`
+    `${collection.name}. Pokémon Tomy collection with ${volumesCount} volumes and ${figuresCount} figures. Browse the full catalogue.`
   );
-  return baseMeta(title, description, `/collection/${createSlug(coleccion.name)}`, siteUrl);
+  return baseMeta(title, description, `/collection/${createSlug(collection.name)}`, siteUrl);
 }
 
-export function volumeMeta(coleccion: any, volumen: any, figuresCount: number, siteUrl: string): SeoMeta {
-  const subtitle = `Vol. ${volumen.volume}${volumen.name_eng ? ` · ${volumen.name_eng}` : ""}`;
-  const volumenSlug = volumen.name_eng ? createSlug(volumen.name_eng) : String(volumen.volume);
-  const title = makeTitle(`${coleccion.name} - ${subtitle}`);
+export function volumeMeta(collection: any, volume: any, figuresCount: number, siteUrl: string): SeoMeta {
+  const subtitle = `Vol. ${volume.volume}${volume.name_eng ? ` · ${volume.name_eng}` : ""}`;
+  const volumeSlug = volume.name_eng ? createSlug(volume.name_eng) : String(volume.volume);
+  const title = makeTitle(`${collection.name} - ${subtitle}`);
   const description = truncateDescription(
-    `${coleccion.name} · ${subtitle}. ${figuresCount} figuras Pokémon Tomy en este volumen.`
+    `${collection.name} · ${subtitle}. ${figuresCount} Pokémon Tomy figures in this volume.`
   );
-  return baseMeta(title, description, `/collection/${createSlug(coleccion.name)}/volume/${volumenSlug}`, siteUrl);
+  return baseMeta(title, description, `/collection/${createSlug(collection.name)}/volume/${volumeSlug}`, siteUrl);
 }
 
 export function attributeMeta(label: string, slug: string, figuresCount: number, siteUrl: string): SeoMeta {
   const title = makeTitle(label);
   const description = truncateDescription(
-    `${label}. ${figuresCount} figuras Pokémon Tomy con este atributo especial en el catálogo.`
+    `${label}. ${figuresCount} Pokémon Tomy figures with this special attribute in the catalogue.`
   );
   return baseMeta(title, description, `/attribute/${slug}`, siteUrl);
 }
@@ -79,7 +79,7 @@ export function attributeMeta(label: string, slug: string, figuresCount: number,
 export function homeMeta(figuresCount: number, siteUrl: string): SeoMeta {
   const title = DEFAULT_TITLE;
   const description = truncateDescription(
-    `Catálogo personal de figuras Pokémon Tomy, Moncolle y T-Arts. ${figuresCount} figuras organizadas por generación, colección, volumen y atributos.`
+    `Personal catalogue of Pokémon Tomy, Moncolle and T-Arts figures. ${figuresCount} figures organised by generation, collection, volume and attributes.`
   );
   return baseMeta(title, description, "/", siteUrl);
 }
@@ -187,14 +187,14 @@ export function breadcrumbSchema(items: { label: string; href?: string }[], site
 }
 
 export function figureSchema(figure: any, siteUrl: string, imageUrl?: string): SchemaItemPage {
-  const name = figure.pokemon?.full_names?.es || `Figura #${String(figure.pokemon?.pokedex_number).padStart(4, "0")}`;
-  const atributos = getFigureAtributos(figure).map((a: string) => getAtributoLabel(a));
+  const name = figure.pokemon?.full_names?.es || `Figure #${String(figure.pokemon?.pokedex_number).padStart(4, "0")}`;
+  const attributes = getFigureAttributes(figure).map((a: string) => getAttributeLabel(a));
   const descriptionParts = [
     name,
-    getLineaLabel(figure.line),
+    getLineLabel(figure.line),
     figure.volumes?.collections?.name,
-    figure.year ? `Año ${figure.year}` : "",
-    ...atributos,
+    figure.year ? `Year ${figure.year}` : "",
+    ...attributes,
   ].filter(Boolean);
 
   const mainEntity: any = {
@@ -226,24 +226,24 @@ export function figureSchema(figure: any, siteUrl: string, imageUrl?: string): S
 }
 
 export function collectionSchema(
-  coleccion: any,
+  collection: any,
   siteUrl: string,
   figuresCount: number,
   imageUrls?: string[]
 ): SchemaCollectionPage {
-  const url = `${siteUrl.replace(/\/$/, "")}/collection/${createSlug(coleccion.name)}`;
+  const url = `${siteUrl.replace(/\/$/, "")}/collection/${createSlug(collection.name)}`;
   return {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
-    name: coleccion.name,
+    name: collection.name,
     url,
-    description: `${coleccion.name}. ${figuresCount} figuras Pokémon Tomy en esta colección.`,
+    description: `${collection.name}. ${figuresCount} Pokémon Tomy figures in this collection.`,
     isPartOf: { "@type": "WebSite", url: siteUrl },
     hasPart: imageUrls?.length
       ? imageUrls.map((src) => ({
           "@type": "ImageObject",
           contentUrl: src,
-          name: `Portada de ${coleccion.name}`,
+          name: `Cover of ${collection.name}`,
         }))
       : undefined,
   };

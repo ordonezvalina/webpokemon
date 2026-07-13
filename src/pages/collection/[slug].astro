@@ -12,8 +12,8 @@ import { collectionMeta, collectionSchema, breadcrumbSchema, absoluteImageUrl, a
 export async function getStaticPaths() {
   const { collections } = await getCatalog();
 
-  return collections.map((coleccion: any) => ({
-    params: { slug: createSlug(coleccion.name) },
+  return collections.map((col: any) => ({
+    params: { slug: createSlug(col.name) },
   }));
 }
 
@@ -21,39 +21,39 @@ const { slug } = Astro.params;
 
 const { figures, collections, volumes, figureTags } = await getCatalog();
 
-const coleccion = collections.find((c: any) => createSlug(c.name) === slug);
+const collection = collections.find((c: any) => createSlug(c.name) === slug);
 
-if (!coleccion) {
+if (!collection) {
   return Astro.redirect("/404");
 }
 
-const volumenes = volumes
-  .filter((v: any) => v.collection_id === coleccion.id)
+const collectionVolumes = volumes
+  .filter((v: any) => v.collection_id === collection.id)
   .sort((a: any, b: any) => (a.volume ?? 0) - (b.volume ?? 0));
 
-const volumenIds = new Set(volumenes.map((v: any) => v.id));
+const volumeIds = new Set(collectionVolumes.map((v: any) => v.id));
 
-const figuras = figures
-  .filter((f: any) => volumenIds.has(f.volume_id))
+const collectionFigures = figures
+  .filter((f: any) => volumeIds.has(f.volume_id))
   .sort((a: any, b: any) => (a.visual_order ?? 0) - (b.visual_order ?? 0));
 
-const figurasConEtiquetas = figuras.map((f: any) => ({
+const figuresWithTags = collectionFigures.map((f: any) => ({
   ...f,
-  etiquetas: getTagsForFigure(f.id, figureTags)
+  tags: getTagsForFigure(f.id, figureTags)
 }));
 
 const siteUrl = Astro.site?.toString() || "https://example.com";
-const coverImageUrls = volumenes
+const coverImageUrls = collectionVolumes
   .map((v: any) => v.cover_image)
   .filter((url): url is string => typeof url === "string")
   .map((url) => absoluteImageUrl(siteUrl, url))
   .filter((url): url is string => typeof url === "string");
 
-const breadcrumbItems = [{ label: coleccion.name }];
-const seo = collectionMeta(coleccion, volumenes.length, figurasConEtiquetas.length, siteUrl);
+const breadcrumbItems = [{ label: collection.name }];
+const seo = collectionMeta(collection, collectionVolumes.length, figuresWithTags.length, siteUrl);
 const imageSeo = coverImageUrls.length > 0 ? addImage(seo, coverImageUrls[0]) : seo;
 const schemas = [
-  collectionSchema(coleccion, siteUrl, figurasConEtiquetas.length, coverImageUrls),
+  collectionSchema(collection, siteUrl, figuresWithTags.length, coverImageUrls),
   breadcrumbSchema(breadcrumbItems, siteUrl),
 ];
 ---
@@ -65,39 +65,39 @@ const schemas = [
 
     <header class="mb-5 flex flex-col gap-4 sm:mb-8 sm:flex-row sm:items-end sm:justify-between">
       <div class="space-y-2">
-        <BackLink href="/" text="Volver al catálogo" />
+        <BackLink href="/" text="Back to catalogue" />
         <h1 class="max-w-3xl text-4xl font-semibold leading-tight text-zinc-900 sm:text-6xl dark:text-white">
-          {coleccion.name}
+          {collection.name}
         </h1>
         <p class="max-w-2xl text-sm leading-6 text-zinc-600 sm:text-base dark:text-zinc-400">
-          {volumenes?.length || 0} volúmenes · {figurasConEtiquetas.length} figuras
+          {collectionVolumes?.length || 0} volumes · {figuresWithTags.length} figures
         </p>
       </div>
     </header>
 
-    {/* Volúmenes de la colección */}
-    {volumenes && volumenes.length > 0 && (
+    {/* Collection volumes */}
+    {collectionVolumes && collectionVolumes.length > 0 && (
       <section class="mb-8">
-        <h2 class="mb-4 text-xl font-semibold text-zinc-900 dark:text-white">Volúmenes</h2>
+        <h2 class="mb-4 text-xl font-semibold text-zinc-900 dark:text-white">Volumes</h2>
         <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
-          {volumenes.map((volumen: any) => (
-            <VolumeCard collectionSlug={slug} volume={volumen} />
+          {collectionVolumes.map((vol: any) => (
+            <VolumeCard collectionSlug={slug} volume={vol} />
           ))}
         </div>
       </section>
     )}
 
-    {/* Figuras de la colección */}
+    {/* Collection figures */}
     <section>
-      <h2 class="mb-4 text-xl font-semibold text-zinc-900 dark:text-white">Todas las figuras</h2>
-      {figurasConEtiquetas.length > 0 ? (
+      <h2 class="mb-4 text-xl font-semibold text-zinc-900 dark:text-white">All figures</h2>
+      {figuresWithTags.length > 0 ? (
         <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
-          {figurasConEtiquetas.map((figura: any) => (
-            <FigureCard figure={figura} showVolume />
+          {figuresWithTags.map((fig: any) => (
+            <FigureCard figure={fig} showVolume />
           ))}
         </div>
       ) : (
-        <EmptyState message="No hay figuras en esta colección." />
+        <EmptyState message="No figures in this collection." />
       )}
     </section>
 

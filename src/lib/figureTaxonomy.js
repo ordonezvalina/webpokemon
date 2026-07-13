@@ -1,18 +1,18 @@
-export const LINEAS = [
+export const LINES = [
   { value: "tomy", label: "Takara Tomy / Moncolle" },
   { value: "t_arts", label: "Takara Tomy Arts (T-Arts)" }
 ];
 
-export const DEFAULT_LINEA = "tomy";
+export const DEFAULT_LINE = "tomy";
 
-export const ATRIBUTOS = [
-  { value: "brillante", label: "Brillante / Pearl" },
+export const ATTRIBUTES = [
+  { value: "brillante", label: "Pearl / Brillante" },
   { value: "shiny", label: "Shiny / Variocolor" },
-  { value: "clear", label: "Translucida / Clear" },
-  { value: "con-base", label: "Con Base / Peana / Diorama" }
+  { value: "clear", label: "Clear / Translucent" },
+  { value: "con-base", label: "With Base / Diorama" }
 ];
 
-export function normalizeLinea(value) {
+export function normalizeLine(value) {
   const normalized = String(value ?? "").toLowerCase().trim();
 
   if (normalized === "tomy" || normalized === "moncolle") {
@@ -23,43 +23,43 @@ export function normalizeLinea(value) {
     return "t_arts";
   }
 
-  return DEFAULT_LINEA;
+  return DEFAULT_LINE;
 }
 
-export function getLineaLabel(value) {
-  const normalized = normalizeLinea(value);
-  const entry = LINEAS.find((e) => e.value === normalized);
-  return entry?.label ?? "Otras Líneas";
+export function getLineLabel(value) {
+  const normalized = normalizeLine(value);
+  const entry = LINES.find((e) => e.value === normalized);
+  return entry?.label ?? "Other Lines";
 }
 
-export function getAtributoLabel(value) {
-  return ATRIBUTOS.find((entry) => entry.value === value)?.label ?? value;
+export function getAttributeLabel(value) {
+  return ATTRIBUTES.find((entry) => entry.value === value)?.label ?? value;
 }
 
-// Trabaja con las columnas booleanas de la BD (is_shiny, is_clear, is_pearl, has_base)
-export function getFigureAtributos(figure) {
-  const atributos = [];
+// Works with boolean columns from the DB (is_shiny, is_clear, is_pearl, has_base)
+export function getFigureAttributes(figure) {
+  const attributes = [];
 
-  if (figure?.is_shiny) atributos.push("shiny");
-  if (figure?.is_clear) atributos.push("clear");
-  if (figure?.is_pearl) atributos.push("brillante");
-  if (figure?.has_base) atributos.push("con-base");
+  if (figure?.is_shiny) attributes.push("shiny");
+  if (figure?.is_clear) attributes.push("clear");
+  if (figure?.is_pearl) attributes.push("brillante");
+  if (figure?.has_base) attributes.push("con-base");
 
-  return atributos;
+  return attributes;
 }
 
 export function figureMatchesLineFilter(figure, lineFilter) {
   if (!lineFilter) {
     return true;
   }
-  return normalizeLinea(figure?.line) === lineFilter;
+  return normalizeLine(figure?.line) === lineFilter;
 }
 
-export function figureMatchesAtributoFilters(figure, selectedAtributos) {
-  if (!selectedAtributos.length) {
+export function figureMatchesAttributeFilters(figure, selectedAttributes) {
+  if (!selectedAttributes.length) {
     return true;
   }
 
-  const figureAtributos = getFigureAtributos(figure);
-  return selectedAtributos.every((atributo) => figureAtributos.includes(atributo));
+  const figureAttributes = getFigureAttributes(figure);
+  return selectedAttributes.every((attribute) => figureAttributes.includes(attribute));
 }

@@ -11,14 +11,14 @@ import { volumeMeta, collectionSchema, breadcrumbSchema, absoluteImageUrl, addIm
 export async function getStaticPaths() {
   const { collections, volumes } = await getCatalog();
 
-  return volumes.map((volumen: any) => {
-    const coleccion = collections.find((c: any) => c.id === volumen.collection_id);
-    const coleccionSlug = createSlug(coleccion?.name ?? "");
-    const volumenSlug = volumen.name_eng ? createSlug(volumen.name_eng) : String(volumen.volume);
+  return volumes.map((vol: any) => {
+    const col = collections.find((c: any) => c.id === vol.collection_id);
+    const collectionSlug = createSlug(col?.name ?? "");
+    const volumeSlug = vol.name_eng ? createSlug(vol.name_eng) : String(vol.volume);
     return {
       params: {
-        slug: coleccionSlug,
-        numero: volumenSlug
+        slug: collectionSlug,
+        numero: volumeSlug
       },
     };
   });
@@ -28,40 +28,40 @@ const { slug, numero } = Astro.params;
 
 const { figures, collections, volumes, figureTags } = await getCatalog();
 
-const coleccion = collections.find((c: any) => createSlug(c.name) === slug);
+const collection = collections.find((c: any) => createSlug(c.name) === slug);
 
-if (!coleccion) {
+if (!collection) {
   return Astro.redirect("/404");
 }
 
-const volumen = volumes.find((v: any) => {
-  const volumenSlug = v.name_eng ? createSlug(v.name_eng) : String(v.volume);
-  return v.collection_id === coleccion.id && volumenSlug === numero;
+const volume = volumes.find((v: any) => {
+  const volumeSlug = v.name_eng ? createSlug(v.name_eng) : String(v.volume);
+  return v.collection_id === collection.id && volumeSlug === numero;
 });
 
-if (!volumen) {
+if (!volume) {
   return Astro.redirect("/404");
 }
 
-const figuras = figures
-  .filter((f: any) => f.volume_id === volumen.id)
+const volumeFigures = figures
+  .filter((f: any) => f.volume_id === volume.id)
   .sort((a: any, b: any) => (a.visual_order ?? 0) - (b.visual_order ?? 0));
 
-const figurasConEtiquetas = figuras.map((f: any) => ({
+const figuresWithTags = volumeFigures.map((f: any) => ({
   ...f,
-  etiquetas: getTagsForFigure(f.id, figureTags)
+  tags: getTagsForFigure(f.id, figureTags)
 }));
 
 const siteUrl = Astro.site?.toString() || "https://example.com";
-const coverImageUrl = volumen.cover_image ? absoluteImageUrl(siteUrl, volumen.cover_image) : undefined;
+const coverImageUrl = volume.cover_image ? absoluteImageUrl(siteUrl, volume.cover_image) : undefined;
 const breadcrumbItems = [
-  { label: coleccion.name, href: `/collection/${slug}` },
-  { label: `Vol. ${volumen.volume}` }
+  { label: collection.name, href: `/collection/${slug}` },
+  { label: `Vol. ${volume.volume}` }
 ];
-const seo = volumeMeta(coleccion, volumen, figurasConEtiquetas.length, siteUrl);
+const seo = volumeMeta(collection, volume, figuresWithTags.length, siteUrl);
 const imageSeo = coverImageUrl ? addImage(seo, coverImageUrl) : seo;
 const schemas = [
-  collectionSchema(coleccion, siteUrl, figurasConEtiquetas.length, coverImageUrl ? [coverImageUrl] : undefined),
+  collectionSchema(collection, siteUrl, figuresWithTags.length, coverImageUrl ? [coverImageUrl] : undefined),
   breadcrumbSchema(breadcrumbItems, siteUrl),
 ];
 ---
@@ -73,25 +73,25 @@ const schemas = [
 
     <header class="mb-5 flex flex-col gap-4 sm:mb-8 sm:flex-row sm:items-end sm:justify-between">
       <div class="space-y-2">
-        <BackLink href={`/collection/${slug}`} text={`Volver a ${coleccion.name}`} />
+        <BackLink href={`/collection/${slug}`} text={`Back to ${collection.name}`} />
         <h1 class="max-w-3xl text-4xl font-semibold leading-tight text-zinc-900 sm:text-6xl dark:text-white">
-          Vol. {volumen.volume}
+          Vol. {volume.volume}
         </h1>
         <p class="max-w-2xl text-sm leading-6 text-zinc-600 sm:text-base dark:text-zinc-400">
-          {coleccion.name}
-          {volumen.name_eng ? ` · ${volumen.name_eng}` : ""} · {figurasConEtiquetas.length} figuras
+          {collection.name}
+          {volume.name_eng ? ` · ${volume.name_eng}` : ""} · {figuresWithTags.length} figures
         </p>
       </div>
     </header>
 
-    {/* Imagen de portada del volumen */}
-    {volumen.cover_image && (
+    {/* Volume cover image */}
+    {volume.cover_image && (
       <section class="mb-8">
         <div class="max-w-xs overflow-hidden rounded-xl border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
           <img
             class="h-full w-full object-cover"
-            src={volumen.cover_image}
-            alt={`Portada del volumen ${volumen.volume}${volumen.name_eng ? ` · ${volumen.name_eng}` : ""}`}
+            src={volume.cover_image}
+            alt={`Cover of volume ${volume.volume}${volume.name_eng ? ` · ${volume.name_eng}` : ""}`}
             loading="lazy"
             decoding="async"
           />
@@ -99,17 +99,17 @@ const schemas = [
       </section>
     )}
 
-    {/* Figuras del volumen */}
+    {/* Volume figures */}
     <section>
-      <h2 class="mb-4 text-xl font-semibold text-zinc-900 dark:text-white">Figuras de este volumen</h2>
-      {figurasConEtiquetas.length > 0 ? (
+      <h2 class="mb-4 text-xl font-semibold text-zinc-900 dark:text-white">Figures in this volume</h2>
+      {figuresWithTags.length > 0 ? (
         <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
-          {figurasConEtiquetas.map((figura: any) => (
-            <FigureCard figure={figura} />
+          {figuresWithTags.map((fig: any) => (
+            <FigureCard figure={fig} />
           ))}
         </div>
       ) : (
-        <EmptyState message="No hay figuras en este volumen." />
+        <EmptyState message="No figures in this volume." />
       )}
     </section>
 

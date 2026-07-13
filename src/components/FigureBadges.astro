@@ -1,6 +1,6 @@
 ---
 import { createSlug } from "../lib/slug";
-import { getLineaLabel, getFigureAtributos, getAtributoLabel } from "../lib/figureTaxonomy";
+import { getLineLabel, getFigureAttributes, getAttributeLabel } from "../lib/figureTaxonomy";
 
 interface Props {
   figure: any;
@@ -9,37 +9,37 @@ interface Props {
 }
 
 const { figure, linkAttributes = false, limit = 3 } = Astro.props;
-const allAtributos = getFigureAtributos(figure);
-const lineaBadge = {
-  label: getLineaLabel(figure.line),
+const allAttributes = getFigureAttributes(figure);
+const lineBadge = {
+  label: getLineLabel(figure.line),
   class: "rounded-md border border-zinc-300 bg-zinc-200/70 px-1.5 py-0.5 text-[10px] font-bold text-zinc-700 dark:border-zinc-600 dark:bg-zinc-700/60 dark:text-zinc-300"
 };
-const visibleAtributos = allAtributos.slice(0, Math.max(0, limit - 1));
-const overflowCount = allAtributos.length - visibleAtributos.length;
+const visibleAttributes = allAttributes.slice(0, Math.max(0, limit - 1));
+const overflowCount = allAttributes.length - visibleAttributes.length;
 
-function getAtributoClass(atributo: string): string {
-  const atributoClasses: { [key: string]: string } = {
+function getAttributeClass(attribute: string): string {
+  const attributeClasses: { [key: string]: string } = {
     brillante: "border-fuchsia-600/40 bg-fuchsia-500/10 text-fuchsia-800 dark:border-fuchsia-300/50 dark:bg-fuchsia-300/12 dark:text-fuchsia-100",
     shiny: "border-amber-600/40 bg-amber-500/10 text-amber-800 dark:border-amber-300/60 dark:bg-amber-300/14 dark:text-amber-100",
     clear: "border-cyan-600/40 bg-cyan-500/10 text-cyan-800 dark:border-cyan-300/50 dark:bg-cyan-300/12 dark:text-cyan-100",
     mega: "border-rose-600/40 bg-rose-500/10 text-rose-800 dark:border-rose-300/55 dark:bg-rose-300/12 dark:text-rose-100",
     "con-base": "border-emerald-600/40 bg-emerald-500/10 text-emerald-800 dark:border-emerald-300/55 dark:bg-emerald-300/12 dark:text-emerald-100"
   };
-  return atributoClasses[atributo] || "border-indigo-600/40 bg-indigo-500/10 text-indigo-800 dark:border-indigo-300/50 dark:bg-indigo-300/12 dark:text-indigo-100";
+  return attributeClasses[attribute] || "border-indigo-600/40 bg-indigo-500/10 text-indigo-800 dark:border-indigo-300/50 dark:bg-indigo-300/12 dark:text-indigo-100";
 }
 
-function baseClass(atributo: string): string {
-  return `rounded-md border px-1.5 py-0.5 text-[10px] font-bold ${getAtributoClass(atributo)}`;
+function baseClass(attribute: string): string {
+  return `rounded-md border px-1.5 py-0.5 text-[10px] font-bold ${getAttributeClass(attribute)}`;
 }
 ---
 
 <div class="flex flex-wrap items-center gap-1">
-  <span class={lineaBadge.class}>{lineaBadge.label}</span>
-  {visibleAtributos.map((atributo: string) => {
-    const label = getAtributoLabel(atributo);
-    const classes = baseClass(atributo) + (linkAttributes ? " hover:opacity-80 transition" : "");
+  <span class={lineBadge.class}>{lineBadge.label}</span>
+  {visibleAttributes.map((attribute: string) => {
+    const label = getAttributeLabel(attribute);
+    const classes = baseClass(attribute) + (linkAttributes ? " hover:opacity-80 transition" : "");
     return linkAttributes ? (
-      <a href={`/attribute/${createSlug(atributo)}`} class={classes}>{label}</a>
+      <a href={`/attribute/${createSlug(attribute)}`} class={classes}>{label}</a>
     ) : (
       <span class={classes}>{label}</span>
     );

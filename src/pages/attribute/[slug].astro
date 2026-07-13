@@ -6,55 +6,55 @@ import FigureCard from "../../components/FigureCard.astro";
 import EmptyState from "../../components/EmptyState.astro";
 import { getCatalog, getTagsForFigure } from "../../lib/catalogCache";
 import { createSlug } from "../../lib/slug";
-import { getAtributoLabel } from "../../lib/figureTaxonomy";
+import { getAttributeLabel } from "../../lib/figureTaxonomy";
 import { attributeMeta, breadcrumbSchema } from "../../lib/seo";
 
 export async function getStaticPaths() {
   const { figures } = await getCatalog();
 
-  const atributosUnicos = new Set<string>();
-  figures.forEach((figura: any) => {
-    if (figura?.is_shiny) atributosUnicos.add("shiny");
-    if (figura?.is_clear) atributosUnicos.add("clear");
-    if (figura?.is_pearl) atributosUnicos.add("brillante");
-    if (figura?.has_base) atributosUnicos.add("con-base");
+  const uniqueAttributes = new Set<string>();
+  figures.forEach((fig: any) => {
+    if (fig?.is_shiny) uniqueAttributes.add("shiny");
+    if (fig?.is_clear) uniqueAttributes.add("clear");
+    if (fig?.is_pearl) uniqueAttributes.add("brillante");
+    if (fig?.has_base) uniqueAttributes.add("con-base");
   });
 
-  return Array.from(atributosUnicos).map((atributo) => ({
-    params: { slug: createSlug(atributo) },
+  return Array.from(uniqueAttributes).map((attribute) => ({
+    params: { slug: createSlug(attribute) },
   }));
 }
 
 const { slug } = Astro.params;
 
-const atributosMap: { [key: string]: { valor: string, columna: string } } = {
-  "brillante": { valor: "brillante", columna: "is_pearl" },
-  "shiny": { valor: "shiny", columna: "is_shiny" },
-  "clear": { valor: "clear", columna: "is_clear" },
-  "con-base": { valor: "con-base", columna: "has_base" }
+const attributesMap: { [key: string]: { value: string, column: string } } = {
+  "brillante": { value: "brillante", column: "is_pearl" },
+  "shiny": { value: "shiny", column: "is_shiny" },
+  "clear": { value: "clear", column: "is_clear" },
+  "con-base": { value: "con-base", column: "has_base" }
 };
 
-const atributoInfo = atributosMap[slug] || Object.values(atributosMap).find(v => createSlug(v.valor) === slug);
+const attributeInfo = attributesMap[slug] || Object.values(attributesMap).find(v => createSlug(v.value) === slug);
 
-if (!atributoInfo) {
+if (!attributeInfo) {
   return Astro.redirect("/404");
 }
 
 const { figures, figureTags } = await getCatalog();
 
-const figuras = figures
-  .filter((f: any) => f[atributoInfo.columna] === true)
+const attributeFigures = figures
+  .filter((f: any) => f[attributeInfo.column] === true)
   .sort((a: any, b: any) => (a.visual_order ?? 0) - (b.visual_order ?? 0));
 
-const figurasConEtiquetas = figuras.map((f: any) => ({
+const figuresWithTags = attributeFigures.map((f: any) => ({
   ...f,
-  etiquetas: getTagsForFigure(f.id, figureTags)
+  tags: getTagsForFigure(f.id, figureTags)
 }));
 
 const siteUrl = Astro.site?.toString() || "https://example.com";
-const attributeLabel = getAtributoLabel(atributoInfo.valor);
+const attributeLabel = getAttributeLabel(attributeInfo.value);
 const breadcrumbItems = [{ label: attributeLabel }];
-const seo = attributeMeta(attributeLabel, slug, figurasConEtiquetas.length, siteUrl);
+const seo = attributeMeta(attributeLabel, slug, figuresWithTags.length, siteUrl);
 const schemas = breadcrumbSchema(breadcrumbItems, siteUrl);
 ---
 
@@ -65,26 +65,26 @@ const schemas = breadcrumbSchema(breadcrumbItems, siteUrl);
 
     <header class="mb-5 flex flex-col gap-4 sm:mb-8 sm:flex-row sm:items-end sm:justify-between">
       <div class="space-y-2">
-        <BackLink href="/" text="Volver al catálogo" />
+        <BackLink href="/" text="Back to catalogue" />
         <h1 class="max-w-3xl text-4xl font-semibold leading-tight text-zinc-900 sm:text-6xl dark:text-white">
-          {getAtributoLabel(atributoInfo.valor)}
+          {getAttributeLabel(attributeInfo.value)}
         </h1>
         <p class="max-w-2xl text-sm leading-6 text-zinc-600 sm:text-base dark:text-zinc-400">
-          {figurasConEtiquetas.length} figuras con este atributo
+          {figuresWithTags.length} figures with this attribute
         </p>
       </div>
     </header>
 
-    {/* Figuras con este atributo */}
+    {/* Figures with this attribute */}
     <section>
-      {figurasConEtiquetas.length > 0 ? (
+      {figuresWithTags.length > 0 ? (
         <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
-          {figurasConEtiquetas.map((figura: any) => (
-            <FigureCard figure={figura} showCollection />
+          {figuresWithTags.map((fig: any) => (
+            <FigureCard figure={fig} showCollection />
           ))}
         </div>
       ) : (
-        <EmptyState message="No hay figuras con este atributo." />
+        <EmptyState message="No figures with this attribute." />
       )}
     </section>
 

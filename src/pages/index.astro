@@ -19,7 +19,7 @@ const linePriority = (line: string): number => {
 };
 
 figures.forEach((figure: any) => {
-  figure.etiquetas = getTagsForFigure(figure.id, figureTags).map((tag: any) =>
+  figure.tagIds = getTagsForFigure(figure.id, figureTags).map((tag: any) =>
     Number(tag.id)
   );
 });
@@ -54,13 +54,13 @@ const initialEtiquetas = tags;
           Tomy Moncolle Archive
         </p>
         <h1 class="mt-1 text-4xl font-semibold leading-tight tracking-tight sm:text-6xl">
-          <span class="bg-gradient-to-br from-zinc-900 via-zinc-700 to-zinc-500 bg-clip-text text-transparent dark:from-white dark:via-zinc-100 dark:to-zinc-400">Coleccion Pokemon</span>
+          <span class="bg-gradient-to-br from-zinc-900 via-zinc-700 to-zinc-500 bg-clip-text text-transparent dark:from-white dark:via-zinc-100 dark:to-zinc-400">Pokémon Collection</span>
         </h1>
         <p class="mt-1 max-w-2xl text-sm leading-6 text-zinc-600 dark:text-zinc-400 sm:text-base">
-          Catálogo de mi coleccion personal de figuras Tomy.
+          My personal catalogue of Tomy figures.
         </p>
 
-        <!-- Buscador -->
+        <!-- Search bar -->
         <div class="relative mt-4 max-w-md">
           <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-zinc-400 dark:text-zinc-500">
             <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
@@ -71,14 +71,14 @@ const initialEtiquetas = tags;
           <input
             type="text"
             id="buscador-principal"
-            placeholder="Buscar Pokémon o #001"
+            placeholder="Search Pokémon or #001"
             class="w-full rounded-lg border border-zinc-300/80 bg-zinc-100/60 py-2 pl-9 pr-9 text-sm text-zinc-900 placeholder-zinc-500 backdrop-blur-sm transition-all duration-200 focus:border-amber-500/70 focus:bg-white focus:outline-none focus:ring-1 focus:ring-amber-500/50 dark:border-zinc-800/70 dark:bg-zinc-900/60 dark:text-zinc-100 dark:placeholder-zinc-400 dark:focus:border-amber-400/70 dark:focus:bg-zinc-900"
           />
           <button
             id="buscador-clear"
             class="absolute inset-y-0 right-0 hidden items-center pr-3 text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white"
             type="button"
-            aria-label="Limpiar búsqueda"
+            aria-label="Clear search"
           >
             <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
               <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -88,7 +88,7 @@ const initialEtiquetas = tags;
         </div>
       </header>
 
-      <!-- ids ocultos para JS de estadísticas -->
+      <!-- Hidden counters for JS -->
       <span id="total-count" class="hidden">0</span>
       <span id="visible-count" class="hidden">0</span>
       <span id="filter-count" class="hidden">0</span>
@@ -98,15 +98,15 @@ const initialEtiquetas = tags;
           <div
             id="generation-tabs"
             class="scrollbar-none flex flex-1 gap-2 overflow-x-auto"
-            aria-label="Filtro por generacion"
+            aria-label="Filter by generation"
           >
             <button
               class="tab-button shrink-0 rounded-lg border px-4 py-2 text-sm font-medium transition border-zinc-200 bg-zinc-100 text-zinc-700 hover:border-zinc-400 hover:bg-zinc-200 hover:text-zinc-900 dark:border-zinc-800 dark:bg-zinc-900/40 dark:text-zinc-400 dark:hover:border-zinc-600 dark:hover:bg-zinc-800/60 dark:hover:text-zinc-200"
               type="button"
               data-generation="all"
             >
-              <span class="block font-semibold">Todas</span>
-              <span class="block text-[10px] font-normal opacity-70">Todas</span>
+              <span class="block font-semibold">All</span>
+              <span class="block text-[10px] font-normal opacity-70">All</span>
             </button>
             {
               (() => {
@@ -130,7 +130,7 @@ const initialEtiquetas = tags;
             type="button"
             aria-expanded="false"
             aria-controls="filter-panel"
-            aria-label="Filtros"
+            aria-label="Filters"
           >
             <span class="grid h-5 w-5 place-items-center">
               <svg viewBox="0 0 24 24" class="h-5 w-5" aria-hidden="true">
@@ -143,7 +143,7 @@ const initialEtiquetas = tags;
                 ></path>
               </svg>
             </span>
-            <span class="hidden sm:inline">Filtros</span>
+            <span class="hidden sm:inline">Filters</span>
           </button>
           <div class="flex shrink-0">
             <ThemeToggle />
@@ -156,9 +156,9 @@ const initialEtiquetas = tags;
         >
           <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
 
-            <!-- Línea -->
+            <!-- Line -->
             <div>
-              <p class="mb-2 text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-400">Línea</p>
+              <p class="mb-2 text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-400">Line</p>
               <div id="linea-filters" class="flex flex-col gap-1.5">
                 <button
                   class="linea-filter rounded-lg border px-3 py-2 text-sm font-semibold transition text-left"
@@ -177,35 +177,35 @@ const initialEtiquetas = tags;
               </div>
             </div>
 
-            <!-- Atributos -->
+            <!-- Attributes -->
             <div>
-              <p class="mb-2 text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-400">Atributos</p>
+              <p class="mb-2 text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-400">Attributes</p>
               <div id="atributo-filters" class="flex flex-col gap-1.5">
-                <button class="atributo-filter rounded-lg border px-3 py-2 text-sm font-semibold transition text-left" type="button" data-atributo="brillante">Brillante / Pearl</button>
+                <button class="atributo-filter rounded-lg border px-3 py-2 text-sm font-semibold transition text-left" type="button" data-atributo="brillante">Pearl / Brillante</button>
                 <button class="atributo-filter rounded-lg border px-3 py-2 text-sm font-semibold transition text-left" type="button" data-atributo="shiny">Shiny / Variocolor</button>
-                <button class="atributo-filter rounded-lg border px-3 py-2 text-sm font-semibold transition text-left" type="button" data-atributo="clear">Translúcida / Clear</button>
-                <button class="atributo-filter rounded-lg border px-3 py-2 text-sm font-semibold transition text-left" type="button" data-atributo="con-base">Con Base / Peana / Diorama</button>
+                <button class="atributo-filter rounded-lg border px-3 py-2 text-sm font-semibold transition text-left" type="button" data-atributo="clear">Clear / Translucent</button>
+                <button class="atributo-filter rounded-lg border px-3 py-2 text-sm font-semibold transition text-left" type="button" data-atributo="con-base">With Base / Diorama</button>
               </div>
             </div>
 
-            <!-- Colección -->
+            <!-- Collection -->
             <div class="sm:col-span-2">
-              <p class="mb-2 text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-400">Colección</p>
+              <p class="mb-2 text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-400">Collection</p>
               <select
                 id="coleccion-select"
                 class="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm font-semibold text-zinc-900 focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500 dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-200 dark:focus:border-amber-400 dark:focus:ring-amber-400"
               >
-                <option value="">— Todas las colecciones —</option>
+                <option value="">— All collections —</option>
               </select>
               <!-- Hidden div kept for JS compatibility -->
               <div id="coleccion-filters" class="hidden"></div>
             </div>
 
-            <!-- Etiquetas -->
+            <!-- Tags -->
             <div class="sm:col-span-2">
-              <p class="mb-2 text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-400">Etiquetas</p>
+              <p class="mb-2 text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-400">Tags</p>
               <div id="etiqueta-filters" class="flex flex-wrap gap-1.5">
-                <!-- Se llenará dinámicamente con JavaScript -->
+                <!-- Filled dynamically by JavaScript -->
               </div>
             </div>
 
@@ -216,18 +216,18 @@ const initialEtiquetas = tags;
       <section class="mt-5 flex items-center justify-between gap-3">
         <div>
           <p id="active-label" class="text-sm font-medium text-zinc-700 dark:text-zinc-300">Gen 1</p>
-          <p id="active-subtitle" class="text-xs text-zinc-400">Mostrando figuras disponibles</p>
+          <p id="active-subtitle" class="text-xs text-zinc-400">Showing available figures</p>
         </div>
         <button
           id="reset-filters"
           class="hidden items-center gap-1.5 rounded-lg border border-zinc-300/80 bg-white/60 px-3 py-2 text-sm font-semibold text-zinc-500 shadow-lg shadow-zinc-900/10 backdrop-blur-sm transition-all duration-200 hover:border-zinc-400 hover:text-zinc-900 dark:border-zinc-700/80 dark:bg-zinc-900/60 dark:text-zinc-400 dark:shadow-black/30 dark:hover:border-zinc-500 dark:hover:text-white"
           type="button"
-          aria-label="Resetear filtros"
+          aria-label="Reset filters"
         >
           <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
             <path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"></path>
           </svg>
-          Resetear
+          Reset
         </button>
       </section>
 
@@ -241,9 +241,9 @@ const initialEtiquetas = tags;
         id="empty-state"
         class="mt-10 hidden rounded-lg border border-dashed border-zinc-300 bg-zinc-100/60 p-8 text-center dark:border-zinc-700 dark:bg-zinc-900/50"
       >
-        <p class="text-base font-semibold text-zinc-900 dark:text-white">No hay figuras para este filtro.</p>
+        <p class="text-base font-semibold text-zinc-900 dark:text-white">No figures match this filter.</p>
         <p class="mt-2 text-sm text-zinc-500 dark:text-zinc-400">
-          Cambia la generacion, la linea o los atributos para ver mas resultados.
+          Try changing the generation, line or attributes to see more results.
         </p>
       </section>
 
@@ -251,7 +251,7 @@ const initialEtiquetas = tags;
         id="loading-state"
         class="mt-10 rounded-lg border border-zinc-200 bg-white/70 p-8 text-center dark:border-zinc-800 dark:bg-zinc-900/70"
       >
-        <p class="text-sm font-medium text-zinc-700 dark:text-zinc-300">Cargando coleccion...</p>
+        <p class="text-sm font-medium text-zinc-700 dark:text-zinc-300">Loading collection...</p>
       </section>
     </main>
 
@@ -260,13 +260,13 @@ const initialEtiquetas = tags;
       class="fixed inset-0 z-50 hidden items-center justify-center bg-black/90 p-4 backdrop-blur-sm"
       role="dialog"
       aria-modal="true"
-      aria-label="Vista ampliada de la foto"
+      aria-label="Enlarged photo view"
     >
       <button
         id="lightbox-close"
         class="absolute right-4 top-4 z-10 grid h-11 w-11 place-items-center rounded-full border border-zinc-400 bg-white/90 text-2xl text-zinc-900 transition hover:border-zinc-600 dark:border-zinc-600 dark:bg-zinc-900/80 dark:text-white dark:hover:border-zinc-400"
         type="button"
-        aria-label="Cerrar"
+        aria-label="Close"
       >
         &times;
       </button>
@@ -275,7 +275,7 @@ const initialEtiquetas = tags;
         id="lightbox-prev"
         class="absolute left-2 top-1/2 z-10 hidden h-11 w-11 -translate-y-1/2 place-items-center rounded-full border border-zinc-400 bg-white/90 text-2xl text-zinc-900 transition hover:border-zinc-600 dark:border-zinc-600 dark:bg-zinc-900/80 dark:text-white dark:hover:border-zinc-400 sm:left-4"
         type="button"
-        aria-label="Foto anterior"
+        aria-label="Previous photo"
       >
         &#8249;
       </button>
@@ -284,7 +284,7 @@ const initialEtiquetas = tags;
         id="lightbox-next"
         class="absolute right-2 top-1/2 z-10 hidden h-11 w-11 -translate-y-1/2 place-items-center rounded-full border border-zinc-400 bg-white/90 text-2xl text-zinc-900 transition hover:border-zinc-600 dark:border-zinc-600 dark:bg-zinc-900/80 dark:text-white dark:hover:border-zinc-400 sm:right-4"
         type="button"
-        aria-label="Foto siguiente"
+        aria-label="Next photo"
       >
         &#8250;
       </button>
@@ -310,11 +310,11 @@ const initialEtiquetas = tags;
       // @ts-nocheck
       import { getFigurePhotos } from "../lib/figurePhotos";
       import {
-        figureMatchesAtributoFilters,
+        figureMatchesAttributeFilters,
         figureMatchesLineFilter,
-        getAtributoLabel,
-        getFigureAtributos,
-        getLineaLabel
+        getAttributeLabel,
+        getFigureAttributes,
+        getLineLabel
       } from "../lib/figureTaxonomy";
 
       function createSlug(text: string): string {
@@ -330,13 +330,13 @@ const initialEtiquetas = tags;
 
       const state = {
         figures: [],
-        colecciones: [],
-        etiquetas: [],
+        collections: [],
+        tags: [],
         generation: "1",
-        linea: null,
-        atributos: [],
-        coleccion: null,
-        etiquetasSeleccionadas: [],
+        line: null,
+        attributes: [],
+        collection: null,
+        selectedTags: [],
         search: "",
         lightbox: {
           photos: [],
@@ -350,8 +350,8 @@ const initialEtiquetas = tags;
       const loadingState = document.querySelector("#loading-state");
       const generationTabs = document.querySelector("#generation-tabs");
       const filterPanel = document.querySelector("#filter-panel");
-      const lineaFilters = document.querySelector("#linea-filters");
-      const atributoFilters = document.querySelector("#atributo-filters");
+      const lineFilters = document.querySelector("#linea-filters");
+      const attributeFilters = document.querySelector("#atributo-filters");
       const filterToggle = document.querySelector("#filter-toggle");
       const activeLabel = document.querySelector("#active-label");
       const activeSubtitle = document.querySelector("#active-subtitle");
@@ -365,8 +365,8 @@ const initialEtiquetas = tags;
       const lightboxClose = document.querySelector("#lightbox-close");
       const lightboxPrev = document.querySelector("#lightbox-prev");
       const lightboxNext = document.querySelector("#lightbox-next");
-      const buscadorPrincipal = document.querySelector("#buscador-principal");
-      const buscadorClear = document.querySelector("#buscador-clear");
+      const searchInput = document.querySelector("#buscador-principal");
+      const searchClear = document.querySelector("#buscador-clear");
       const resetFiltersBtn = document.querySelector("#reset-filters");
 
       const atributoClasses = {
@@ -382,7 +382,7 @@ const initialEtiquetas = tags;
       }
 
       function getActiveFilterCount() {
-        return (state.linea ? 1 : 0) + state.atributos.length + (state.coleccion ? 1 : 0) + state.etiquetasSeleccionadas.length;
+        return (state.line ? 1 : 0) + state.attributes.length + (state.collection ? 1 : 0) + state.selectedTags.length;
       }
 
       function escapeHtml(value) {
@@ -406,12 +406,12 @@ const initialEtiquetas = tags;
 
         return baseFigures.filter(
           (figure) =>
-            figureMatchesLineFilter(figure, state.linea) &&
-            figureMatchesAtributoFilters(figure, state.atributos) &&
-            (state.coleccion === null || figure.volumes?.collections?.id === state.coleccion) &&
-            (state.etiquetasSeleccionadas.length === 0 || 
-             state.etiquetasSeleccionadas.some(etiquetaId => 
-               figure.etiquetas?.includes(etiquetaId)
+            figureMatchesLineFilter(figure, state.line) &&
+            figureMatchesAttributeFilters(figure, state.attributes) &&
+            (state.collection === null || figure.volumes?.collections?.id === state.collection) &&
+            (state.selectedTags.length === 0 || 
+             state.selectedTags.some(tagId => 
+               figure.tagIds?.includes(tagId)
              )) &&
             (state.search === "" ||
               figure.pokemon?.full_names?.es?.toLowerCase().includes(state.search) ||
@@ -432,9 +432,9 @@ const initialEtiquetas = tags;
         });
       }
 
-      function renderLineaFilters() {
+      function renderLineFilters() {
         document.querySelectorAll(".linea-filter").forEach((button) => {
-          const isActive = state.linea === button.dataset.linea;
+          const isActive = state.line === button.dataset.linea;
           button.className = [
             "linea-filter text-left rounded-lg border px-3 py-2 text-sm font-semibold transition-all duration-200",
             isActive
@@ -444,9 +444,9 @@ const initialEtiquetas = tags;
         });
       }
 
-      function renderAtributoFilters() {
+      function renderAttributeFilters() {
         document.querySelectorAll(".atributo-filter").forEach((button) => {
-          const isActive = state.atributos.includes(button.dataset.atributo);
+          const isActive = state.attributes.includes(button.dataset.atributo);
           button.className = [
             "atributo-filter text-left rounded-lg border px-3 py-2 text-sm font-semibold transition-all duration-200",
             isActive
@@ -456,37 +456,37 @@ const initialEtiquetas = tags;
         });
       }
 
-      function renderColeccionFilters() {
+      function renderCollectionFilters() {
         const select = document.querySelector("#coleccion-select");
         if (!select) return;
-        const currentVal = state.coleccion ? String(state.coleccion) : "";
-        select.innerHTML = `<option value="">— Todas las colecciones —</option>` +
-          state.colecciones
+        const currentVal = state.collection ? String(state.collection) : "";
+        select.innerHTML = `<option value="">— All collections —</option>` +
+          state.collections
             .map((c) => `<option value="${c.id}" ${String(c.id) === currentVal ? "selected" : ""}>${escapeHtml(c.name)}</option>`)
             .join("");
         select.className = [
           "w-full rounded-lg border px-3 py-2 text-sm font-semibold transition focus:outline-none focus:ring-1",
-          state.coleccion
+          state.collection
             ? "border-amber-500 bg-amber-500/10 text-amber-700 focus:border-amber-500 focus:ring-amber-500/50 dark:border-amber-400 dark:bg-amber-400/10 dark:text-amber-300 dark:focus:border-amber-400 dark:focus:ring-amber-400/50"
             : "border-zinc-300 bg-white text-zinc-900 focus:border-amber-500 focus:ring-amber-500 dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-200 dark:focus:border-amber-400 dark:focus:ring-amber-400"
         ].join(" ");
       }
 
-      function renderEtiquetaFilters() {
-        const etiquetaFilters = document.querySelector("#etiqueta-filters");
-        etiquetaFilters.innerHTML = state.etiquetas
-          .map((etiqueta) => `
+      function renderTagFilters() {
+        const tagFilters = document.querySelector("#etiqueta-filters");
+        tagFilters.innerHTML = state.tags
+          .map((tag) => `
             <button
               class="etiqueta-filter rounded-lg border px-3 py-2 text-sm font-semibold transition"
               type="button"
-              data-etiqueta="${etiqueta.id}"
+              data-etiqueta="${tag.id}"
             >
-              ${escapeHtml(etiqueta.name)}
+              ${escapeHtml(tag.name)}
             </button>
           `)
           .join("");
         document.querySelectorAll(".etiqueta-filter").forEach((button) => {
-          const isActive = state.etiquetasSeleccionadas.includes(Number(button.dataset.etiqueta));
+          const isActive = state.selectedTags.includes(Number(button.dataset.etiqueta));
           button.className = [
             "etiqueta-filter rounded-lg border px-3 py-2 text-sm font-semibold transition-all duration-200",
             isActive
@@ -497,14 +497,14 @@ const initialEtiquetas = tags;
       }
 
       function hasActiveFilters() {
-        return state.linea !== null || state.atributos.length > 0 || state.coleccion !== null || state.etiquetasSeleccionadas.length > 0;
+        return state.line !== null || state.attributes.length > 0 || state.collection !== null || state.selectedTags.length > 0;
       }
 
       function renderFilterState() {
-        renderLineaFilters();
-        renderAtributoFilters();
-        renderColeccionFilters();
-        renderEtiquetaFilters();
+        renderLineFilters();
+        renderAttributeFilters();
+        renderCollectionFilters();
+        renderTagFilters();
         filterCount.textContent = String(getActiveFilterCount());
         if (resetFiltersBtn) {
           resetFiltersBtn.classList.toggle("hidden", !hasActiveFilters());
@@ -516,11 +516,11 @@ const initialEtiquetas = tags;
         return String(number).padStart(4, "0");
       }
 
-      function getColeccionVolumenText(figure) {
+      function getCollectionVolumeText(figure) {
         if (!figure.volumes?.collections) return "";
-        const coleccionNombre = figure.volumes.collections.name;
-        const volumenNum = figure.volumes.volume;
-        return `${coleccionNombre} · Vol. ${volumenNum}`;
+        const collectionName = figure.volumes.collections.name;
+        const volumeNum = figure.volumes.volume;
+        return `${collectionName} · Vol. ${volumeNum}`;
       }
 
       function getLightboxCaption(figure) {
@@ -540,7 +540,7 @@ const initialEtiquetas = tags;
 
         const photoCountBadge =
           photos.length > 1
-            ? `<span class="absolute bottom-2 right-2 rounded-md bg-black/65 px-2 py-1 text-[11px] font-bold text-white backdrop-blur-sm dark:bg-black/65 dark:text-white">${photos.length} fotos</span>`
+            ? `<span class="absolute bottom-2 right-2 rounded-md bg-black/65 px-2 py-1 text-[11px] font-bold text-white backdrop-blur-sm dark:bg-black/65 dark:text-white">${photos.length} photos</span>`
             : "";
 
         return `
@@ -608,45 +608,44 @@ const initialEtiquetas = tags;
 
         visibleCount.textContent = String(figures.length);
         
-        // MODIFICADO: Ajustamos dinámicamente el texto de los subtítulos según si estás buscando globalmente o no
         if (state.search) {
-          activeLabel.textContent = `Búsqueda: "${state.search}"`;
-          activeSubtitle.textContent = `Encontradas ${figures.length} figuras globalmente`;
+          activeLabel.textContent = `Search: "${state.search}"`;
+          activeSubtitle.textContent = `Found ${figures.length} figures`;
         } else {
-          activeLabel.textContent = state.generation === "all" ? "Todas las generaciones" : `Gen ${state.generation}`;
-          activeSubtitle.textContent = `${generationFigures.length} figuras en esta vista`;
+          activeLabel.textContent = state.generation === "all" ? "All generations" : `Gen ${state.generation}`;
+          activeSubtitle.textContent = `${generationFigures.length} figures in this view`;
         }
 
         emptyState.classList.toggle("hidden", figures.length > 0);
 
         catalogGrid.innerHTML = figures
           .map((figure) => {
-            const atributos = getFigureAtributos(figure);
+            const attributes = getFigureAttributes(figure);
             const maxBadges = 3;
-            const visibleAtributos = atributos.slice(0, Math.max(0, maxBadges - 1));
-            const overflowCount = atributos.length - visibleAtributos.length;
+            const visibleAttributes = attributes.slice(0, Math.max(0, maxBadges - 1));
+            const overflowCount = attributes.length - visibleAttributes.length;
 
-            const atributoBadges = visibleAtributos
-              .map((atributo) =>
-                `<span class="rounded-md border px-1.5 py-0.5 text-[10px] font-bold ${getAtributoClass(atributo)}">${escapeHtml(getAtributoLabel(atributo))}</span>`
+            const attributeBadges = visibleAttributes
+              .map((attribute) =>
+                `<span class="rounded-md border px-1.5 py-0.5 text-[10px] font-bold ${getAtributoClass(attribute)}">${escapeHtml(getAttributeLabel(attribute))}</span>`
               )
               .join("");
             const overflowBadge = overflowCount > 0
               ? `<span class="rounded-md border border-zinc-300 bg-zinc-200/70 px-1.5 py-0.5 text-[10px] font-bold text-zinc-600 dark:border-zinc-700 dark:bg-zinc-800/60 dark:text-zinc-400">+${overflowCount}</span>`
               : "";
-            const lineaBadge = `<span class="rounded-md border border-zinc-300 bg-zinc-200/70 px-1.5 py-0.5 text-[10px] font-bold text-zinc-700 dark:border-zinc-600 dark:bg-zinc-700/60 dark:text-zinc-300">${escapeHtml(getLineaLabel(figure.line))}</span>`;
+            const lineBadge = `<span class="rounded-md border border-zinc-300 bg-zinc-200/70 px-1.5 py-0.5 text-[10px] font-bold text-zinc-700 dark:border-zinc-600 dark:bg-zinc-700/60 dark:text-zinc-300">${escapeHtml(getLineLabel(figure.line))}</span>`;
             const image = renderPhotoArea(figure);
             const pokedexBadge = `<span class="absolute top-2 right-2 rounded-md bg-black/60 px-1.5 py-0.5 font-mono text-[10px] text-white backdrop-blur-sm dark:bg-black/60 dark:text-zinc-300">#${escapeHtml(formatPokedexNumber(figure.pokemon?.pokedex_number))}</span>`;
 
             const metaParts = [];
             if (figure.year) metaParts.push(escapeHtml(figure.year));
-            const coleccionText = getColeccionVolumenText(figure);
-            if (coleccionText) metaParts.push(escapeHtml(coleccionText));
+            const collectionText = getCollectionVolumeText(figure);
+            if (collectionText) metaParts.push(escapeHtml(collectionText));
             const metaLine = metaParts.length > 0
               ? `<p class="truncate text-xs font-medium text-zinc-500">${metaParts.join(" · ")}</p>`
               : "";
 
-            const figureName = escapeHtml(figure.pokemon?.full_names?.es) || `Figura #${escapeHtml(formatPokedexNumber(figure.pokemon?.pokedex_number))}`;
+            const figureName = escapeHtml(figure.pokemon?.full_names?.es) || `Figure #${escapeHtml(formatPokedexNumber(figure.pokemon?.pokedex_number))}`;
 
             return `
               <a
@@ -684,14 +683,14 @@ const initialEtiquetas = tags;
         totalCount.textContent = String(state.figures.length);
       }
 
-      async function loadColecciones() {
-        state.colecciones = window.__COLECCIONES__ || [];
-        renderColeccionFilters();
+      async function loadCollections() {
+        state.collections = window.__COLECCIONES__ || [];
+        renderCollectionFilters();
       }
 
-      async function loadEtiquetas() {
-        state.etiquetas = window.__ETIQUETAS__ || [];
-        renderEtiquetaFilters();
+      async function loadTags() {
+        state.tags = window.__ETIQUETAS__ || [];
+        renderTagFilters();
       }
 
       const STORAGE_KEY = "catalogState";
@@ -702,16 +701,16 @@ const initialEtiquetas = tags;
             STORAGE_KEY,
             JSON.stringify({
               generation: state.generation,
-              linea: state.linea,
-              atributos: state.atributos,
-              coleccion: state.coleccion,
-              etiquetasSeleccionadas: state.etiquetasSeleccionadas,
+              line: state.line,
+              attributes: state.attributes,
+              collection: state.collection,
+              selectedTags: state.selectedTags,
               search: state.search,
               scrollY: window.scrollY
             })
           );
         } catch (e) {
-          console.error("Error guardando estado:", e);
+          console.error("Error saving state:", e);
         }
       }
 
@@ -721,7 +720,7 @@ const initialEtiquetas = tags;
           if (!raw) return null;
           return JSON.parse(raw);
         } catch (e) {
-          console.error("Error cargando estado:", e);
+          console.error("Error loading state:", e);
           return null;
         }
       }
@@ -732,28 +731,28 @@ const initialEtiquetas = tags;
         } catch (e) {}
       }
 
-      buscadorPrincipal?.addEventListener("input", (event) => {
+      searchInput?.addEventListener("input", (event) => {
         state.search = event.target.value.toLowerCase().trim();
-        if (buscadorClear) {
-          buscadorClear.classList.toggle("hidden", state.search === "");
-          buscadorClear.classList.toggle("flex", state.search !== "");
+        if (searchClear) {
+          searchClear.classList.toggle("hidden", state.search === "");
+          searchClear.classList.toggle("flex", state.search !== "");
         }
         render();
       });
 
-      buscadorClear?.addEventListener("click", () => {
+      searchClear?.addEventListener("click", () => {
         state.search = "";
-        if (buscadorPrincipal) buscadorPrincipal.value = "";
-        buscadorClear.classList.add("hidden");
-        buscadorClear.classList.remove("flex");
+        if (searchInput) searchInput.value = "";
+        searchClear.classList.add("hidden");
+        searchClear.classList.remove("flex");
         render();
       });
 
       resetFiltersBtn?.addEventListener("click", () => {
-        state.linea = null;
-        state.atributos = [];
-        state.coleccion = null;
-        state.etiquetasSeleccionadas = [];
+        state.line = null;
+        state.attributes = [];
+        state.collection = null;
+        state.selectedTags = [];
         render();
       });
 
@@ -763,10 +762,10 @@ const initialEtiquetas = tags;
 
         state.generation = button.dataset.generation;
         
-        // Opcional: Limpiamos el buscador al cambiar explícitamente de pestaña de generación
-        if (state.search && buscadorPrincipal) {
+        // Clear the search when explicitly switching generation tab
+        if (state.search && searchInput) {
           state.search = "";
-          buscadorPrincipal.value = "";
+          searchInput.value = "";
         }
 
         render();
@@ -777,51 +776,51 @@ const initialEtiquetas = tags;
         filterToggle.setAttribute("aria-expanded", String(!isHidden));
       });
 
-      lineaFilters.addEventListener("click", (event) => {
+      lineFilters.addEventListener("click", (event) => {
         const button = event.target.closest("[data-linea]");
         if (!button) return;
 
-        const linea = button.dataset.linea;
-        state.linea = state.linea === linea ? null : linea;
+        const line = button.dataset.linea;
+        state.line = state.line === line ? null : line;
         render();
       });
 
-      atributoFilters.addEventListener("click", (event) => {
+      attributeFilters.addEventListener("click", (event) => {
         const button = event.target.closest("[data-atributo]");
         if (!button) return;
 
-        const atributo = button.dataset.atributo;
-        const index = state.atributos.indexOf(atributo);
+        const attribute = button.dataset.atributo;
+        const index = state.attributes.indexOf(attribute);
 
         if (index >= 0) {
-          state.atributos.splice(index, 1);
+          state.attributes.splice(index, 1);
         } else {
-          state.atributos.push(atributo);
+          state.attributes.push(attribute);
         }
 
         render();
       });
 
-      // Event listener para el select de colecciones
+      // Event listener for collection select
       document.querySelector("#coleccion-select")?.addEventListener("change", (event) => {
         const val = event.target.value;
-        state.coleccion = val ? Number(val) : null;
-        renderColeccionFilters();
+        state.collection = val ? Number(val) : null;
+        renderCollectionFilters();
         render();
       });
 
-      // Event listeners para filtros de etiquetas
+      // Event listeners for tag filters
       document.addEventListener("click", (event) => {
         const button = event.target.closest("[data-etiqueta]");
         if (!button) return;
 
-        const etiquetaId = Number(button.dataset.etiqueta);
-        const index = state.etiquetasSeleccionadas.indexOf(etiquetaId);
+        const tagId = Number(button.dataset.etiqueta);
+        const index = state.selectedTags.indexOf(tagId);
 
         if (index >= 0) {
-          state.etiquetasSeleccionadas.splice(index, 1);
+          state.selectedTags.splice(index, 1);
         } else {
-          state.etiquetasSeleccionadas.push(etiquetaId);
+          state.selectedTags.push(tagId);
         }
 
         render();
@@ -856,26 +855,26 @@ const initialEtiquetas = tags;
         const savedState = loadCatalogState();
         if (savedState) {
           state.generation = savedState.generation ?? state.generation;
-          state.linea = savedState.linea ?? null;
-          state.atributos = Array.isArray(savedState.atributos)
-            ? savedState.atributos
+          state.line = savedState.line ?? null;
+          state.attributes = Array.isArray(savedState.attributes)
+            ? savedState.attributes
             : [];
-          state.coleccion = savedState.coleccion ?? null;
-          state.etiquetasSeleccionadas = Array.isArray(savedState.etiquetasSeleccionadas)
-            ? savedState.etiquetasSeleccionadas
+          state.collection = savedState.collection ?? null;
+          state.selectedTags = Array.isArray(savedState.selectedTags)
+            ? savedState.selectedTags
             : [];
           state.search = typeof savedState.search === "string" ? savedState.search : "";
-          if (buscadorPrincipal) buscadorPrincipal.value = state.search;
-          if (buscadorClear) {
-            buscadorClear.classList.toggle("hidden", state.search === "");
-            buscadorClear.classList.toggle("flex", state.search !== "");
+          if (searchInput) searchInput.value = state.search;
+          if (searchClear) {
+            searchClear.classList.toggle("hidden", state.search === "");
+            searchClear.classList.toggle("flex", state.search !== "");
           }
           clearCatalogState();
         }
 
         loadFigures();
-        loadColecciones();
-        loadEtiquetas();
+        loadCollections();
+        loadTags();
         render();
 
         if (savedState && typeof savedState.scrollY === "number") {
