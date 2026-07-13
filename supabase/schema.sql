@@ -60,6 +60,21 @@ for delete
 to authenticated
 using (true);
 
+-- ------------------------------------------------------------
+-- Canonical line values + CHECK constraint
+-- (see also: migration-line-constraint.sql)
+-- Canonical values MUST match figureTaxonomy.js → LINES
+-- ------------------------------------------------------------
+update public.figures set line = 'tomy'   where line = 'moncolle';
+update public.figures set line = 't_arts' where line in ('tomy-arts', 'tomy_arts');
+
+alter table public.figures
+  drop constraint if exists figures_line_check;
+
+alter table public.figures
+  add constraint figures_line_check
+  check (line in ('tomy', 't_arts'));
+
 insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
 values (
   'fotos-figuras',

@@ -1,5 +1,9 @@
+// Canonical database values for the figures.line column.
+// These values MUST match the PostgreSQL CHECK constraint in schema.sql:
+//   CHECK (line IN ('tomy', 't_arts'))
+// Do not rename these values without running a database migration first.
 export const LINES = [
-  { value: "tomy", label: "Takara Tomy / Moncolle" },
+  { value: "tomy",   label: "Takara Tomy / Moncolle" },
   { value: "t_arts", label: "Takara Tomy Arts (T-Arts)" }
 ];
 
@@ -12,18 +16,21 @@ export const ATTRIBUTES = [
   { value: "con-base", label: "With Base / Diorama" }
 ];
 
+// Compatibility layer: normalises any historical alias or external value
+// to a canonical LINES value. The database CHECK constraint prevents new
+// aliases from being persisted, but this function keeps the frontend
+// resilient against legacy data, backups, or external imports.
 export function normalizeLine(value) {
-  const normalized = String(value ?? "").toLowerCase().trim();
-
-  if (normalized === "tomy" || normalized === "moncolle") {
-    return "tomy";
-  }
-
-  if (normalized === "t_arts" || normalized === "tomy-arts" || normalized === "tomyarts") {
-    return "t_arts";
-  }
-
-  return DEFAULT_LINE;
+  const v = String(value ?? "").toLowerCase().trim();
+  const ALIASES = {
+    tomy:      "tomy",
+    moncolle:  "tomy",
+    t_arts:    "t_arts",
+    "tomy-arts": "t_arts",
+    tomy_arts: "t_arts",
+    tomyarts:  "t_arts"
+  };
+  return ALIASES[v] ?? DEFAULT_LINE;
 }
 
 export function getLineLabel(value) {
