@@ -338,6 +338,8 @@ const initialEtiquetas = tags;
       // @ts-nocheck
       import { getFigurePhotos } from "../lib/figurePhotos";
       import {
+        LINES,
+        ATTRIBUTES,
         figureMatchesAttributeFilters,
         figureMatchesLineFilter,
         getAttributeLabel,
@@ -439,7 +441,7 @@ const initialEtiquetas = tags;
           (figure) =>
             figureMatchesLineFilter(figure, state.line) &&
             figureMatchesAttributeFilters(figure, state.attributes) &&
-            (state.collection === null || figure.volumes?.collections?.id === state.collection) &&
+            (state.collection === null || createSlug(figure.volumes?.collections?.name ?? "") === state.collection) &&
             (state.selectedTags.length === 0 || 
              state.selectedTags.some(tagId => 
                figure.tagIds?.includes(tagId)
@@ -490,10 +492,12 @@ const initialEtiquetas = tags;
       function renderCollectionFilters() {
         const select = document.querySelector("#coleccion-select");
         if (!select) return;
-        const currentVal = state.collection ? String(state.collection) : "";
         select.innerHTML = `<option value="">— All collections —</option>` +
           state.collections
-            .map((c) => `<option value="${c.id}" ${String(c.id) === currentVal ? "selected" : ""}>${escapeHtml(c.name)}</option>`)
+            .map((c) => {
+              const slug = createSlug(c.name);
+              return `<option value="${escapeHtml(slug)}" ${slug === state.collection ? "selected" : ""}>${escapeHtml(c.name)}</option>`;
+            })
             .join("");
         select.className = [
           "w-full rounded-lg border px-3 py-2 text-sm font-semibold transition focus:outline-none focus:ring-1",
@@ -706,6 +710,14 @@ const initialEtiquetas = tags;
         renderTabs();
         renderFilterState();
         renderCards();
+        writeStateToUrl();
+
+        if (import.meta.env.DEV) {
+          const roundTripped = readStateFromUrl();
+          const serialisable = ["generation", "line", "attributes", "collection", "selectedTags", "search"];
+          const ok = serialisable.every((k) => JSON.stringify(roundTripped[k]) === JSON.stringify(state[k]));
+          if (!ok) console.warn("[URL round-trip] invariant violated", { state, roundTripped });
+        }
       }
 
       async function loadFigures() {
@@ -724,42 +736,66 @@ const initialEtiquetas = tags;
         renderTagFilters();
       }
 
-      const STORAGE_KEY = "catalogState";
+      // --- URL state codec (canonical source of truth for filter state) ---
 
-      function saveCatalogState() {
-        try {
-          sessionStorage.setItem(
-            STORAGE_KEY,
-            JSON.stringify({
-              generation: state.generation,
-              line: state.line,
-              attributes: state.attributes,
-              collection: state.collection,
-              selectedTags: state.selectedTags,
-              search: state.search,
-              scrollY: window.scrollY
-            })
-          );
-        } catch (e) {
-          console.error("Error saving state:", e);
-        }
+      const VALID_GENERATIONS = new Set(["all", "1", "2", "3", "4", "5", "6", "7", "8", "9"]);
+      const VALID_LINES = new Set(LINES.map((l) => l.value));
+      const VALID_ATTRIBUTES = new Set(ATTRIBUTES.map((a) => a.value));
+
+      function writeStateToUrl() {
+        const p = new URLSearchParams();
+        p.set("gen", state.generation);
+        if (state.line)                      p.set("line", state.line);
+        if (state.attributes.length)         p.set("attr", [...state.attributes].sort().join(","));
+        if (state.collection)                p.set("col",  state.collection);
+        if (state.selectedTags.length)       p.set("tag",  [...state.selectedTags].sort((a, b) => a - b).join(","));
+        if (state.search)                    p.set("q",    state.search);
+        const newUrl = `?${p.toString()}`;
+        history.replaceState(null, "", newUrl);
       }
 
-      function loadCatalogState() {
-        try {
-          const raw = sessionStorage.getItem(STORAGE_KEY);
-          if (!raw) return null;
-          return JSON.parse(raw);
-        } catch (e) {
-          console.error("Error loading state:", e);
-          return null;
-        }
+      function readStateFromUrl() {
+        const p = new URLSearchParams(location.search);
+
+        const gen = (p.get("gen") ?? "1").trim();
+        const generation = VALID_GENERATIONS.has(gen) ? gen : "1";
+
+        const rawLine = (p.get("line") ?? "").toLowerCase().trim();
+        const line = VALID_LINES.has(rawLine) ? rawLine : null;
+
+        const rawAttrs = (p.get("attr") ?? "").toLowerCase().trim();
+        const attributes = rawAttrs
+          ? rawAttrs.split(",").filter((a) => VALID_ATTRIBUTES.has(a)).sort()
+          : [];
+
+        const rawCol = (p.get("col") ?? "").toLowerCase().trim();
+        const collection = rawCol || null;
+
+        const rawTags = (p.get("tag") ?? "").trim();
+        const knownTagIds = new Set(state.tags.map((t) => t.id));
+        const selectedTags = rawTags
+          ? rawTags.split(",").map(Number).filter((id) => !isNaN(id) && knownTagIds.has(id)).sort((a, b) => a - b)
+          : [];
+
+        const search = (p.get("q") ?? "").trim().toLowerCase();
+
+        return { generation, line, attributes, collection, selectedTags, search };
       }
 
-      function clearCatalogState() {
+      // --- scrollY persistence (sessionStorage — non-shareable, ephemeral only) ---
+
+      const SCROLL_KEY = "catalogScrollY";
+
+      function saveScrollY() {
+        try { sessionStorage.setItem(SCROLL_KEY, String(window.scrollY)); } catch (e) {}
+      }
+
+      function loadScrollY() {
         try {
-          sessionStorage.removeItem(STORAGE_KEY);
-        } catch (e) {}
+          const raw = sessionStorage.getItem(SCROLL_KEY);
+          sessionStorage.removeItem(SCROLL_KEY);
+          return raw !== null ? Number(raw) : null;
+        } catch (e) { return null; }
       }
 
       searchInput?.addEventListener("input", (event) => {
@@ -869,8 +905,8 @@ const initialEtiquetas = tags;
 
       // Event listener for collection select
       document.querySelector("#coleccion-select")?.addEventListener("change", (event) => {
-        const val = event.target.value;
-        state.collection = val ? Number(val) : null;
+        const val = event.target.value.trim();
+        state.collection = val || null;
         renderCollectionFilters();
         render();
       });
@@ -918,41 +954,37 @@ const initialEtiquetas = tags;
       });
 
       function init() {
-        const savedState = loadCatalogState();
-        if (savedState) {
-          state.generation = savedState.generation ?? state.generation;
-          state.line = savedState.line ?? null;
-          state.attributes = Array.isArray(savedState.attributes)
-            ? savedState.attributes
-            : [];
-          state.collection = savedState.collection ?? null;
-          state.selectedTags = Array.isArray(savedState.selectedTags)
-            ? savedState.selectedTags
-            : [];
-          state.search = typeof savedState.search === "string" ? savedState.search : "";
-          if (searchInput) searchInput.value = state.search;
-          if (searchClear) {
-            searchClear.classList.toggle("hidden", state.search === "");
-            searchClear.classList.toggle("flex", state.search !== "");
-          }
-          clearCatalogState();
-        }
-
         loadFigures();
         loadCollections();
         loadTags();
+
+        const fromUrl = readStateFromUrl();
+        state.generation   = fromUrl.generation;
+        state.line         = fromUrl.line;
+        state.attributes   = fromUrl.attributes;
+        state.collection   = fromUrl.collection;
+        state.selectedTags = fromUrl.selectedTags;
+        state.search       = fromUrl.search;
+
+        if (searchInput) searchInput.value = state.search;
+        if (searchClear) {
+          searchClear.classList.toggle("hidden", state.search === "");
+          searchClear.classList.toggle("flex", state.search !== "");
+        }
+
         render();
 
-        if (savedState && typeof savedState.scrollY === "number") {
+        const scrollY = loadScrollY();
+        if (scrollY !== null) {
           requestAnimationFrame(() => {
-            window.scrollTo({ top: savedState.scrollY, behavior: "instant" });
+            window.scrollTo({ top: scrollY, behavior: "instant" });
           });
         }
       }
 
       init();
 
-      window.addEventListener("beforeunload", saveCatalogState);
-      window.addEventListener("pagehide", saveCatalogState);
+      window.addEventListener("beforeunload", saveScrollY);
+      window.addEventListener("pagehide", saveScrollY);
     </script>
 </BaseLayout>
