@@ -12,17 +12,17 @@ import { figureMeta, addImage, absoluteImageUrl, figureSchema, breadcrumbSchema 
 export async function getStaticPaths() {
   const { figures } = await getCatalog();
 
-  return figures
-    .filter((fig: any) => fig.slug)
-    .map((fig: any) => ({
-      params: { slug: String(fig.slug) },
-    }));
+  // Same fallback as figure links (FigureCard, index cards, seo.ts):
+  // figures without a slug get a page at /figure/<id> so links never 404.
+  return figures.map((fig: any) => ({
+    params: { slug: String(fig.slug ?? fig.id) },
+  }));
 }
 
 const { slug } = Astro.params;
 
 const { figures, figureTags } = await getCatalog();
-const figure = figures.find((f: any) => f.slug === slug);
+const figure = figures.find((f: any) => String(f.slug ?? f.id) === slug);
 
 if (!figure) {
   return Astro.redirect("/404");
