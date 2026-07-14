@@ -129,6 +129,8 @@ The following files in the repository are the **authoritative sources of truth**
 | `supabase/migration-linea-atributos.sql` | Adds the `line` / attribute boolean columns to `figures` and their constraints. |
 | `supabase/migration-fotos-multiples.sql` | Adds the `images_urls` array column to `figures` for multi-photo support. |
 | `supabase/migration-anio-mfc.sql` | Adds the `year` and `mfc_id` columns to `figures`. |
+| `supabase/migration-backfill-figure-slugs.sql` | One-off backfill for missing `slug` values using the panel slug format. |
+| `supabase/migration-figure-slug-trigger-and-unique.sql` | Adds a trigger to auto-generate `slug`, backfills/deduplicates existing values, and enforces a unique index plus a non-empty CHECK constraint. |
 
 ### Applying a migration
 

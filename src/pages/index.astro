@@ -2,6 +2,7 @@
 import BaseLayout from "../components/BaseLayout.astro";
 import ThemeToggle from "../components/ThemeToggle.astro";
 import { getCatalog, getTagsForFigure } from "../lib/catalogCache";
+import { sortFigures } from "../lib/sortFigures";
 import { homeMeta, webSiteSchema } from "../lib/seo";
 
 const { figures: rawFigures, collections, tags, figureTags } = await getCatalog();
@@ -12,29 +13,15 @@ const schemas = webSiteSchema(siteUrl, seo.description);
 
 const figures = rawFigures.map((figure: any) => ({ ...figure }));
 
-const linePriority = (line: string): number => {
-  if (line === "tomy") return 0;
-  if (line === "t_arts") return 1;
-  return 2;
-};
-
 figures.forEach((figure: any) => {
   figure.tagIds = getTagsForFigure(figure.id, figureTags).map((tag: any) =>
     Number(tag.id)
   );
 });
 
-figures.sort((a: any, b: any) => {
-  const numA = a.pokemon?.pokedex_number ?? 0;
-  const numB = b.pokemon?.pokedex_number ?? 0;
-  if (numA !== numB) return numA - numB;
-  const lpA = linePriority(a.line);
-  const lpB = linePriority(b.line);
-  if (lpA !== lpB) return lpA - lpB;
-  return (a.visual_order ?? 0) - (b.visual_order ?? 0);
-});
+const sortedFigures = sortFigures(figures);
 
-const initialFigures = figures;
+const initialFigures = sortedFigures;
 const initialColecciones = collections;
 const initialEtiquetas = tags;
 ---
