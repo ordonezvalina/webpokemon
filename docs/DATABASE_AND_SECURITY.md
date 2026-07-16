@@ -26,7 +26,7 @@ All six application tables have RLS **enabled**. The table below reflects the cu
 | Table | RLS Enabled | Notes |
 |---|---|---|
 | `figures` | ✅ | Core catalogue entries. First table to receive RLS (defined in `schema.sql`). |
-| `collections` | ✅ | Groups of related volumes. |
+| `collections` | ✅ | Groups of related volumes. Now includes optional `release_year` / `release_month` columns for chronological public navigation. |
 | `volumes` | ✅ | Individual volumes within a collection. |
 | `pokemon` | ✅ | Pokémon reference data (Pokédex number, name, generation, form). |
 | `tags` | ✅ | User-defined tags applied to figures (e.g. "Special Edition"). |
@@ -131,6 +131,7 @@ The following files in the repository are the **authoritative sources of truth**
 | `supabase/migration-anio-mfc.sql` | Adds the `year` and `mfc_id` columns to `figures`. |
 | `supabase/migration-backfill-figure-slugs.sql` | One-off backfill for missing `slug` values using the panel slug format. |
 | `supabase/migration-figure-slug-trigger-and-unique.sql` | Adds a trigger to auto-generate `slug`, backfills/deduplicates existing values, and enforces a unique index plus a non-empty CHECK constraint. |
+| `supabase/migration-collection-release-dates.sql` | Adds optional `release_year` and `release_month` columns to `collections` for chronological ordering on the public site. |
 
 ### Applying a migration
 

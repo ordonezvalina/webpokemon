@@ -146,6 +146,19 @@ Navigation back to the catalogue uses a plain `<a href="/">` link, which trigger
 
 ---
 
+### `src/pages/collections.astro` — Collections Index
+
+A static overview page listing every collection as `CollectionCard` components.
+
+Responsible for:
+- Sorting collections chronologically (`release_year`, then `release_month`) using `sortCollections()`.
+- Computing per-collection metadata: lowest-volume cover image, figure count, volume count and involved lines (`tomy`, `t_arts` or both).
+- Generating SEO metadata and Schema.org `ItemList` structured data.
+
+The page is reachable from the main navigation via `SiteHeader`.
+
+---
+
 ### `src/pages/collection/[slug].astro` — Collection Index
 
 One static page per collection.
@@ -153,9 +166,10 @@ One static page per collection.
 Responsible for:
 - Listing all volumes of the collection as `VolumeCard` components.
 - Listing all figures belonging to any volume of that collection as `FigureCard` components.
+- Computing and rendering chronological previous/next collection navigation via `PrevNextNav`.
 - Generating SEO metadata and Schema.org `CollectionPage` structured data.
 
-Slug is derived at build time from the collection `name` field via `createSlug()`.
+Slug is derived at build time from the collection `name` field via `createSlug()`. Collection order is driven by the optional `release_year` / `release_month` columns; collections without a date are placed at the end and sorted alphabetically.
 
 ---
 
@@ -204,6 +218,7 @@ Unlike all other pages, this page makes **live Supabase queries in the browser**
 src/
 ├── lib/
 │   ├── catalogCache.ts      # getCatalog() — single build-time data source
+│   ├── collectionSort.ts    # sortCollections() — chronological ordering helper
 │   ├── figureTaxonomy.js    # LINES, ATTRIBUTES constants; label/filter helpers
 │   ├── figurePhotos.js      # getFigurePhotos(), MAX_PHOTOS
 │   ├── seo.ts               # SEO meta + Schema.org builders
@@ -212,6 +227,7 @@ src/
 ├── pages/
 │   ├── index.astro                              # Catalogue (main page)
 │   ├── figure/[slug].astro                      # Figure detail
+│   ├── collections.astro                        # Collections index
 │   ├── collection/[slug].astro                  # Collection index
 │   ├── collection/[slug]/volume/[numero].astro  # Volume detail
 │   ├── attribute/[slug].astro                   # Attribute filter page
@@ -219,12 +235,15 @@ src/
 │   └── robots.txt.ts                            # robots.txt generator
 └── components/
     ├── BaseLayout.astro      # HTML shell, SEO <head>, theme init
+    ├── SiteHeader.astro      # Main navigation header (Home, Collections, theme toggle)
     ├── Breadcrumb.astro      # Breadcrumb trail
     ├── BackLink.astro        # "Back to catalogue" link
     ├── FigureCard.astro      # Figure card (used in static list pages)
     ├── FigureBadges.astro    # Attribute + line badge strip
     ├── VolumeCard.astro      # Volume card (used in collection pages)
-    ├── CollectionNav.astro   # Prev/next volume navigation
+    ├── CollectionCard.astro  # Collection card (used on /collections)
+    ├── CollectionNav.astro   # Collection/volume membership chips
+    ├── PrevNextNav.astro     # Previous/next navigation arrows
     ├── ThemeToggle.astro     # Dark/light mode toggle button
     ├── EmptyState.astro      # Empty results placeholder
     └── JsonLd.astro          # JSON-LD <script> injector
