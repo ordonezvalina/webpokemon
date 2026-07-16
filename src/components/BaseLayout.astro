@@ -76,12 +76,21 @@ const twitterImage = twitter?.image ?? defaultOgImage;
     ))}
 
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <link rel="apple-touch-icon" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
+    <link rel="manifest" href="/manifest.webmanifest" />
 
     {schemas && <JsonLd schema={schemas} />}
   </head>
   <body class="antialiased">
     <SiteHeader showThemeToggle={showThemeToggle} />
     <slot />
+
+    <script is:inline>
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.register("/service-worker.js").catch((error) => {
+          console.error("Service worker registration failed:", error);
+        });
+      }
+    </script>
   </body>
 </html>
