@@ -39,7 +39,7 @@ function baseClass(attribute: string): string {
     const label = getAttributeLabel(attribute);
     const classes = baseClass(attribute) + (linkAttributes ? " hover:opacity-80 transition" : "");
     return linkAttributes ? (
-      <a href={`/attribute/${createSlug(attribute)}`} class={classes}>{label}</a>
+      <a href={`/attribute/${createSlug(attribute)}/`} class={classes}>{label}</a>
     ) : (
       <span class={classes}>{label}</span>
     );

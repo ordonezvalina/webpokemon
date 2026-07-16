@@ -7,6 +7,7 @@ const SITE_URL = process.env.PUBLIC_SITE_URL || "https://example.com";
 
 export default defineConfig({
   site: SITE_URL,
+  trailingSlash: "always",
   integrations: [
     sitemap({
       filter: (page) => !page.includes("/panel-secreto/")

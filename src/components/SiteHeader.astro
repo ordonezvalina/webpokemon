@@ -9,7 +9,7 @@ const { showThemeToggle = true } = Astro.props;
 
 const navLinks = [
   { label: "Home", href: "/" },
-  { label: "Collections", href: "/collections" },
+  { label: "Collections", href: "/collections/" },
 ];
 
 const currentPath = Astro.url.pathname;
@@ -20,7 +20,9 @@ const currentPath = Astro.url.pathname;
     <nav aria-label="Main navigation">
       <ul class="flex items-center gap-1 sm:gap-2">
         {navLinks.map((link) => {
-          const isActive = currentPath === link.href || currentPath.startsWith(`${link.href}/`);
+          const isActive =
+            currentPath === link.href ||
+            (link.href !== "/" && currentPath.startsWith(link.href));
           return (
             <li>
               <a

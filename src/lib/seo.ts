@@ -47,7 +47,7 @@ export function figureMeta(figure: any, siteUrl: string): SeoMeta {
   const description = truncateDescription(parts.join(" · ")) || DEFAULT_DESCRIPTION;
   const title = makeTitle(`${name} (${line})`);
 
-  return baseMeta(title, description, `/figure/${figure.slug ?? figure.id}`, siteUrl);
+  return baseMeta(title, description, `/figure/${figure.slug ?? figure.id}/`, siteUrl);
 }
 
 export function collectionMeta(collection: any, volumesCount: number, figuresCount: number, siteUrl: string): SeoMeta {
@@ -55,7 +55,7 @@ export function collectionMeta(collection: any, volumesCount: number, figuresCou
   const description = truncateDescription(
     `${collection.name}. Pokémon Tomy collection with ${volumesCount} volumes and ${figuresCount} figures. Browse the full catalogue.`
   );
-  return baseMeta(title, description, `/collection/${createSlug(collection.name)}`, siteUrl);
+  return baseMeta(title, description, `/collection/${createSlug(collection.name)}/`, siteUrl);
 }
 
 export function volumeMeta(collection: any, volume: any, figuresCount: number, siteUrl: string): SeoMeta {
@@ -65,7 +65,7 @@ export function volumeMeta(collection: any, volume: any, figuresCount: number, s
   const description = truncateDescription(
     `${collection.name} · ${subtitle}. ${figuresCount} Pokémon Tomy figures in this volume.`
   );
-  return baseMeta(title, description, `/collection/${createSlug(collection.name)}/volume/${volumeSlug}`, siteUrl);
+  return baseMeta(title, description, `/collection/${createSlug(collection.name)}/volume/${volumeSlug}/`, siteUrl);
 }
 
 export function collectionsMeta(collectionsCount: number, figuresCount: number, siteUrl: string): SeoMeta {
@@ -73,7 +73,7 @@ export function collectionsMeta(collectionsCount: number, figuresCount: number, 
   const description = truncateDescription(
     `Browse all Pokémon Tomy, Moncolle and T-Arts collections. ${collectionsCount} collections and ${figuresCount} figures organised chronologically.`
   );
-  return baseMeta(title, description, "/collections", siteUrl);
+  return baseMeta(title, description, "/collections/", siteUrl);
 }
 
 export function collectionsListSchema(
@@ -88,7 +88,7 @@ export function collectionsListSchema(
       "@type": "ListItem",
       position: index + 1,
       name: collection.name,
-      url: `${base}/collection/${collection.slug}`,
+      url: `${base}/collection/${collection.slug}/`,
       image: collection.coverImage ? { "@type": "ImageObject", contentUrl: collection.coverImage } : undefined,
     })),
   };
@@ -99,7 +99,7 @@ export function attributeMeta(label: string, slug: string, figuresCount: number,
   const description = truncateDescription(
     `${label}. ${figuresCount} Pokémon Tomy figures with this special attribute in the catalogue.`
   );
-  return baseMeta(title, description, `/attribute/${slug}`, siteUrl);
+  return baseMeta(title, description, `/attribute/${slug}/`, siteUrl);
 }
 
 export function homeMeta(figuresCount: number, siteUrl: string): SeoMeta {
@@ -227,7 +227,7 @@ export function figureSchema(figure: any, siteUrl: string, imageUrl?: string): S
     "@type": "Product",
     name,
     description: truncateDescription(figure.details || descriptionParts.join(" · ")),
-    url: `${siteUrl.replace(/\/$/, "")}/figure/${figure.slug ?? figure.id}`,
+    url: `${siteUrl.replace(/\/$/, "")}/figure/${figure.slug ?? figure.id}/`,
   };
 
   if (imageUrl) mainEntity.image = imageUrl;
@@ -257,7 +257,7 @@ export function collectionSchema(
   figuresCount: number,
   imageUrls?: string[]
 ): SchemaCollectionPage {
-  const url = `${siteUrl.replace(/\/$/, "")}/collection/${createSlug(collection.name)}`;
+  const url = `${siteUrl.replace(/\/$/, "")}/collection/${createSlug(collection.name)}/`;
   return {
     "@context": "https://schema.org",
     "@type": "CollectionPage",

@@ -55,7 +55,7 @@ const figuresWithTags = volumeFigures.map((f: any) => ({
 const siteUrl = Astro.site?.toString() || "https://example.com";
 const coverImageUrl = volume.cover_image ? absoluteImageUrl(siteUrl, volume.cover_image) : undefined;
 const breadcrumbItems = [
-  { label: collection.name, href: `/collection/${slug}` },
+  { label: collection.name, href: `/collection/${slug}/` },
   { label: `Vol. ${volume.volume}` }
 ];
 const seo = volumeMeta(collection, volume, figuresWithTags.length, siteUrl);
@@ -73,7 +73,7 @@ const schemas = [
 
     <header class="mb-5 flex flex-col gap-4 sm:mb-8 sm:flex-row sm:items-end sm:justify-between">
       <div class="space-y-2">
-        <BackLink href={`/collection/${slug}`} text={`Back to ${collection.name}`} />
+        <BackLink href={`/collection/${slug}/`} text={`Back to ${collection.name}`} />
         <h1 class="max-w-3xl text-4xl font-semibold leading-tight text-zinc-900 sm:text-6xl dark:text-white">
           Vol. {volume.volume}
         </h1>

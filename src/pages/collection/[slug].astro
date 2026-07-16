@@ -37,10 +37,10 @@ const nextCollection = currentCollectionIndex >= 0 && currentCollectionIndex < s
   : null;
 
 const prevNav = prevCollection
-  ? { href: `/collection/${createSlug(prevCollection.name)}`, label: prevCollection.name }
+  ? { href: `/collection/${createSlug(prevCollection.name)}/`, label: prevCollection.name }
   : null;
 const nextNav = nextCollection
-  ? { href: `/collection/${createSlug(nextCollection.name)}`, label: nextCollection.name }
+  ? { href: `/collection/${createSlug(nextCollection.name)}/`, label: nextCollection.name }
   : null;
 
 const collectionVolumes = volumes

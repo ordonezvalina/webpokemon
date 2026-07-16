@@ -36,7 +36,7 @@ const currentIndex = sortedFigures.findIndex((f: any) => f.id === figure.id);
 const prevFigure = currentIndex > 0 ? sortedFigures[currentIndex - 1] : null;
 const nextFigure = currentIndex >= 0 && currentIndex < sortedFigures.length - 1 ? sortedFigures[currentIndex + 1] : null;
 
-const figureHref = (fig: any) => `/figure/${String(fig.slug ?? fig.id)}`;
+const figureHref = (fig: any) => `/figure/${String(fig.slug ?? fig.id)}/`;
 
 const photos = getFigurePhotos(figure);
 const attributes = getFigureAttributes(figure);
@@ -48,9 +48,9 @@ const volumeSlug = volume?.name_eng ? createSlug(volume.name_eng) : String(volum
 
 const breadcrumbItems = [];
 if (collection) {
-  breadcrumbItems.push({ label: collection.name, href: `/collection/${collectionSlug}` });
+  breadcrumbItems.push({ label: collection.name, href: `/collection/${collectionSlug}/` });
   if (volume) {
-    breadcrumbItems.push({ label: `Vol. ${volume.volume}`, href: `/collection/${collectionSlug}/volume/${volumeSlug}` });
+    breadcrumbItems.push({ label: `Vol. ${volume.volume}`, href: `/collection/${collectionSlug}/volume/${volumeSlug}/` });
   }
 }
 breadcrumbItems.push({ label: figure.pokemon?.full_names?.es });
@@ -131,7 +131,7 @@ const schemas = [
         {attributes.length > 0 && (
           <div class="flex flex-wrap gap-1.5">
             {attributes.map((attr: string) => (
-              <a href={`/attribute/${createSlug(attr)}`} class="rounded-full bg-amber-100 border border-amber-300/60 px-3 py-0.5 text-xs font-semibold text-amber-800 hover:bg-amber-200/70 transition dark:bg-amber-300/10 dark:border-amber-300/30 dark:text-amber-300 dark:hover:bg-amber-300/20">
+              <a href={`/attribute/${createSlug(attr)}/`} class="rounded-full bg-amber-100 border border-amber-300/60 px-3 py-0.5 text-xs font-semibold text-amber-800 hover:bg-amber-200/70 transition dark:bg-amber-300/10 dark:border-amber-300/30 dark:text-amber-300 dark:hover:bg-amber-300/20">
                 {getAttributeLabel(attr)}
               </a>
             ))}
