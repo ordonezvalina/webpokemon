@@ -68,6 +68,32 @@ export function volumeMeta(collection: any, volume: any, figuresCount: number, s
   return baseMeta(title, description, `/collection/${createSlug(collection.name)}/volume/${volumeSlug}`, siteUrl);
 }
 
+export function collectionsMeta(collectionsCount: number, figuresCount: number, siteUrl: string): SeoMeta {
+  const title = makeTitle("Collections");
+  const description = truncateDescription(
+    `Browse all Pokémon Tomy, Moncolle and T-Arts collections. ${collectionsCount} collections and ${figuresCount} figures organised chronologically.`
+  );
+  return baseMeta(title, description, "/collections", siteUrl);
+}
+
+export function collectionsListSchema(
+  collections: { name: string; slug: string; figuresCount: number; coverImage?: string }[],
+  siteUrl: string
+): any {
+  const base = siteUrl.replace(/\/$/, "");
+  return {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    itemListElement: collections.map((collection, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      name: collection.name,
+      url: `${base}/collection/${collection.slug}`,
+      image: collection.coverImage ? { "@type": "ImageObject", contentUrl: collection.coverImage } : undefined,
+    })),
+  };
+}
+
 export function attributeMeta(label: string, slug: string, figuresCount: number, siteUrl: string): SeoMeta {
   const title = makeTitle(label);
   const description = truncateDescription(

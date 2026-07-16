@@ -7,6 +7,8 @@ import FigureCard from "../../components/FigureCard.astro";
 import EmptyState from "../../components/EmptyState.astro";
 import { getCatalog, getTagsForFigure } from "../../lib/catalogCache";
 import { createSlug } from "../../lib/slug";
+import { sortCollections } from "../../lib/collectionSort";
+import PrevNextNav from "../../components/PrevNextNav.astro";
 import { collectionMeta, collectionSchema, breadcrumbSchema, absoluteImageUrl, addImage } from "../../lib/seo";
 
 export async function getStaticPaths() {
@@ -26,6 +28,20 @@ const collection = collections.find((c: any) => createSlug(c.name) === slug);
 if (!collection) {
   return Astro.redirect("/404");
 }
+
+const sortedCollections = sortCollections(collections);
+const currentCollectionIndex = sortedCollections.findIndex((c: any) => c.id === collection.id);
+const prevCollection = currentCollectionIndex > 0 ? sortedCollections[currentCollectionIndex - 1] : null;
+const nextCollection = currentCollectionIndex >= 0 && currentCollectionIndex < sortedCollections.length - 1
+  ? sortedCollections[currentCollectionIndex + 1]
+  : null;
+
+const prevNav = prevCollection
+  ? { href: `/collection/${createSlug(prevCollection.name)}`, label: prevCollection.name }
+  : null;
+const nextNav = nextCollection
+  ? { href: `/collection/${createSlug(nextCollection.name)}`, label: nextCollection.name }
+  : null;
 
 const collectionVolumes = volumes
   .filter((v: any) => v.collection_id === collection.id)
@@ -74,6 +90,10 @@ const schemas = [
         </p>
       </div>
     </header>
+
+    <div class="mb-8">
+      <PrevNextNav prev={prevNav} next={nextNav} />
+    </div>
 
     {/* Collection volumes */}
     {collectionVolumes && collectionVolumes.length > 0 && (

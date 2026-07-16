@@ -1,0 +1,89 @@
+---
+import BaseLayout from "../components/BaseLayout.astro";
+import CollectionCard from "../components/CollectionCard.astro";
+import { getCatalog } from "../lib/catalogCache";
+import { createSlug } from "../lib/slug";
+import { sortCollections } from "../lib/collectionSort";
+import { normalizeLine } from "../lib/figureTaxonomy";
+import { collectionsMeta, collectionsListSchema, breadcrumbSchema } from "../lib/seo";
+
+const { figures, collections, volumes } = await getCatalog();
+
+const sortedCollections = sortCollections(collections).map((collection) => {
+  const collectionSlug = createSlug(collection.name);
+  const collectionVolumes = volumes
+    .filter((volume) => volume.collection_id === collection.id)
+    .sort((a, b) => (a.volume ?? 0) - (b.volume ?? 0));
+
+  const volumeIds = new Set(collectionVolumes.map((volume) => volume.id));
+  const collectionFigures = figures.filter((figure) => volumeIds.has(figure.volume_id));
+  const figureCount = collectionFigures.length;
+  const volumeCount = collectionVolumes.length;
+  const coverImage = collectionVolumes[0]?.cover_image;
+
+  const lineValues = new Set(
+    collectionFigures
+      .map((figure) => normalizeLine(figure.line))
+      .filter(Boolean)
+  );
+  const lines = Array.from(lineValues).sort();
+
+  return {
+    collection,
+    collectionSlug,
+    figureCount,
+    volumeCount,
+    coverImage,
+    lines,
+  };
+});
+
+const totalFigures = sortedCollections.reduce((sum, item) => sum + item.figureCount, 0);
+const siteUrl = Astro.site?.toString() || "https://example.com";
+const seo = collectionsMeta(sortedCollections.length, totalFigures, siteUrl);
+const schemas = [
+  collectionsListSchema(
+    sortedCollections.map((item) => ({
+      name: item.collection.name,
+      slug: item.collectionSlug,
+      figuresCount: item.figureCount,
+      coverImage: item.coverImage,
+    })),
+    siteUrl
+  ),
+  breadcrumbSchema([{ label: "Collections" }], siteUrl),
+];
+---
+
+<BaseLayout title={seo.title} description={seo.description} seo={seo} schemas={schemas}>
+  <main class="mx-auto min-h-screen w-full max-w-7xl px-4 pb-24 pt-5 sm:px-6 lg:px-8">
+    <header class="mb-8 space-y-3">
+      <p class="text-xs font-bold uppercase tracking-[0.2em] text-amber-600 dark:text-amber-300">Pokémon Tomy Catalogue</p>
+      <h1 class="text-4xl font-semibold leading-tight text-zinc-900 sm:text-5xl dark:text-white">
+        Collections
+      </h1>
+      <p class="max-w-2xl text-base text-zinc-600 dark:text-zinc-400">
+        {sortedCollections.length} collections · {totalFigures} figures, organised chronologically.
+      </p>
+    </header>
+
+    {sortedCollections.length > 0 ? (
+      <section class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {sortedCollections.map((item) => (
+          <CollectionCard
+            collection={item.collection}
+            collectionSlug={item.collectionSlug}
+            figureCount={item.figureCount}
+            volumeCount={item.volumeCount}
+            coverImage={item.coverImage}
+            lines={item.lines}
+          />
+        ))}
+      </section>
+    ) : (
+      <p class="rounded-xl border border-zinc-200 bg-zinc-50 p-6 text-center text-zinc-600 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-400">
+        No collections found.
+      </p>
+    )}
+  </main>
+</BaseLayout>
