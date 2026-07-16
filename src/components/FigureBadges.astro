@@ -12,7 +12,7 @@ const { figure, linkAttributes = false, limit = 3 } = Astro.props;
 const allAttributes = getFigureAttributes(figure);
 const lineBadge = {
   label: getLineLabel(figure.line),
-  class: "rounded-md border border-zinc-300 bg-zinc-200/70 px-1.5 py-0.5 text-[10px] font-bold text-zinc-700 dark:border-zinc-600 dark:bg-zinc-700/60 dark:text-zinc-300"
+  class: "rounded-md border border-zinc-300 bg-zinc-200/70 px-1.5 py-0.5 text-xs font-bold text-zinc-700 dark:border-zinc-600 dark:bg-zinc-700/60 dark:text-zinc-300"
 };
 const visibleAttributes = allAttributes.slice(0, Math.max(0, limit - 1));
 const overflowCount = allAttributes.length - visibleAttributes.length;
@@ -29,7 +29,7 @@ function getAttributeClass(attribute: string): string {
 }
 
 function baseClass(attribute: string): string {
-  return `rounded-md border px-1.5 py-0.5 text-[10px] font-bold ${getAttributeClass(attribute)}`;
+  return `rounded-md border px-1.5 py-0.5 text-xs font-bold ${getAttributeClass(attribute)}`;
 }
 ---
 
@@ -45,7 +45,7 @@ function baseClass(attribute: string): string {
     );
   })}
   {overflowCount > 0 && (
-    <span class="rounded-md border border-zinc-300 bg-zinc-200/70 px-1.5 py-0.5 text-[10px] font-bold text-zinc-600 dark:border-zinc-700 dark:bg-zinc-800/60 dark:text-zinc-400">
+    <span class="rounded-md border border-zinc-300 bg-zinc-200/70 px-1.5 py-0.5 text-xs font-bold text-zinc-600 dark:border-zinc-700 dark:bg-zinc-800/60 dark:text-zinc-400">
       +{overflowCount}
     </span>
   )}

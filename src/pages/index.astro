@@ -93,7 +93,7 @@ const initialEtiquetas = tags;
               data-generation="all"
             >
               <span class="block font-semibold">All</span>
-              <span class="block text-[10px] font-normal opacity-70">All</span>
+              <span class="block text-xs font-normal opacity-70">All</span>
             </button>
             {
               (() => {
@@ -105,7 +105,7 @@ const initialEtiquetas = tags;
                     data-generation={String(generation)}
                   >
                     <span class="block font-semibold">Gen {generation}</span>
-                    <span class="block text-[10px] font-normal opacity-70">{regions[generation]}</span>
+                    <span class="block text-xs font-normal opacity-70">{regions[generation]}</span>
                   </button>
                 ));
               })()
@@ -145,7 +145,7 @@ const initialEtiquetas = tags;
 
             <!-- Line -->
             <div>
-              <p class="mb-2 text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-400">Line</p>
+              <p class="mb-2 text-xs font-bold uppercase tracking-[0.2em] text-zinc-400">Line</p>
               <div id="linea-filters" class="flex flex-col gap-1.5">
                 <button
                   class="linea-filter rounded-lg border px-3 py-2 text-sm font-semibold transition text-left"
@@ -166,7 +166,7 @@ const initialEtiquetas = tags;
 
             <!-- Attributes -->
             <div>
-              <p class="mb-2 text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-400">Attributes</p>
+              <p class="mb-2 text-xs font-bold uppercase tracking-[0.2em] text-zinc-400">Attributes</p>
               <div id="atributo-filters" class="flex flex-col gap-1.5">
                 <button class="atributo-filter rounded-lg border px-3 py-2 text-sm font-semibold transition text-left" type="button" data-atributo="brillante">Pearl / Brillante</button>
                 <button class="atributo-filter rounded-lg border px-3 py-2 text-sm font-semibold transition text-left" type="button" data-atributo="shiny">Shiny / Variocolor</button>
@@ -177,7 +177,7 @@ const initialEtiquetas = tags;
 
             <!-- Collection -->
             <div class="sm:col-span-2">
-              <p class="mb-2 text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-400">Collection</p>
+              <p class="mb-2 text-xs font-bold uppercase tracking-[0.2em] text-zinc-400">Collection</p>
               <select
                 id="coleccion-select"
                 class="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm font-semibold text-zinc-900 focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500 dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-200 dark:focus:border-amber-400 dark:focus:ring-amber-400"
@@ -190,7 +190,7 @@ const initialEtiquetas = tags;
 
             <!-- Tags -->
             <div class="sm:col-span-2">
-              <p class="mb-2 text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-400">Tags</p>
+              <p class="mb-2 text-xs font-bold uppercase tracking-[0.2em] text-zinc-400">Tags</p>
               <div id="etiqueta-filters" class="flex flex-wrap gap-1.5">
                 <!-- Filled dynamically by JavaScript -->
               </div>
@@ -562,7 +562,7 @@ const initialEtiquetas = tags;
 
         const photoCountBadge =
           photos.length > 1
-            ? `<span class="absolute bottom-2 right-2 rounded-md bg-black/65 px-2 py-1 text-[11px] font-bold text-white backdrop-blur-sm dark:bg-black/65 dark:text-white">${photos.length} photos</span>`
+            ? `<span class="absolute bottom-2 right-2 rounded-md bg-black/65 px-2 py-1 text-xs font-bold text-white backdrop-blur-sm dark:bg-black/65 dark:text-white">${photos.length} photos</span>`
             : "";
 
         return `
@@ -649,15 +649,15 @@ const initialEtiquetas = tags;
 
             const attributeBadges = visibleAttributes
               .map((attribute) =>
-                `<span class="rounded-md border px-1.5 py-0.5 text-[10px] font-bold ${getAtributoClass(attribute)}">${escapeHtml(getAttributeLabel(attribute))}</span>`
+                `<span class="rounded-md border px-1.5 py-0.5 text-xs font-bold ${getAtributoClass(attribute)}">${escapeHtml(getAttributeLabel(attribute))}</span>`
               )
               .join("");
             const overflowBadge = overflowCount > 0
-              ? `<span class="rounded-md border border-zinc-300 bg-zinc-200/70 px-1.5 py-0.5 text-[10px] font-bold text-zinc-600 dark:border-zinc-700 dark:bg-zinc-800/60 dark:text-zinc-400">+${overflowCount}</span>`
+              ? `<span class="rounded-md border border-zinc-300 bg-zinc-200/70 px-1.5 py-0.5 text-xs font-bold text-zinc-600 dark:border-zinc-700 dark:bg-zinc-800/60 dark:text-zinc-400">+${overflowCount}</span>`
               : "";
-            const lineBadge = `<span class="rounded-md border border-zinc-300 bg-zinc-200/70 px-1.5 py-0.5 text-[10px] font-bold text-zinc-700 dark:border-zinc-600 dark:bg-zinc-700/60 dark:text-zinc-300">${escapeHtml(getLineLabel(figure.line))}</span>`;
+            const lineBadge = `<span class="rounded-md border border-zinc-300 bg-zinc-200/70 px-1.5 py-0.5 text-xs font-bold text-zinc-700 dark:border-zinc-600 dark:bg-zinc-700/60 dark:text-zinc-300">${escapeHtml(getLineLabel(figure.line))}</span>`;
             const image = renderPhotoArea(figure);
-            const pokedexBadge = `<span class="absolute top-2 right-2 rounded-md bg-black/60 px-1.5 py-0.5 font-mono text-[10px] text-white backdrop-blur-sm dark:bg-black/60 dark:text-zinc-300">#${escapeHtml(formatPokedexNumber(figure.pokemon?.pokedex_number))}</span>`;
+            const pokedexBadge = `<span class="absolute top-2 right-2 rounded-md bg-black/60 px-1.5 py-0.5 font-mono text-xs text-white backdrop-blur-sm dark:bg-black/60 dark:text-zinc-300">#${escapeHtml(formatPokedexNumber(figure.pokemon?.pokedex_number))}</span>`;
 
             const metaParts = [];
             if (figure.year) metaParts.push(escapeHtml(figure.year));
