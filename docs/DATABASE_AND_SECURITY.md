@@ -26,8 +26,8 @@ All six application tables have RLS **enabled**. The table below reflects the cu
 | Table | RLS Enabled | Notes |
 |---|---|---|
 | `figures` | ✅ | Core catalogue entries. First table to receive RLS (defined in `schema.sql`). |
-| `collections` | ✅ | Groups of related volumes. Now includes optional `release_year` / `release_month` columns for chronological public navigation. |
-| `volumes` | ✅ | Individual volumes within a collection. |
+| `collections` | ✅ | Groups of related releases. Has `name`, optional `description` and `created_at`. |
+| `releases` | ✅ | Individual releases within a collection. Has `number` (optional), `name` (optional), `release_date`, `cover_image`, optional `description` and `created_at`. |
 | `pokemon` | ✅ | Pokémon reference data (Pokédex number, name, generation, form). |
 | `tags` | ✅ | User-defined tags applied to figures (e.g. "Special Edition"). |
 | `figure_tags` | ✅ | Many-to-many join table linking figures to tags. |
@@ -51,7 +51,7 @@ using (true);
 ```
 
 - **Who:** Both the `anon` role and the `authenticated` role.
-- **Why:** The Astro static build runs at deploy time using the public `anon` key. All five parallel `getCatalog()` queries (figures, collections, volumes, tags, figure_tags) must succeed without authentication. The catalogue and all detail pages are read-only by design.
+- **Why:** The Astro static build runs at deploy time using the public `anon` key. All five parallel `getCatalog()` queries (figures, collections, releases, tags, figure_tags) must succeed without authentication. The catalogue and all detail pages are read-only by design.
 - **Condition:** `using (true)` — no row-level filter; all rows in the table are visible.
 
 ---
@@ -114,7 +114,7 @@ using (true);
 | UPDATE | ❌ Blocked | ✅ Allowed |
 | DELETE | ❌ Blocked | ✅ Allowed |
 
-This matrix applies identically to all six tables: `figures`, `collections`, `volumes`, `pokemon`, `tags`, and `figure_tags`.
+This matrix applies identically to all six tables: `figures`, `collections`, `releases`, `pokemon`, `tags`, and `figure_tags`.
 
 ---
 
@@ -125,13 +125,15 @@ The following files in the repository are the **authoritative sources of truth**
 | File | Purpose |
 |---|---|
 | `supabase/schema.sql` | Full database schema: table definitions, indexes, RLS activation, all policies for tables and storage. Re-runnable (`drop policy if exists` guards). |
-| `supabase/migration-rls-all-tables.sql` | Standalone migration that enables RLS and creates the four policies on `collections`, `volumes`, `pokemon`, `tags`, and `figure_tags`. Safe to re-run. |
+| `supabase/migration-rls-all-tables.sql` | Standalone migration that enables RLS and creates the four policies on `collections`, `releases`, `pokemon`, `tags`, and `figure_tags`. Safe to re-run. |
+| `supabase/migration-rename-volumes-to-releases-up.sql` | Renames `volumes` → `releases`, migrates collection dates into `release_date`, renames `figures.volume_id` → `figures.release_id`, and updates RLS policies. |
+| `supabase/migration-rename-volumes-to-releases-down.sql` | Reverts the above migration back to the original `volumes` schema. Run only if you need to undo. |
 | `supabase/migration-linea-atributos.sql` | Adds the `line` / attribute boolean columns to `figures` and their constraints. |
 | `supabase/migration-fotos-multiples.sql` | Adds the `images_urls` array column to `figures` for multi-photo support. |
 | `supabase/migration-anio-mfc.sql` | Adds the `year` and `mfc_id` columns to `figures`. |
 | `supabase/migration-backfill-figure-slugs.sql` | One-off backfill for missing `slug` values using the panel slug format. |
 | `supabase/migration-figure-slug-trigger-and-unique.sql` | Adds a trigger to auto-generate `slug`, backfills/deduplicates existing values, and enforces a unique index plus a non-empty CHECK constraint. |
-| `supabase/migration-collection-release-dates.sql` | Adds optional `release_year` and `release_month` columns to `collections` for chronological ordering on the public site. |
+| `supabase/migration-collection-release-dates.sql` | (Deprecated) Added optional `release_year` and `release_month` columns to `collections`. Superseded by `migration-rename-volumes-to-releases-up.sql`. |
 
 ### Applying a migration
 

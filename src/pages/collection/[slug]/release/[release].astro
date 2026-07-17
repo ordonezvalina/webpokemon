@@ -6,27 +6,37 @@ import FigureCard from "../../../../components/FigureCard.astro";
 import EmptyState from "../../../../components/EmptyState.astro";
 import { getCatalog, getTagsForFigure } from "../../../../lib/catalogCache";
 import { createSlug } from "../../../../lib/slug";
-import { volumeMeta, collectionSchema, breadcrumbSchema, absoluteImageUrl, addImage } from "../../../../lib/seo";
+import { releaseMeta, collectionSchema, breadcrumbSchema, absoluteImageUrl, addImage } from "../../../../lib/seo";
+
+function releaseLabel(release: any): string {
+  const number = release.number;
+  const name = release.name;
+
+  if (number != null && !name) return `Release ${number}`;
+  if (!number && name) return name;
+  if (number != null && name) return `Release ${number} - ${name}`;
+  return "Release";
+}
 
 export async function getStaticPaths() {
-  const { collections, volumes } = await getCatalog();
+  const { collections, releases } = await getCatalog();
 
-  return volumes.map((vol: any) => {
-    const col = collections.find((c: any) => c.id === vol.collection_id);
+  return releases.map((rel: any) => {
+    const col = collections.find((c: any) => c.id === rel.collection_id);
     const collectionSlug = createSlug(col?.name ?? "");
-    const volumeSlug = vol.name_eng ? createSlug(vol.name_eng) : String(vol.volume);
+    const releaseSlug = rel.name ? createSlug(rel.name) : String(rel.number ?? "");
     return {
       params: {
         slug: collectionSlug,
-        numero: volumeSlug
+        release: releaseSlug
       },
     };
   });
 }
 
-const { slug, numero } = Astro.params;
+const { slug, release: releaseParam } = Astro.params;
 
-const { figures, collections, volumes, figureTags } = await getCatalog();
+const { figures, collections, releases, figureTags } = await getCatalog();
 
 const collection = collections.find((c: any) => createSlug(c.name) === slug);
 
@@ -34,31 +44,31 @@ if (!collection) {
   return Astro.redirect("/404");
 }
 
-const volume = volumes.find((v: any) => {
-  const volumeSlug = v.name_eng ? createSlug(v.name_eng) : String(v.volume);
-  return v.collection_id === collection.id && volumeSlug === numero;
+const release = releases.find((r: any) => {
+  const releaseSlug = r.name ? createSlug(r.name) : String(r.number ?? "");
+  return r.collection_id === collection.id && releaseSlug === releaseParam;
 });
 
-if (!volume) {
+if (!release) {
   return Astro.redirect("/404");
 }
 
-const volumeFigures = figures
-  .filter((f: any) => f.volume_id === volume.id)
+const releaseFigures = figures
+  .filter((f: any) => f.release_id === release.id)
   .sort((a: any, b: any) => (a.visual_order ?? 0) - (b.visual_order ?? 0));
 
-const figuresWithTags = volumeFigures.map((f: any) => ({
+const figuresWithTags = releaseFigures.map((f: any) => ({
   ...f,
   tags: getTagsForFigure(f.id, figureTags)
 }));
 
 const siteUrl = Astro.site?.toString() || "https://example.com";
-const coverImageUrl = volume.cover_image ? absoluteImageUrl(siteUrl, volume.cover_image) : undefined;
+const coverImageUrl = release.cover_image ? absoluteImageUrl(siteUrl, release.cover_image) : undefined;
 const breadcrumbItems = [
   { label: collection.name, href: `/collection/${slug}/` },
-  { label: `Vol. ${volume.volume}` }
+  { label: releaseLabel(release) }
 ];
-const seo = volumeMeta(collection, volume, figuresWithTags.length, siteUrl);
+const seo = releaseMeta(collection, release, figuresWithTags.length, siteUrl);
 const imageSeo = coverImageUrl ? addImage(seo, coverImageUrl) : seo;
 const schemas = [
   collectionSchema(collection, siteUrl, figuresWithTags.length, coverImageUrl ? [coverImageUrl] : undefined),
@@ -75,23 +85,23 @@ const schemas = [
       <div class="space-y-2">
         <BackLink href={`/collection/${slug}/`} text={`Back to ${collection.name}`} />
         <h1 class="max-w-3xl text-4xl font-semibold leading-tight text-zinc-900 sm:text-6xl dark:text-white">
-          Vol. {volume.volume}
+          {releaseLabel(release)}
         </h1>
         <p class="max-w-2xl text-sm leading-6 text-zinc-600 sm:text-base dark:text-zinc-400">
           {collection.name}
-          {volume.name_eng ? ` · ${volume.name_eng}` : ""} · {figuresWithTags.length} figures
+          {release.name ? ` · ${release.name}` : ""} · {figuresWithTags.length} figures
         </p>
       </div>
     </header>
 
-    {/* Volume cover image */}
-    {volume.cover_image && (
+    {/* Release cover image */}
+    {release.cover_image && (
       <section class="mb-8">
         <div class="max-w-xs overflow-hidden rounded-xl border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
           <img
             class="h-full w-full object-cover"
-            src={volume.cover_image}
-            alt={`Cover of volume ${volume.volume}${volume.name_eng ? ` · ${volume.name_eng}` : ""}`}
+            src={release.cover_image}
+            alt={`Cover of ${releaseLabel(release)}`}
             loading="lazy"
             decoding="async"
           />
@@ -99,9 +109,9 @@ const schemas = [
       </section>
     )}
 
-    {/* Volume figures */}
+    {/* Release figures */}
     <section>
-      <h2 class="mb-4 text-xl font-semibold text-zinc-900 dark:text-white">Figures in this volume</h2>
+      <h2 class="mb-4 text-xl font-semibold text-zinc-900 dark:text-white">Figures in this release</h2>
       {figuresWithTags.length > 0 ? (
         <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
           {figuresWithTags.map((fig: any) => (
@@ -109,7 +119,7 @@ const schemas = [
           ))}
         </div>
       ) : (
-        <EmptyState message="No figures in this volume." />
+        <EmptyState message="No figures in this release." />
       )}
     </section>
 

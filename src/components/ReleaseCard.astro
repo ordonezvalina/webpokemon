@@ -1,0 +1,46 @@
+---
+import { createSlug } from "../lib/slug";
+
+interface Props {
+  collectionSlug: string;
+  release: any;
+}
+
+const { collectionSlug, release } = Astro.props;
+
+function releaseLabel(release: any): string {
+  const number = release.number;
+  const name = release.name;
+
+  if (number != null && !name) return `Release ${number}`;
+  if (!number && name) return name;
+  if (number != null && name) return `Release ${number} - ${name}`;
+  return "Release";
+}
+
+const releaseSlug = release.name ? createSlug(release.name) : String(release.number ?? "");
+---
+
+<a
+  href={`/collection/${collectionSlug}/release/${releaseSlug}/`}
+  class="group block overflow-hidden rounded-lg border border-zinc-200 bg-white transition hover:border-zinc-400 hover:-translate-y-0.5 dark:border-zinc-800 dark:bg-zinc-900 dark:hover:border-zinc-600"
+>
+  <div class="aspect-[4/5] overflow-hidden bg-zinc-100 dark:bg-zinc-800">
+    {release.cover_image ? (
+      <img
+        class="h-full w-full object-cover transition group-hover:scale-105"
+        src={release.cover_image}
+        alt={`Cover of ${releaseLabel(release)}`}
+        loading="lazy"
+        decoding="async"
+      />
+    ) : (
+      <div class="grid h-full w-full place-items-center text-sm font-bold text-zinc-400 dark:text-zinc-600">
+        {releaseLabel(release)}
+      </div>
+    )}
+  </div>
+  <div class="p-3">
+    <p class="truncate text-sm font-semibold text-zinc-900 dark:text-white">{releaseLabel(release)}</p>
+  </div>
+</a>

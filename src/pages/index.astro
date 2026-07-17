@@ -428,7 +428,7 @@ const initialEtiquetas = tags;
           (figure) =>
             figureMatchesLineFilter(figure, state.line) &&
             figureMatchesAttributeFilters(figure, state.attributes) &&
-            (state.collection === null || createSlug(figure.volumes?.collections?.name ?? "") === state.collection) &&
+            (state.collection === null || createSlug(figure.releases?.collections?.name ?? "") === state.collection) &&
             (state.selectedTags.length === 0 || 
              state.selectedTags.some(tagId => 
                figure.tagIds?.includes(tagId)
@@ -538,11 +538,20 @@ const initialEtiquetas = tags;
         return String(number).padStart(4, "0");
       }
 
-      function getCollectionVolumeText(figure) {
-        if (!figure.volumes?.collections) return "";
-        const collectionName = figure.volumes.collections.name;
-        const volumeNum = figure.volumes.volume;
-        return `${collectionName} · Vol. ${volumeNum}`;
+      function getCollectionReleaseText(figure) {
+        if (!figure.releases?.collections) return "";
+        const collectionName = figure.releases.collections.name;
+        const releaseNumber = figure.releases.number;
+        const releaseName = figure.releases.name;
+        let releaseText = "";
+        if (releaseNumber != null && !releaseName) {
+          releaseText = `Release ${releaseNumber}`;
+        } else if (!releaseNumber && releaseName) {
+          releaseText = releaseName;
+        } else if (releaseNumber != null && releaseName) {
+          releaseText = `Release ${releaseNumber} - ${releaseName}`;
+        }
+        return `${collectionName} · ${releaseText}`;
       }
 
       function getLightboxCaption(figure) {
@@ -661,7 +670,7 @@ const initialEtiquetas = tags;
 
             const metaParts = [];
             if (figure.year) metaParts.push(escapeHtml(figure.year));
-            const collectionText = getCollectionVolumeText(figure);
+            const collectionText = getCollectionReleaseText(figure);
             if (collectionText) metaParts.push(escapeHtml(collectionText));
             const metaLine = metaParts.length > 0
               ? `<p class="truncate text-xs font-medium text-zinc-500">${metaParts.join(" · ")}</p>`

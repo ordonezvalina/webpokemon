@@ -3,7 +3,7 @@ import { supabase } from "./supabaseClient";
 export interface Catalog {
   figures: any[];
   collections: any[];
-  volumes: any[];
+  releases: any[];
   tags: any[];
   figureTags: any[];
 }
@@ -22,10 +22,11 @@ export async function getCatalog(): Promise<Catalog> {
         `
         *,
         pokemon(*),
-        volumes(
+        releases(
           id,
-          volume,
-          name_eng,
+          number,
+          name,
+          release_date,
           cover_image,
           collections(id, name)
         )
@@ -33,21 +34,21 @@ export async function getCatalog(): Promise<Catalog> {
       )
       .order("visual_order", { ascending: true }),
     supabase.from("collections").select("*").order("name", { ascending: true }),
-    supabase.from("volumes").select("*").order("volume", { ascending: true }),
+    supabase.from("releases").select("*").order("number", { ascending: true, nullsFirst: false }),
     supabase.from("tags").select("*").order("name", { ascending: true }),
     supabase.from("figure_tags").select("figure_id, tags(id, name)")
   ]).then(
-    ([figuresRes, collectionsRes, volumesRes, tagsRes, figureTagsRes]) => {
+    ([figuresRes, collectionsRes, releasesRes, tagsRes, figureTagsRes]) => {
       if (figuresRes.error) throw figuresRes.error;
       if (collectionsRes.error) throw collectionsRes.error;
-      if (volumesRes.error) throw volumesRes.error;
+      if (releasesRes.error) throw releasesRes.error;
       if (tagsRes.error) throw tagsRes.error;
       if (figureTagsRes.error) throw figureTagsRes.error;
 
       return {
         figures: figuresRes.data ?? [],
         collections: collectionsRes.data ?? [],
-        volumes: volumesRes.data ?? [],
+        releases: releasesRes.data ?? [],
         tags: tagsRes.data ?? [],
         figureTags: figureTagsRes.data ?? []
       };

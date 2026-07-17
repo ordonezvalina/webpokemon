@@ -5,14 +5,24 @@ interface Props {
   figure: any;
 }
 
+function releaseLabel(release: any): string {
+  const number = release.number;
+  const name = release.name;
+
+  if (number != null && !name) return `Release ${number}`;
+  if (!number && name) return name;
+  if (number != null && name) return `Release ${number} - ${name}`;
+  return "Release";
+}
+
 const { figure } = Astro.props;
-const collection = figure.volumes?.collections;
-const volume = figure.volumes;
+const collection = figure.releases?.collections;
+const release = figure.releases;
 
 if (!collection) return null;
 
 const collectionSlug = createSlug(collection.name);
-const volumeSlug = volume?.name_eng ? createSlug(volume.name_eng) : String(volume?.volume || "");
+const releaseSlug = release?.name ? createSlug(release.name) : String(release?.number ?? "");
 ---
 
 <div class="flex flex-wrap gap-1.5">
@@ -23,10 +33,9 @@ const volumeSlug = volume?.name_eng ? createSlug(volume.name_eng) : String(volum
     📁 {collection.name}
   </a>
   <a
-    href={`/collection/${collectionSlug}/volume/${volumeSlug}/`}
+    href={`/collection/${collectionSlug}/release/${releaseSlug}/`}
     class="inline-block rounded-full bg-blue-100 border border-blue-300/60 px-3 py-1 text-xs font-semibold text-blue-800 hover:bg-blue-200/70 transition dark:bg-blue-300/10 dark:border-blue-300/30 dark:text-blue-300 dark:hover:bg-blue-300/20"
   >
-    📖 Vol. {volume.volume}
-    {volume.name_eng ? ` · ${volume.name_eng}` : ""}
+    📖 {releaseLabel(release)}
   </a>
 </div>

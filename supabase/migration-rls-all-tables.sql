@@ -1,6 +1,6 @@
 -- ============================================================
 -- Migration: Enable RLS on all previously unrestricted tables
--- Tables: collections, volumes, pokemon, tags, figure_tags
+-- Tables: collections, releases, pokemon, tags, figure_tags
 -- Policy: public SELECT for anon + authenticated
 --         INSERT / UPDATE / DELETE for authenticated only
 -- ============================================================
@@ -40,35 +40,35 @@ to authenticated
 using (true);
 
 -- ------------------------------------------------------------
--- volumes
+-- releases
 -- ------------------------------------------------------------
-alter table public.volumes enable row level security;
+alter table public.releases enable row level security;
 
-drop policy if exists "Public read access to volumes" on public.volumes;
-create policy "Public read access to volumes"
-on public.volumes
+drop policy if exists "Public read access to releases" on public.releases;
+create policy "Public read access to releases"
+on public.releases
 for select
 to anon, authenticated
 using (true);
 
-drop policy if exists "Authenticated users can insert volumes" on public.volumes;
-create policy "Authenticated users can insert volumes"
-on public.volumes
+drop policy if exists "Authenticated users can insert releases" on public.releases;
+create policy "Authenticated users can insert releases"
+on public.releases
 for insert
 to authenticated
 with check (true);
 
-drop policy if exists "Authenticated users can update volumes" on public.volumes;
-create policy "Authenticated users can update volumes"
-on public.volumes
+drop policy if exists "Authenticated users can update releases" on public.releases;
+create policy "Authenticated users can update releases"
+on public.releases
 for update
 to authenticated
 using (true)
 with check (true);
 
-drop policy if exists "Authenticated users can delete volumes" on public.volumes;
-create policy "Authenticated users can delete volumes"
-on public.volumes
+drop policy if exists "Authenticated users can delete releases" on public.releases;
+create policy "Authenticated users can delete releases"
+on public.releases
 for delete
 to authenticated
 using (true);

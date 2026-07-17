@@ -41,16 +41,26 @@ const figureHref = (fig: any) => `/figure/${String(fig.slug ?? fig.id)}/`;
 const photos = getFigurePhotos(figure);
 const attributes = getFigureAttributes(figure);
 
-const collection = figure.volumes?.collections;
-const volume = figure.volumes;
+const collection = figure.releases?.collections;
+const release = figure.releases;
 const collectionSlug = collection ? createSlug(collection.name) : "";
-const volumeSlug = volume?.name_eng ? createSlug(volume.name_eng) : String(volume?.volume || "");
+const releaseSlug = release?.name ? createSlug(release.name) : String(release?.number ?? "");
+
+function releaseLabel(release: any): string {
+  const number = release.number;
+  const name = release.name;
+
+  if (number != null && !name) return `Release ${number}`;
+  if (!number && name) return name;
+  if (number != null && name) return `Release ${number} - ${name}`;
+  return "Release";
+}
 
 const breadcrumbItems = [];
 if (collection) {
   breadcrumbItems.push({ label: collection.name, href: `/collection/${collectionSlug}/` });
-  if (volume) {
-    breadcrumbItems.push({ label: `Vol. ${volume.volume}`, href: `/collection/${collectionSlug}/volume/${volumeSlug}/` });
+  if (release) {
+    breadcrumbItems.push({ label: releaseLabel(release), href: `/collection/${collectionSlug}/release/${releaseSlug}/` });
   }
 }
 breadcrumbItems.push({ label: figure.pokemon?.full_names?.es });

@@ -2,7 +2,7 @@
 import BaseLayout from "../../components/BaseLayout.astro";
 import Breadcrumb from "../../components/Breadcrumb.astro";
 import BackLink from "../../components/BackLink.astro";
-import VolumeCard from "../../components/VolumeCard.astro";
+import ReleaseCard from "../../components/ReleaseCard.astro";
 import FigureCard from "../../components/FigureCard.astro";
 import EmptyState from "../../components/EmptyState.astro";
 import { getCatalog, getTagsForFigure } from "../../lib/catalogCache";
@@ -21,7 +21,7 @@ export async function getStaticPaths() {
 
 const { slug } = Astro.params;
 
-const { figures, collections, volumes, figureTags } = await getCatalog();
+const { figures, collections, releases, figureTags } = await getCatalog();
 
 const collection = collections.find((c: any) => createSlug(c.name) === slug);
 
@@ -29,7 +29,7 @@ if (!collection) {
   return Astro.redirect("/404");
 }
 
-const sortedCollections = sortCollections(collections);
+const sortedCollections = sortCollections(collections, releases);
 const currentCollectionIndex = sortedCollections.findIndex((c: any) => c.id === collection.id);
 const prevCollection = currentCollectionIndex > 0 ? sortedCollections[currentCollectionIndex - 1] : null;
 const nextCollection = currentCollectionIndex >= 0 && currentCollectionIndex < sortedCollections.length - 1
@@ -43,14 +43,14 @@ const nextNav = nextCollection
   ? { href: `/collection/${createSlug(nextCollection.name)}/`, label: nextCollection.name }
   : null;
 
-const collectionVolumes = volumes
-  .filter((v: any) => v.collection_id === collection.id)
-  .sort((a: any, b: any) => (a.volume ?? 0) - (b.volume ?? 0));
+const collectionReleases = releases
+  .filter((r: any) => r.collection_id === collection.id)
+  .sort((a: any, b: any) => (a.number ?? 0) - (b.number ?? 0));
 
-const volumeIds = new Set(collectionVolumes.map((v: any) => v.id));
+const releaseIds = new Set(collectionReleases.map((r: any) => r.id));
 
 const collectionFigures = figures
-  .filter((f: any) => volumeIds.has(f.volume_id))
+  .filter((f: any) => releaseIds.has(f.release_id))
   .sort((a: any, b: any) => (a.visual_order ?? 0) - (b.visual_order ?? 0));
 
 const figuresWithTags = collectionFigures.map((f: any) => ({
@@ -59,14 +59,14 @@ const figuresWithTags = collectionFigures.map((f: any) => ({
 }));
 
 const siteUrl = Astro.site?.toString() || "https://example.com";
-const coverImageUrls = collectionVolumes
-  .map((v: any) => v.cover_image)
+const coverImageUrls = collectionReleases
+  .map((r: any) => r.cover_image)
   .filter((url): url is string => typeof url === "string")
   .map((url) => absoluteImageUrl(siteUrl, url))
   .filter((url): url is string => typeof url === "string");
 
 const breadcrumbItems = [{ label: collection.name }];
-const seo = collectionMeta(collection, collectionVolumes.length, figuresWithTags.length, siteUrl);
+const seo = collectionMeta(collection, collectionReleases.length, figuresWithTags.length, siteUrl);
 const imageSeo = coverImageUrls.length > 0 ? addImage(seo, coverImageUrls[0]) : seo;
 const schemas = [
   collectionSchema(collection, siteUrl, figuresWithTags.length, coverImageUrls),
@@ -86,7 +86,7 @@ const schemas = [
           {collection.name}
         </h1>
         <p class="max-w-2xl text-sm leading-6 text-zinc-600 sm:text-base dark:text-zinc-400">
-          {collectionVolumes?.length || 0} volumes · {figuresWithTags.length} figures
+          {collectionReleases?.length || 0} releases · {figuresWithTags.length} figures
         </p>
       </div>
     </header>
@@ -95,13 +95,13 @@ const schemas = [
       <PrevNextNav prev={prevNav} next={nextNav} />
     </div>
 
-    {/* Collection volumes */}
-    {collectionVolumes && collectionVolumes.length > 0 && (
+    {/* Collection releases */}
+    {collectionReleases && collectionReleases.length > 0 && (
       <section class="mb-8">
-        <h2 class="mb-4 text-xl font-semibold text-zinc-900 dark:text-white">Volumes</h2>
+        <h2 class="mb-4 text-xl font-semibold text-zinc-900 dark:text-white">Releases</h2>
         <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
-          {collectionVolumes.map((vol: any) => (
-            <VolumeCard collectionSlug={slug} volume={vol} />
+          {collectionReleases.map((rel: any) => (
+            <ReleaseCard collectionSlug={slug} release={rel} />
           ))}
         </div>
       </section>
@@ -113,7 +113,7 @@ const schemas = [
       {figuresWithTags.length > 0 ? (
         <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
           {figuresWithTags.map((fig: any) => (
-            <FigureCard figure={fig} showVolume />
+            <FigureCard figure={fig} showRelease />
           ))}
         </div>
       ) : (

@@ -15,9 +15,9 @@ All data is fetched through a single entry point: `getCatalog()`.
 
 ```
 getCatalog()
-  ├─ figures   (with nested pokemon + volumes + collections)
+  ├─ figures   (with nested pokemon + releases + collections)
   ├─ collections
-  ├─ volumes
+  ├─ releases
   ├─ tags
   └─ figure_tags  (join table figure ↔ tag)
 ```
@@ -52,7 +52,7 @@ async function loadTags()        { state.tags        = window.__ETIQUETAS__   ||
 
 ### How data reaches detail pages
 
-Every detail page (`figure/[slug].astro`, `collection/[slug].astro`, `collection/[slug]/volume/[numero].astro`, `attribute/[slug].astro`) uses the same pattern:
+Every detail page (`figure/[slug].astro`, `collection/[slug].astro`, `collection/[slug]/release/[release].astro`, `attribute/[slug].astro`) uses the same pattern:
 
 1. `getStaticPaths()` calls `getCatalog()` to enumerate all valid slugs and generate one static HTML file per entity.
 2. The page-level frontmatter calls `getCatalog()` again (hitting the cache) to look up the specific entity and build its props.
@@ -138,8 +138,8 @@ One static page per figure, routed by its `slug` column from the database.
 
 Responsible for:
 - Displaying all photos of the figure in a thumbnail gallery with a full-screen lightbox.
-- Showing Pokédex metadata, line, attributes (badges), collection/volume membership, and tags.
-- Rendering a breadcrumb trail (`Home → Collection → Volume → Figure name`).
+- Showing Pokédex metadata, line, attributes (badges), collection/release membership, and tags.
+- Rendering a breadcrumb trail (`Home → Collection → Release → Figure name`).
 - Generating full SEO metadata (`<title>`, `<meta description>`, Open Graph, Schema.org `ItemPage`).
 
 Navigation back to the catalogue uses a plain `<a href="/">` link, which triggers `pagehide` / `beforeunload` on the catalogue page before the user left it, enabling scroll and filter restoration on return.
@@ -151,8 +151,8 @@ Navigation back to the catalogue uses a plain `<a href="/">` link, which trigger
 A static overview page listing every collection as `CollectionCard` components.
 
 Responsible for:
-- Sorting collections chronologically (`release_year`, then `release_month`) using `sortCollections()`.
-- Computing per-collection metadata: lowest-volume cover image, figure count, volume count and involved lines (`tomy`, `t_arts` or both).
+- Sorting collections chronologically by earliest `release_date` using `sortCollections()`.
+- Computing per-collection metadata: first-release cover image, figure count, release count, derived date label and involved lines (`tomy`, `t_arts` or both).
 - Generating SEO metadata and Schema.org `ItemList` structured data.
 
 The page is reachable from the main navigation via `SiteHeader`.
@@ -164,25 +164,25 @@ The page is reachable from the main navigation via `SiteHeader`.
 One static page per collection.
 
 Responsible for:
-- Listing all volumes of the collection as `VolumeCard` components.
-- Listing all figures belonging to any volume of that collection as `FigureCard` components.
+- Listing all releases of the collection as `ReleaseCard` components.
+- Listing all figures belonging to any release of that collection as `FigureCard` components.
 - Computing and rendering chronological previous/next collection navigation via `PrevNextNav`.
 - Generating SEO metadata and Schema.org `CollectionPage` structured data.
 
-Slug is derived at build time from the collection `name` field via `createSlug()`. Collection order is driven by the optional `release_year` / `release_month` columns; collections without a date are placed at the end and sorted alphabetically.
+Slug is derived at build time from the collection `name` field via `createSlug()`. Collection order is driven by the earliest `release_date` of each collection's releases; collections without any release date are placed at the end and sorted alphabetically.
 
 ---
 
-### `src/pages/collection/[slug]/volume/[numero].astro` — Volume Detail
+### `src/pages/collection/[slug]/release/[release].astro` — Release Detail
 
-One static page per volume, nested under its collection slug.
+One static page per release, nested under its collection slug.
 
 Responsible for:
-- Displaying the volume cover image and listing all figures in that volume.
-- Rendering breadcrumb `Home → Collection → Vol. N`.
+- Displaying the release cover image and listing all figures in that release.
+- Rendering breadcrumb `Home → Collection → Release name/number → Figure name`.
 - Generating SEO metadata and Schema.org `CollectionPage` structured data.
 
-The `[numero]` param is derived from `volume.name_eng` (slugified) if present, otherwise from the numeric `volume.volume` field.
+The `[release]` param is derived from `release.name` (slugified) if present, otherwise from the numeric `release.number` field. Display labels follow the rule: `Release 2`, `Fire & Grass` or `Release 2 - Fire & Grass`.
 
 ---
 
@@ -204,7 +204,7 @@ A private, fully client-side admin interface. It is excluded from search engines
 Responsible for:
 - **Authentication** via Supabase Auth (`signInWithPassword`). All data operations are gated behind an authenticated session.
 - **Listing figures** fetched live from Supabase (not from the build-time cache) with real-time search.
-- **Creating and editing figures**: Pokémon selection by generation, line radio buttons, attribute checkboxes, collection/volume dropdowns, tag checkboxes, detail text, year, MFC ID.
+- **Creating and editing figures**: Pokémon selection by generation, line radio buttons, attribute checkboxes, collection/release dropdowns, tag checkboxes, detail text, year, MFC ID.
 - **Photo management**: selecting photos from the gallery or camera, compressing them client-side with `browser-image-compression` to WebP ≤ 150 KB, uploading to the Supabase Storage bucket `fotos-figuras`, and writing the resulting public URLs to the `images_urls` / `image_url` columns.
 - **Tag relations**: managing the `figure_tags` join table (delete all then re-insert selected) on each save.
 
@@ -229,7 +229,7 @@ src/
 │   ├── figure/[slug].astro                      # Figure detail
 │   ├── collections.astro                        # Collections index
 │   ├── collection/[slug].astro                  # Collection index
-│   ├── collection/[slug]/volume/[numero].astro  # Volume detail
+│   ├── collection/[slug]/release/[release].astro  # Release detail
 │   ├── attribute/[slug].astro                   # Attribute filter page
 │   ├── panel-secreto.astro                      # Admin panel
 │   └── robots.txt.ts                            # robots.txt generator
@@ -240,9 +240,9 @@ src/
     ├── BackLink.astro        # "Back to catalogue" link
     ├── FigureCard.astro      # Figure card (used in static list pages)
     ├── FigureBadges.astro    # Attribute + line badge strip
-    ├── VolumeCard.astro      # Volume card (used in collection pages)
+    ├── ReleaseCard.astro      # Release card (used in collection pages)
     ├── CollectionCard.astro  # Collection card (used on /collections)
-    ├── CollectionNav.astro   # Collection/volume membership chips
+    ├── CollectionNav.astro   # Collection/release membership chips
     ├── PrevNextNav.astro     # Previous/next navigation arrows
     ├── ThemeToggle.astro     # Dark/light mode toggle button
     ├── EmptyState.astro      # Empty results placeholder
