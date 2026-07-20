@@ -5,7 +5,7 @@ import { getCatalog } from "../lib/catalogCache";
 import { createSlug } from "../lib/slug";
 import { sortCollections, formatCollectionDate } from "../lib/collectionSort";
 import { normalizeLine } from "../lib/figureTaxonomy";
-import { collectionsMeta, collectionsListSchema, breadcrumbSchema } from "../lib/seo";
+import { collectionsMeta, collectionsListSchema, breadcrumbSchema, absoluteImageUrl } from "../lib/seo";
 
 const monthNames = [
   "January", "February", "March", "April", "May", "June",
@@ -54,7 +54,7 @@ const schemas = [
       name: item.collection.name,
       slug: item.collectionSlug,
       figuresCount: item.figureCount,
-      coverImage: item.coverImage,
+      coverImage: item.coverImage ? absoluteImageUrl(siteUrl, item.coverImage) : undefined,
     })),
     siteUrl
   ),

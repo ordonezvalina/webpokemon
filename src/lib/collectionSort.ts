@@ -63,15 +63,15 @@ export function formatCollectionDate(
   const first = new Date(dates[0]);
   const last = new Date(dates[dates.length - 1]);
 
-  const firstYear = first.getFullYear();
-  const lastYear = last.getFullYear();
+  const firstYear = first.getUTCFullYear();
+  const lastYear = last.getUTCFullYear();
 
   if (firstYear !== lastYear) {
     return `${firstYear}–${lastYear}`;
   }
 
-  const firstMonth = first.getMonth();
-  const lastMonth = last.getMonth();
+  const firstMonth = first.getUTCMonth();
+  const lastMonth = last.getUTCMonth();
 
   if (firstMonth !== lastMonth) {
     return `${monthNames[firstMonth]} ${firstYear}`;

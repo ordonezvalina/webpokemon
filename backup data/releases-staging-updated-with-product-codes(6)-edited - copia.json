@@ -1,0 +1,982 @@
+[
+  {
+    "collection_id": "1",
+    "release_number": 1,
+    "release_name": "Volume 1",
+    "release_name_jp": "ポケモン おうちで！りらくっしょんマスコット",
+    "release_date": "2022-10",
+    "description": "Pokémon relajados sobre cojines/cojines hechos a mano.. Includes: Pikachu, Riolu, Larvitar, Buneary, Teddiursa.",
+    "product_code": "Y060113",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "1",
+    "release_number": 2,
+    "release_name": "Volume 2",
+    "release_name_jp": "ポケモン おうちで！りらくっしょんマスコット Part2",
+    "release_date": "2023-05",
+    "description": "Pokémon relajados sobre cojines/cojines hechos a mano.. Includes: Eevee, Mankey, Scraggy, Mimikyu.",
+    "product_code": "",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "1",
+    "release_number": 3,
+    "release_name": "Volume 3",
+    "release_name_jp": "ポケモン おうちで！りらくっしょんマスコット Part3",
+    "release_date": "2024-02",
+    "description": "Pokémon relajados sobre cojines/cojines hechos a mano.. Includes: Piplup, Espurr, Sprigatito, Fidough.",
+    "product_code": "",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "1",
+    "release_number": 4,
+    "release_name": "Volume 4",
+    "release_name_jp": "ポケモン おうちで！りらくっしょんマスコット Part4",
+    "release_date": "2024-10",
+    "description": "Pokémon relajados sobre cojines/cojines hechos a mano.. Includes: Fuecoco, Gible, Pawmo, Mew.",
+    "product_code": "Y083051",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "1",
+    "release_number": 5,
+    "release_name": "Volume 5",
+    "release_name_jp": "ポケモン おうちで！りらくっしょんマスコット Part5",
+    "release_date": "2025-04",
+    "description": "Pokémon relajados sobre cojines/cojines hechos a mano.. Includes: Psyduck, Rowlet, Tinkatink, Tandemaus.",
+    "product_code": "",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "1",
+    "release_number": 6,
+    "release_name": "Volume 6",
+    "release_name_jp": "ポケモン おうちで！りらくっしょんマスコット Part6",
+    "release_date": "2025-08",
+    "description": "Pokémon relajados sobre cojines/cojines hechos a mano.. Includes: Umbreon, Cubone, Pancham, Alcremie.",
+    "product_code": "Y090998",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "1",
+    "release_number": "Party",
+    "release_name": "Party",
+    "release_name_jp": "ポケモン おうちで！りらくっしょんマスコット Party",
+    "release_date": "2026-01",
+    "description": "Pokémon relajados sobre cojines/cojines hechos a mano.. Includes: Pikachu, Eevee, Piplup, Mew.",
+    "product_code": "Y901973",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "2",
+    "release_number": 1,
+    "release_name": "Volume 1",
+    "release_name_jp": "ポケモン Yummy!スイーツマスコット",
+    "release_date": "2022-01",
+    "description": "Pokémon con dulces/postres; vasos/platos detallados.. Includes: Goomy, Alcremie, Ditto, Milcery.",
+    "product_code": "Y899799",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "2",
+    "release_number": 2,
+    "release_name": "Volume 2",
+    "release_name_jp": "ポケモン Yummy!スイーツマスコット2",
+    "release_date": "2022-06",
+    "description": "Pokémon con dulces/postres; vasos/platos detallados.. Includes: Psyduck, Spheal, Piplup, Gengar.",
+    "product_code": "Y899805",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "2",
+    "release_number": 3,
+    "release_name": "Volume 3",
+    "release_name_jp": "ポケモン Yummy!スイーツマスコット3",
+    "release_date": "2023-05",
+    "description": "Pokémon con dulces/postres; vasos/platos detallados.. Includes: Snom, Mew, Drifloon, Marill.",
+    "product_code": "Y066245",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "2",
+    "release_number": 4,
+    "release_name": "Volume 4",
+    "release_name_jp": "ポケモン Yummy!スイーツマスコット4",
+    "release_date": "2024-02",
+    "description": "Pokémon con dulces/postres; vasos/platos detallados.. Includes: Shellder, Cleffa, Fuecoco, Litwick.",
+    "product_code": "",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "2",
+    "release_number": 5,
+    "release_name": "Volume 5",
+    "release_name_jp": "ポケモン Yummy!スイーツマスコット5",
+    "release_date": "2024-08",
+    "description": "Pokémon con dulces/postres; vasos/platos detallados.. Includes: Ponyta (Galarian), Wooper (Paldean), Sprigatito, Swirlix.",
+    "product_code": "Y078880",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "2",
+    "release_number": 6,
+    "release_name": "Volume 6",
+    "release_name_jp": "ポケモン Yummy!スイーツマスコット6",
+    "release_date": "2024-12",
+    "description": "Pokémon con dulces/postres; vasos/platos detallados.. Includes: Pikachu, Quagsire, Jigglypuff, Tandemaus.",
+    "product_code": "Y085888",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "2",
+    "release_number": 7,
+    "release_name": "Volume 7",
+    "release_name_jp": "ポケモン Yummy!スイーツマスコット7",
+    "release_date": "2025-09",
+    "description": "Pokémon con dulces/postres; vasos/platos detallados.. Includes: Quaxly, Slowpoke, Rotom, Jirachi.",
+    "product_code": "Y902994",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "2",
+    "release_number": "—",
+    "release_name": "—",
+    "release_name_jp": "ポケモン Yummy!スイーツマスコット chocolate!",
+    "release_date": "2026-02",
+    "description": "Pokémon con dulces/postres; vasos/platos detallados.. Includes: Goomy, Alcremie, Ditto, Milcery.",
+    "product_code": "",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "3",
+    "release_number": 1,
+    "release_name": "Volume 1",
+    "release_name_jp": "肩ズンFig. ポケモン",
+    "release_date": "2021-07",
+    "description": "Pokémon apoyando la cabeza en el hombro de otro, dormidos.. Includes: Gengar, Pikachu, Rowlet, Piplup, Munchlax.",
+    "product_code": "Y895258",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "3",
+    "release_number": 2,
+    "release_name": "Volume 2",
+    "release_name_jp": "肩ズンFig. ポケモン2",
+    "release_date": "2022-05/06",
+    "description": "Pokémon apoyando la cabeza en el hombro de otro, dormidos.. Includes: Pichu, Plusle, Minun, Riolu, Jigglypuff.",
+    "product_code": "",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "3",
+    "release_number": 3,
+    "release_name": "Volume 3",
+    "release_name_jp": "肩ズンFig. ポケモン3",
+    "release_date": "2023-04",
+    "description": "Pokémon apoyando la cabeza en el hombro de otro, dormidos.. Includes: Psyduck, Slowpoke, Togepi, Dedenne, Pachirisu.",
+    "product_code": "",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "3",
+    "release_number": 5,
+    "release_name": "Volume 5",
+    "release_name_jp": "肩ズンFig. ポケモン5",
+    "release_date": "2024-03",
+    "description": "Pokémon apoyando la cabeza en el hombro de otro, dormidos.. Includes: Sprigatito, Marill, Cetoddle, Eevee, Espurr.",
+    "product_code": "Y078156",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "3",
+    "release_number": 6,
+    "release_name": "Volume 6",
+    "release_name_jp": "肩ズンFig. ポケモン6",
+    "release_date": "2024-09",
+    "description": "Pokémon apoyando la cabeza en el hombro de otro, dormidos.. Includes: Eevee, Marill, Cetoddle, Dedenne, Pachirisu.",
+    "product_code": "",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "3",
+    "release_number": 7,
+    "release_name": "Volume 7",
+    "release_name_jp": "肩ズンFig. ポケモン7",
+    "release_date": "2025-03",
+    "description": "Pokémon apoyando la cabeza en el hombro de otro, dormidos.. Includes: Scream Tail, Tatsugiri (Curly), Quaxly, Dedenne, Espurr.",
+    "product_code": "",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "3",
+    "release_number": 8,
+    "release_name": "Volume 8",
+    "release_name_jp": "肩ズンFig. ポケモン8",
+    "release_date": "2025-11",
+    "description": "Pokémon apoyando la cabeza en el hombro de otro, dormidos.. Includes: Snorlax, Larvitar, Charmander, Helioptile, Dedenne.",
+    "product_code": "",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "4",
+    "release_number": 1,
+    "release_name": "Volume 1",
+    "release_name_jp": "ポケモン まんぷくぱくぱくマスコット",
+    "release_date": "2019-06",
+    "description": "Pokémon comiendo bayas.. Includes: Pikachu, Munchlax, Rowlet, Togedemaru, Eevee.",
+    "product_code": "Y099588",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "4",
+    "release_number": 2,
+    "release_name": "Volume 2",
+    "release_name_jp": "ポケモン まんぷくぱくぱくマスコット おかわり",
+    "release_date": "2020-07",
+    "description": "Pokémon comiendo bayas.. Includes: Pikachu, Yamper, Dratini, Chespin, Gengar.",
+    "product_code": "Y884665",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "4",
+    "release_number": 3,
+    "release_name": "Volume 3",
+    "release_name_jp": "ポケモン まんぷくぱくぱくマスコット3",
+    "release_date": "2025-04",
+    "description": "Pokémon comiendo bayas.. Includes: Pikachu, Pachirisu, Toedscool, Sprigatito.",
+    "product_code": "Y088469",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "4",
+    "release_number": 4,
+    "release_name": "Volume 4",
+    "release_name_jp": "ポケモン まんぷくぱくぱくマスコット4",
+    "release_date": "2026-06",
+    "description": "Pokémon comiendo bayas.. Includes: Eevee, Riolu, Snorlax, Morpeko (Hangry Mode).",
+    "product_code": "",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "5",
+    "release_number": 1,
+    "release_name": "Volume 1",
+    "release_name_jp": "ポケモン みんなでアワアワマスコット",
+    "release_date": "2020-09",
+    "description": "Pokémon en la bañera/espuma.. Includes: Pikachu, Squirtle, Minccino, Mudkip, Slowbro.",
+    "product_code": "Y885594",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "5",
+    "release_number": 2,
+    "release_name": "Volume 2",
+    "release_name_jp": "てのひらモーメント ポケモン みんなでアワアワマスコット2",
+    "release_date": "2024-05",
+    "description": "Pokémon en la bañera/espuma.. Includes: Pikachu, Clodsire, Tatsugiri (Droopy), Goomy.",
+    "product_code": "Y078149",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "6",
+    "release_number": 1,
+    "release_name": "Volume 1",
+    "release_name_jp": "ポケモン すりすりマスコット",
+    "release_date": "2023-10",
+    "description": "Pokémon frotándose/acosando.. Includes: Pikachu, Dedenne, Espurr, Pachirisu.",
+    "product_code": "Y074516",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "6",
+    "release_number": 2,
+    "release_name": "Volume 2",
+    "release_name_jp": "ポケモン すりすりマスコット2",
+    "release_date": "2024-11",
+    "description": "Pokémon frotándose/acosando.. Includes: Pichu, Dedenne, Toxel, Yamper.",
+    "product_code": "Y082252",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "7",
+    "release_number": 1,
+    "release_name": "Volume 1",
+    "release_name_jp": "ポケモン ぎらぎら☆サンシャイン",
+    "release_date": "2022-07",
+    "description": "Verano, pelotas de playa, flotadores.. Includes: Pikachu, Popplio, Slowpoke, Rowlet, Pyukumuku.",
+    "product_code": "Y090981",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "7",
+    "release_number": 2,
+    "release_name": "Volume 2",
+    "release_name_jp": "ポケモン ぎらぎらサンシャイン-pastel beach-",
+    "release_date": "2023-06",
+    "description": "Verano, pelotas de playa, flotadores.. Includes: Pikachu, Totodile, Oshawott, Corsola, Froakie.",
+    "product_code": "Y071645",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "7",
+    "release_number": 3,
+    "release_name": "Volume 3",
+    "release_name_jp": "ポケモン ぎらぎらサンシャイン3",
+    "release_date": "2024-07",
+    "description": "Verano, pelotas de playa, flotadores.. Includes: Psyduck, Quaxly, Spheal, Wiglett.",
+    "product_code": "Y903311",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "7",
+    "release_number": 4,
+    "release_name": "Volume 4",
+    "release_name_jp": "ポケモン ぎらぎらサンシャイン4",
+    "release_date": "2025-06",
+    "description": "Verano, pelotas de playa, flotadores.. Includes: Squirtle, Piplup, Marill, Tatsugiri (Stretchy).",
+    "product_code": "",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "7",
+    "release_number": 5,
+    "release_name": "Volume 5",
+    "release_name_jp": "ポケモン ぎらぎらサンシャイン5",
+    "release_date": "2026-06",
+    "description": "Verano, pelotas de playa, flotadores.. Includes: Raichu (Alolan), Wooper, Manaphy, Mudkip.",
+    "product_code": "",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "8",
+    "release_number": 1,
+    "release_name": "Volume 1",
+    "release_name_jp": "ポケットモンスター わざすなっぷ しっぽをふる",
+    "release_date": "2022-01",
+    "description": "Pokémon usando movimientos.. Includes: Pikachu, Eevee, Squirtle, Yamper, Vulpix (Alolan).",
+    "product_code": "Y050435",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "8",
+    "release_number": 2,
+    "release_name": "Volume 2",
+    "release_name_jp": "ポケモン わざすなっぷ いろいろなわざ",
+    "release_date": "2023-03",
+    "description": "Pokémon usando movimientos.. Includes: Psyduck (Amnesia), Eevee (Charm), Jigglypuff (Sing), Teddiursa (Covet), Gengar (Lick).",
+    "product_code": "Y903328",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "8",
+    "release_number": "2 (Parte)",
+    "release_name": "2 (Parte)",
+    "release_name_jp": "ポケモン わざすなっぷ いろいろなわざ Part2",
+    "release_date": "2024-08",
+    "description": "Pokémon usando movimientos.. Includes: Gulpin (Swallow), Magikarp (Splash), Slowpoke (Yawn), Fidough (Tail Wag), Tandemaus (Population Bomb).",
+    "product_code": "Y078804",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "8",
+    "release_number": 3,
+    "release_name": "Volume 3",
+    "release_name_jp": "ポケモン わざすなっぷ いろいろなわざ Part3",
+    "release_date": "2026-07",
+    "description": "Pokémon usando movimientos.. Includes: Snorlax (Belly Drum), Piplup (Flatter), Stufful (Thrash), Phanpy (Defense Curl).",
+    "product_code": "",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "9",
+    "release_number": 1,
+    "release_name": "Volume 1",
+    "release_name_jp": "ポケモン カプセルアクト",
+    "release_date": "2018-04",
+    "description": "Figuras de acción con base de efecto.. Includes: Silvally, Pikachu, Nihilego, Golisopod.",
+    "product_code": "Y089695",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "9",
+    "release_number": "Movie 21",
+    "release_name": "Movie 21",
+    "release_name_jp": "ポケモン カプセルアクト MOVIE 21st ver.",
+    "release_date": "2018-07",
+    "description": "Figuras de acción con base de efecto.. Includes: Zeraora, Eevee, Pikachu, Lugia.",
+    "product_code": "Y865466",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "9",
+    "release_number": "New Adventure",
+    "release_name": "New Adventure",
+    "release_name_jp": "ポケモン カプセルアクト 新たな冒険編",
+    "release_date": "2024-08",
+    "description": "Figuras de acción con base de efecto.. Includes: Captain Pikachu, Sprigatito, Charizard, Ceruledge.",
+    "product_code": "Y078170",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "9",
+    "release_number": "Tri-Color",
+    "release_name": "Tri-Color",
+    "release_name_jp": "ポケモン カプセルアクト 三色の光彩",
+    "release_date": "2025-10",
+    "description": "Figuras de acción con base de efecto.. Includes: Meowscarada, Skeledirge, Quaquaval.",
+    "product_code": "",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "9",
+    "release_number": "Blue Wave",
+    "release_name": "Blue Wave",
+    "release_name_jp": "ポケモン カプセルアクト 蒼き波動",
+    "release_date": "2026-05",
+    "description": "Figuras de acción con base de efecto.. Includes: Lucario, Latios, Mega Charizard X.",
+    "product_code": "",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "10",
+    "release_number": "Sinnoh",
+    "release_name": "Sinnoh",
+    "release_name_jp": "ポケモン シンオウいっぱいコレクション",
+    "release_date": "2021-11",
+    "description": "Figuras en miniatura dentro de Poké Ball/contenedor.. Includes: Pikachu, Piplup, Pachirisu, Darkrai, Arceus.",
+    "product_code": "Y895678",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "10",
+    "release_number": "Paldea",
+    "release_name": "Paldea",
+    "release_name_jp": "ポケモン パルデアいっぱいコレクション",
+    "release_date": "2024",
+    "description": "Figuras en miniatura dentro de Poké Ball/contenedor.. Includes: Pikachu, Sprigatito, Tandemaus, Palafin, Tinkaton.",
+    "product_code": "Y074592",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "10",
+    "release_number": "Hogeta",
+    "release_name": "Hogeta",
+    "release_name_jp": "ポケモン ホゲータいっぱいコレクション",
+    "release_date": "2025-09",
+    "description": "Figuras en miniatura dentro de Poké Ball/contenedor.. Includes: Fuecoco (4 poses).",
+    "product_code": "Y094170",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "10",
+    "release_number": "Kanto",
+    "release_name": "Kanto",
+    "release_name_jp": "ポケモン カントーいっぱいコレクション",
+    "release_date": "2019-03",
+    "description": "Figuras en miniatura dentro de Poké Ball/contenedor.. Includes: Pikachu, Eevee, Charizard, Venusaur, Blastoise.",
+    "product_code": "Y094163",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "10",
+    "release_number": "Gengar",
+    "release_name": "Gengar",
+    "release_name_jp": "ゲンガーいっぱいコレクション",
+    "release_date": "2021-09",
+    "description": "Figuras en miniatura dentro de Poké Ball/contenedor.. Includes: Gengar (Gigantamax, Sleeping, Shadow Ball, Sad).",
+    "product_code": "Y895630",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "11",
+    "release_number": 1,
+    "release_name": "Volume 1",
+    "release_name_jp": "ポケモン ジオラマコレクト でんき＆みず",
+    "release_date": "2022-04",
+    "description": "Figuras con base de efecto tipo-clear para formar diorama.. Includes: Joltik, Toxel, Pikachu, Piplup, Totodile, Pyukumuku.",
+    "product_code": "Y050459",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "11",
+    "release_number": 2,
+    "release_name": "Volume 2",
+    "release_name_jp": "ポケモン ジオラマコレクト ほのお＆くさ",
+    "release_date": "2022-12",
+    "description": "Figuras con base de efecto tipo-clear para formar diorama.. Includes: Cyndaquil, Growlithe, Charmander, Bulbasaur, Turtwig, Whimsicott.",
+    "product_code": "Y060427",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "11",
+    "release_number": 3,
+    "release_name": "Volume 3",
+    "release_name_jp": "ポケモン ジオラマコレクト パルデア地方編",
+    "release_date": "2023-04",
+    "description": "Figuras con base de efecto tipo-clear para formar diorama.. Includes: Sprigatito, Fuecoco, Quaxly, Pikachu.",
+    "product_code": "Y067228",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "11",
+    "release_number": 7,
+    "release_name": "Volume 7",
+    "release_name_jp": "ポケモン ジオラマコレクト ほのお＆こおり",
+    "release_date": "2024-10",
+    "description": "Figuras con base de efecto tipo-clear para formar diorama.. Includes: Charcadet, Flareon, Glaceon, Vulpix (Alolan).",
+    "product_code": "Y078866",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "11",
+    "release_number": 9,
+    "release_name": "Volume 9",
+    "release_name_jp": "ポケモン ジオラマコレクト みず＆くさ",
+    "release_date": "2025-05",
+    "description": "Figuras con base de efecto tipo-clear para formar diorama.. Includes: Squirtle, Vaporeon, Leafeon, Chikorita.",
+    "product_code": "Y091414",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "12",
+    "release_number": "único",
+    "release_name": "único",
+    "release_name_jp": "森のポケモンたち",
+    "release_date": "2022-02",
+    "description": "Diorama de árbol con Pokémon descansando.. Includes: Pikachu, Buneary, Starly, Munchlax.",
+    "product_code": "Y050770",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "13",
+    "release_number": 1,
+    "release_name": "Volume 1",
+    "release_name_jp": "ポケモン フニットマスコット",
+    "release_date": "2021-09",
+    "description": "Figuras sofubi blanditas/voluminosas.. Includes: Pikachu, Wooloo, Alcremie, Pincurchin, Snom (+ secret).",
+    "product_code": "Y098260",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "13",
+    "release_number": 3,
+    "release_name": "Volume 3",
+    "release_name_jp": "ポケモン フニットマスコット3",
+    "release_date": "2023-08",
+    "description": "Figuras sofubi blanditas/voluminosas.. Includes: Sprigatito, Fuecoco, Quaxly, Pawmi, Lechonk, Smoliv.",
+    "product_code": "Y066009",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "13",
+    "release_number": 4,
+    "release_name": "Volume 4",
+    "release_name_jp": "ポケモン フニットマスコット4",
+    "release_date": "2024-04",
+    "description": "Figuras sofubi blanditas/voluminosas.. Includes: Gengar, Cufant, Bellibolt, Tatsugiri (Curly/Stretchy/Droopy).",
+    "product_code": "Y075353",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "13",
+    "release_number": 5,
+    "release_name": "Volume 5",
+    "release_name_jp": "ポケモン フニットマスコット5",
+    "release_date": "2024-11",
+    "description": "Figuras sofubi blanditas/voluminosas.. Includes: Jigglypuff, Togepi, Ditto, Munna, Ponyta (Galarian), Duosion.",
+    "product_code": "Y082610",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "13",
+    "release_number": 6,
+    "release_name": "Volume 6",
+    "release_name_jp": "ポケモン フニットマスコット6",
+    "release_date": "2025-04",
+    "description": "Figuras sofubi blanditas/voluminosas.. Includes: Piplup, Mudkip, Spheal, Azumarill, Cubchoo, Snom.",
+    "product_code": "Y083495",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "13",
+    "release_number": 7,
+    "release_name": "Volume 7",
+    "release_name_jp": "ポケモン フニットマスコット7",
+    "release_date": "2026-04",
+    "description": "Figuras sofubi blanditas/voluminosas.. Includes: Trubbish, Lotad, Psyduck, Slowpoke, Magikarp.",
+    "product_code": "",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "14",
+    "release_number": "XY",
+    "release_name": "XY",
+    "release_name_jp": "ポケモン おやすみフレンズXY",
+    "release_date": "2014-12",
+    "description": "Pokémon durmiendo.. Includes: Pikachu, Chespin, Fennekin, Froakie, Dedenne, Bunnelby.",
+    "product_code": "Y813368",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "14",
+    "release_number": "XY&Z",
+    "release_name": "XY&Z",
+    "release_name_jp": "ポケモン おやすみフレンズ XY & Z",
+    "release_date": "2015-12",
+    "description": "Pokémon durmiendo.. Includes: Pikachu, Bulbasaur, Charmander, Squirtle, Squishy (Zygarde Core).",
+    "product_code": "Y830389",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "14",
+    "release_number": "SM2",
+    "release_name": "SM2",
+    "release_name_jp": "ポケモン おやすみフレンズ サン＆ムーン2",
+    "release_date": "2018",
+    "description": "Pokémon durmiendo.. Includes: Pikachu, Snorlax, Jigglypuff, Rotom Dex, Vulpix (Alolan).",
+    "product_code": "Y852305",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "14",
+    "release_number": "Everyone Sleeps",
+    "release_name": "Everyone Sleeps",
+    "release_name_jp": "ポケモン おやすみフレンズ みんなぐっすり",
+    "release_date": "2024-07",
+    "description": "Pokémon durmiendo.. Includes: Pikachu, Sprigatito, Fuecoco, Pawmi, Alcremie.",
+    "product_code": "",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "14",
+    "release_number": "Together",
+    "release_name": "Together",
+    "release_name_jp": "ポケモン おやすみフレンズ いっしょにすやすや",
+    "release_date": "2025-06",
+    "description": "Pokémon durmiendo.. Includes: Pikachu, Eevee, Quaxly, Tinkatink, Mareep.",
+    "product_code": "Y090318",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "15",
+    "release_number": 1,
+    "release_name": "Volume 1",
+    "release_name_jp": "てのひらモーメント ポケモン みんなでホカホカマスコット",
+    "release_date": "2024-12",
+    "description": "Pokémon abrigándose con mantas/fuego.. Includes: Pikachu, Fuecoco? Wait lineup: Pikachu, Skeledirge, Litwick, Charcadet..",
+    "product_code": "Y085819",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "16",
+    "release_number": 1,
+    "release_name": "Volume 1",
+    "release_name_jp": "ポケモン ぬくぬくタイム",
+    "release_date": "2019-01",
+    "description": "Pokémon con ovillos de lana (invierno).. Includes: Pikachu, Snowy (Lillie’s Alolan Vulpix), Mimikyu, Nagisa (Lana’s Eevee), Litten.",
+    "product_code": "Y078989",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "16",
+    "release_number": 2,
+    "release_name": "Volume 2",
+    "release_name_jp": "ポケモン ぬくぬくタイム2",
+    "release_date": "2024-11",
+    "description": "Pokémon con ovillos de lana (invierno).. Includes: Pikachu, Vulpix (Alolan), Sprigatito, Toxel, Tarountula.",
+    "product_code": "",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "17",
+    "release_number": 1,
+    "release_name": "Volume 1",
+    "release_name_jp": "ポケモン ぽかぽかびより",
+    "release_date": "2019-04",
+    "description": "Primavera, flores, clima cálido.. Includes: Pikachu, Jigglypuff, Rockruff, Butterfree, Shaymin.",
+    "product_code": "Y900358",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "17",
+    "release_number": 2,
+    "release_name": "Volume 2",
+    "release_name_jp": "ポケモン ぽかぽかびより2",
+    "release_date": "2026-04",
+    "description": "Primavera, flores, clima cálido.. Includes: Pikachu, Jigglypuff, Togepi, Turtwig, Buneary.",
+    "product_code": "",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "18",
+    "release_number": 1,
+    "release_name": "Volume 1",
+    "release_name_jp": "ポケモン ハッピーハロウィンマスコット",
+    "release_date": "2019-09",
+    "description": "Halloween.. Includes: Pikachu (white ghost), Pikachu (black ghost), Rowlet (orange pumpkin), Rowlet (brown pumpkin), Mimikyu (black costume), Mimikyu (purple costume).",
+    "product_code": "Y876929",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "18",
+    "release_number": 2,
+    "release_name": "Volume 2",
+    "release_name_jp": "ポケモン わくわくハロウィンマスコット",
+    "release_date": "2020-09",
+    "description": "Halloween.. Includes: Pikachu (red pumpkin), Pikachu (orange pumpkin), Morpeko (Full Belly, red/orange), Yamper (red/orange).",
+    "product_code": "Y893179",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "18",
+    "release_number": 3,
+    "release_name": "Volume 3",
+    "release_name_jp": "ポケモン わくわくハロウィンマスコット2",
+    "release_date": "2021-08",
+    "description": "Halloween.. Includes: Pikachu (white/black ghost), Sobble (orange/red pumpkin), Toxel (orange/red pumpkin).",
+    "product_code": "",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "19",
+    "release_number": 1,
+    "release_name": "Volume 1",
+    "release_name_jp": "てのひらモーメント ポケモン みんなでタイヤとびマスコット",
+    "release_date": "2022-01",
+    "description": "Pokémon saltando ruedas/neumáticos.. Includes: Pikachu, Scorbunny, Aipom, Pancham, Marill.",
+    "product_code": "Y899782",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "20",
+    "release_number": 1,
+    "release_name": "Volume 1",
+    "release_name_jp": "ポケモン みんなでおうえんマスコット",
+    "release_date": "2020-06",
+    "description": "Pokémon animando con pompones.. Includes: Pikachu, Piplup, Plusle, Minun, Chansey.",
+    "product_code": "Y893186",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "21",
+    "release_number": 1,
+    "release_name": "Volume 1",
+    "release_name_jp": "ポケモン はらはら おちばあそび",
+    "release_date": "2019-12",
+    "description": "Otoño, hojas caídas.. Includes: Pikachu, Whimsicott, Ditto, Stufful, Psyduck.",
+    "product_code": "Y887567",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "21",
+    "release_number": 2,
+    "release_name": "Volume 2",
+    "release_name_jp": "ポケモン はらはらおちばあそび2",
+    "release_date": "2020-10",
+    "description": "Otoño, hojas caídas.. Includes: Pikachu, Bulbasaur, Diglett, Teddiursa, Vulpix.",
+    "product_code": "",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "22",
+    "release_number": "3 (Fire)",
+    "release_name": "3 (Fire)",
+    "release_name_jp": "ポケモン ぺたんこマスコット Type:ほのお",
+    "release_date": "2022-12",
+    "description": "Mascotas planas semi-tridimensionales con correa.. Includes: Charmander, Torchic, Litten, Scorbunny, Darumaka.",
+    "product_code": "Y060410",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "22",
+    "release_number": "? (Electric 2)",
+    "release_name": "? (Electric 2)",
+    "release_name_jp": "ポケモン ぺたんこマスコット Type:でんき2",
+    "release_date": "2024-12?",
+    "description": "Mascotas planas semi-tridimensionales con correa.. Includes: Pikachu (female), Tadbulb, Dedenne, Pawmo, Toxtricity.",
+    "product_code": "Y093449",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "22",
+    "release_number": "7 (Psychic)",
+    "release_name": "7 (Psychic)",
+    "release_name_jp": "ポケモン ぺたんこマスコット Type:エスパー",
+    "release_date": "2024-04",
+    "description": "Mascotas planas semi-tridimensionales con correa.. Includes: Mew, Espurr, Wynaut, Hatenna, Unown.",
+    "product_code": "Y078132",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "22",
+    "release_number": "9 (Fairy)",
+    "release_name": "9 (Fairy)",
+    "release_name_jp": "ポケモン ぺたんこマスコット Type:フェアリー",
+    "release_date": "2024-12",
+    "description": "Mascotas planas semi-tridimensionales con correa.. Includes: Togepi, Cleffa, Alcremie, Milcery, Swirlix.",
+    "product_code": "Y084553",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "22",
+    "release_number": "8 (Water 2)",
+    "release_name": "8 (Water 2)",
+    "release_name_jp": "ポケモン ぺたんこマスコット Type:みず2",
+    "release_date": "2024-06",
+    "description": "Mascotas planas semi-tridimensionales con correa.. Includes: Quaxly, Slowpoke, Poliwag, Chinchou, Staryu.",
+    "product_code": "Y078194",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "22",
+    "release_number": "—",
+    "release_name": "—",
+    "release_name_jp": "ポケモン ぺたんこマスコット Color：White",
+    "release_date": "2026-03",
+    "description": "Mascotas planas semi-tridimensionales con correa.. Includes: Tandemaus, Vulpix (Alolan), Zorua (Hisuian), Absol, Flabébé (White Flower).",
+    "product_code": "Y097171",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "22",
+    "release_number": "—",
+    "release_name": "—",
+    "release_name_jp": "ポケモン ぺたんこマスコット カントーSPECIAL",
+    "release_date": "2026-06",
+    "description": "Mascotas planas semi-tridimensionales con correa.. Includes: Bulbasaur, Charmander, Squirtle, Pikachu, Gengar, Eevee.",
+    "product_code": "Y901188",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "23",
+    "release_number": 1,
+    "release_name": "Volume 1",
+    "release_name_jp": "ポケモンとタマゴのポット",
+    "release_date": "",
+    "description": "Pokémon dentro de cápsulas en forma de huevo.. Includes: Pichu, Eevee, Vulpix, Snowy (Lillie’s Alolan Vulpix).",
+    "product_code": "Y050800",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "23",
+    "release_number": 4,
+    "release_name": "Volume 4",
+    "release_name_jp": "ポケモンとタマゴのポット4",
+    "release_date": "2022-03",
+    "description": "Pokémon dentro de cápsulas en forma de huevo.. Includes: Mime Jr., Mantyke, Chingling, Budew.",
+    "product_code": "",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "24",
+    "release_number": "Sinnoh",
+    "release_name": "Sinnoh",
+    "release_name_jp": "ポケットモンスター ミニミニガチャポケマシン シンオウ地方のポケモン大集合",
+    "release_date": "2022-02",
+    "description": "Mini máquinas gashapon funcionales.. Includes: Turtwig/Chimchar/Piplup, Shinx, Weavile, Garchomp, Giratina (Origin Forme).",
+    "product_code": "Y052262",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "24",
+    "release_number": "Paldea",
+    "release_name": "Paldea",
+    "release_name_jp": "ポケットモンスター ミニミニガチャポケマシン バルデア地方のポケモンたち",
+    "release_date": "2023-01",
+    "description": "Mini máquinas gashapon funcionales.. Includes: Sprigatito, Fuecoco, Quaxly, Koraidon, Miraidon.",
+    "product_code": "Y066375",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "24",
+    "release_number": "Liko & Roy",
+    "release_name": "Liko & Roy",
+    "release_name_jp": "ポケットモンスター ミニミニガチャポケマシン リコとロイの新たな冒険編",
+    "release_date": "2023-10",
+    "description": "Mini máquinas gashapon funcionales.. Includes: Liko & Sprigatito, Roy & Fuecoco, Friede & Captain Pikachu, Dot & Quaxly, Amethio & Ceruledge.",
+    "product_code": "Y075889",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "24",
+    "release_number": "Mega Evolution",
+    "release_name": "Mega Evolution",
+    "release_name_jp": "ポケモン ミニミニガチャポケマシン メガシンカのチカラ",
+    "release_date": "2026-01",
+    "description": "Mini máquinas gashapon funcionales.. Includes: Mega Lucario, Mega Sableye, Mega Gengar, Mega Ampharos, Mega Charizard X.",
+    "product_code": "Y900891",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "25",
+    "release_number": 1,
+    "release_name": "Volume 1",
+    "release_name_jp": "モンコレボックスVol.1",
+    "release_date": "2019-12",
+    "description": "Figuras estilo Moncolle con chicle.. Includes: Pikachu, Grookey, Scorbunny, Sobble, Chewtle.",
+    "product_code": "Y107283",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "25",
+    "release_number": 13,
+    "release_name": "Volume 13",
+    "release_name_jp": "モンコレボックス Vol.13 流麗！みずタイプポケモン",
+    "release_date": "2024-04",
+    "description": "Figuras estilo Moncolle con chicle.. Includes: Suicune, Greninja, Popplio, Quaxly, Tatsugiri (Stretchy).",
+    "product_code": "Y109546",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "25",
+    "release_number": "Earth Roar",
+    "release_name": "Earth Roar",
+    "release_name_jp": "モンコレボックス 大地の咆哮",
+    "release_date": "2025-03",
+    "description": "Figuras estilo Moncolle con chicle.. Includes: Entei, Tandemaus, Tyranitar, Fuecoco, Slowpoke.",
+    "product_code": "Y110016",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "25",
+    "release_number": "Blaze Wing",
+    "release_name": "Blaze Wing",
+    "release_name_jp": "モンコレボックス 翠翼のブレイズ",
+    "release_date": "2025-09",
+    "description": "Figuras estilo Moncolle con chicle.. Includes: Charizard, Dragonite, Lucario, Gardevoir, Gengar.",
+    "product_code": "Y110474",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "25",
+    "release_number": "Blue Flame",
+    "release_name": "Blue Flame",
+    "release_name_jp": "モンコレボックス 蒼炎の覇者",
+    "release_date": "2026-04",
+    "description": "Figuras estilo Moncolle con chicle.. Includes: Mega Charizard X, Mega Charizard Y, Ditto, Umbreon, Mew.",
+    "product_code": "Y110801",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "26",
+    "release_number": "Nyahoja",
+    "release_name": "Nyahoja",
+    "release_name_jp": "ポケモン ニャオハいっぱいコレクション",
+    "release_date": "2022-12",
+    "description": ". Includes: Sprigatito (5 poses).",
+    "product_code": "Y077623",
+    "cover_filename": ""
+  },
+  {
+    "collection_id": "26",
+    "release_number": "Hogeta",
+    "release_name": "Hogeta",
+    "release_name_jp": "ポケモン ホゲータいっぱいコレクション",
+    "release_date": "2025-09",
+    "description": ". Includes: Fuecoco (4 poses).",
+    "product_code": "Y094170",
+    "cover_filename": ""
+  }
+]

@@ -7,7 +7,7 @@ const SERPAPI_KEY = 'xxx';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const OUTPUT_FILE = path.join(__dirname, 'volumes-staging.json');
+const OUTPUT_FILE = path.join(__dirname, 'releases-staging.json');
 
 // Tus 22 archivos validados
 const validFiles = [
@@ -39,30 +39,30 @@ const validFiles = [
 const capitalize = (str) => str.replace(/\b\w/g, l => l.toUpperCase());
 
 // Parsear el nombre del archivo mediante Regex para extraer su estructura básica
-function parseVolumeFile(filename) {
+function parseReleaseFile(filename) {
   const match = filename.match(/^(.+?)-vol-(\d+)(?:-(.+))?\.webp$/);
   if (!match) return null;
 
   const rawCollection = match[1].replace(/-/g, ' ');
-  const volumeNum = parseInt(match[2], 10);
+  const releaseNum = parseInt(match[2], 10);
   const rawSubtitle = match[3] ? match[3].replace(/-/g, ' ') : null;
 
   const collectionName = capitalize(rawCollection);
   const subtitleName = rawSubtitle ? capitalize(rawSubtitle) : null;
   
-  const volumeStr = subtitleName ? `Vol ${volumeNum} ${subtitleName}` : `Vol ${volumeNum}`;
-  const searchQuery = `Takara Tomy Arts Pokémon ${collectionName} ${volumeStr}`;
+  const releaseStr = subtitleName ? `Release ${releaseNum} ${subtitleName}` : `Release ${releaseNum}`;
+  const searchQuery = `Takara Tomy Arts Pokémon ${collectionName} ${releaseStr}`;
 
   return {
     filename,
     collection_name: collectionName,
-    volume_number: volumeNum,
-    name_eng: subtitleName,
+    release_number: releaseNum,
+    name: subtitleName,
     search_query: searchQuery
   };
 }
 
-async function searchVolumeMetadata(item) {
+async function searchReleaseMetadata(item) {
   const url = `https://serpapi.com/search.json?engine=google&q=${encodeURIComponent(item.search_query)}&api_key=${SERPAPI_KEY}`;
   
   try {
@@ -102,8 +102,8 @@ async function searchVolumeMetadata(item) {
     return {
       filename: item.filename,
       collection_name: item.collection_name,
-      volume_number: item.volume_number,
-      name_eng: item.name_eng,
+      release_number: item.release_number,
+      name: item.name,
       release_year: releaseYear,
       original_name_ja: originalNameJa
     };
@@ -113,8 +113,8 @@ async function searchVolumeMetadata(item) {
     return {
       filename: item.filename,
       collection_name: item.collection_name,
-      volume_number: item.volume_number,
-      name_eng: item.name_eng,
+      release_number: item.release_number,
+      name: item.name,
       release_year: null,
       original_name_ja: null
     };
@@ -126,14 +126,14 @@ async function main() {
   const stagingData = [];
 
   for (const filename of validFiles) {
-    const parsed = parseVolumeFile(filename);
+    const parsed = parseReleaseFile(filename);
     if (!parsed) {
       console.log(`⚠️ Archivo omitido por formato no reconocido: ${filename}`);
       continue;
     }
 
-    console.log(`Analizando web para: "${parsed.collection_name} Vol. ${parsed.volume_number}"...`);
-    const metadata = await searchVolumeMetadata(parsed);
+    console.log(`Analizando web para: "${parsed.collection_name} Release ${parsed.release_number}"...`);
+    const metadata = await searchReleaseMetadata(parsed);
     stagingData.push(metadata);
 
     // Espera de seguridad de 1 segundo para la API
@@ -143,7 +143,7 @@ async function main() {
   // Guardamos los datos estructurados en un archivo JSON local limpio
   fs.writeFileSync(OUTPUT_FILE, JSON.stringify(stagingData, null, 2), 'utf-8');
   console.log(`\n--- Fichero de staging creado con éxito en: ${OUTPUT_FILE} ---`);
-  console.log('Abre el archivo "volumes-staging.json" para revisar y ajustar los datos antes de subirlos.');
+  console.log('Abre el archivo "releases-staging.json" para revisar y ajustar los datos antes de subirlos.');
 }
 
 main();

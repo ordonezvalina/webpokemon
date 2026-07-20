@@ -10,7 +10,7 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const JSON_PATH = path.join(__dirname, 'volumes-staging.json');
+const JSON_PATH = path.join(__dirname, 'releases-staging.json');
 
 async function main() {
   console.log('--- Iniciando volcado masivo en Supabase (Estructura Corregida) ---');
@@ -56,29 +56,25 @@ async function main() {
       collectionMap.set(item.collection_name, collectionId);
     }
 
-    // 2. Construir la URL pública del bucket para la portada
-    const publicImageUrl = `${SUPABASE_URL}/storage/v1/object/public/volume-covers/${item.filename}`;
-
-    // 3. Inserción del volumen (Match idílico con tus columnas de Postgres)
-    const { error: volError } = await supabase
-      .from('volumes')
+    // 2. Inserción de la release (cover_image guarda solo el nombre de archivo)
+    const { error: relError } = await supabase
+      .from('releases')
       .insert({
         collection_id: collectionId,
-        volume: item.volume,
-        name_eng: item.name_eng,
-        name_jp: item.name_jp,
-        cover_image: publicImageUrl,
+        number: item.release_number,
+        name: item.name,
+        cover_image: item.filename,
         release_date: item.release_date // Entrará como NULL o string 'AAAA-MM-DD'
       });
 
-    if (volError) {
-      console.error(`  ❌ Error vinculando Vol. ${item.volume} de "${item.collection_name}":`, volError.message);
+    if (relError) {
+      console.error(`  ❌ Error vinculando release ${item.release_number} de "${item.collection_name}":`, relError.message);
     } else {
-      console.log(`  -> ✅ Vol. ${item.volume} insertado perfectamente.`);
+      console.log(`  -> ✅ Release ${item.release_number} insertada perfectamente.`);
     }
   }
 
-  console.log('\n--- ¡Proceso completado! Tus 22 volúmenes están a buen recaudo ---');
+  console.log('\n--- ¡Proceso completado! Tus releases están a buen recaudo ---');
 }
 
 main();

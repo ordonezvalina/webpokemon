@@ -1,0 +1,205 @@
+[
+  {
+    "filename": "at-home-relaxation-mascot-vol-1.webp",
+    "collection_name": "Pokémon At-Home Relaxation Mascot",
+    "release_number": 1,
+    "name": null,
+    "release_date": "2022-10",
+    "official_name_jp": "ポケモン おうちで！りらくっしょんマスコット",
+    "product_code": "Y060113"
+  },
+  {
+    "filename": "at-home-relaxation-mascot-vol-4.webp",
+    "collection_name": "Pokémon At-Home Relaxation Mascot",
+    "release_number": 4,
+    "name": "Part 4",
+    "release_date": "2024-10",
+    "official_name_jp": "ポケモン おうちで！りらくっしょんマスコット Part4",
+    "product_code": "Y083051"
+  },
+  {
+    "filename": "battle-capsule-toys-vol-3.webp",
+    "collection_name": "Pokémon Battle Capsule Toys",
+    "release_number": 3,
+    "name": null,
+    "release_date": null,
+    "note": "No se encontró ficha oficial en Takara Tomy Arts.",
+    "skip": true
+  },
+  {
+    "filename": "diorama-collect-fire-grass-vol-1.webp",
+    "collection_name": "Pokémon Diorama Collect Fire & Grass",
+    "release_number": 1,
+    "name": "Fire & Grass",
+    "release_date": "2022-12",
+    "official_name_jp": "ポケモン ジオラマコレクト ほのお＆くさ",
+    "product_code": "Y060427",
+    "note": "Segunda entrega de la serie Diorama Collect."
+  },
+  {
+    "filename": "forest-series-vol-2.webp",
+    "collection_name": "Pokémon Forest Series",
+    "release_number": 2,
+    "name": null,
+    "release_date": "2022-02",
+    "official_name_jp": "森のポケモンたち",
+    "product_code": "Y050770",
+    "note": "La ficha oficial no numera volúmenes; este es el único set."
+  },
+  {
+    "filename": "funit-mascot-vol-7-sinnoh.webp",
+    "collection_name": "Pokémon Funit Mascot",
+    "release_number": 7,
+    "name": "Sinnoh Region",
+    "release_date": "2026-04",
+    "official_name_jp": "ポケモン フニットマスコット7",
+    "product_code": "Y098260",
+    "note": "El nombre del archivo indica Sinnoh, pero la vol. 7 oficial no es Sinnoh. Revisar antes de descargar.",
+    "skip": true
+  },
+  {
+    "filename": "good-night-friends-vol-1-everyone-sleeps.webp",
+    "collection_name": "Pokémon Good Night Friends",
+    "release_number": 1,
+    "name": "Everyone Sleeps",
+    "release_date": "2024-07",
+    "official_name_jp": "ポケモン おやすみフレンズ みんなぐっすり",
+    "product_code": "Y078996"
+  },
+  {
+    "filename": "kanto-full-collection-vol-1.webp",
+    "collection_name": "Pokémon Kanto Ippai Collection",
+    "release_number": 1,
+    "name": null,
+    "release_date": "2019-03",
+    "official_name_jp": "ポケモン カントーいっぱいコレクション",
+    "product_code": "Y870255"
+  },
+  {
+    "filename": "katazun-pokmon-vol-1.webp",
+    "collection_name": "Katazun Fig. Pokémon",
+    "release_number": 1,
+    "name": null,
+    "release_date": "2021-07",
+    "official_name_jp": "肩ズンFig. ポケモン",
+    "product_code": "Y895258"
+  },
+  {
+    "filename": "katazun-pokmon-vol-5.webp",
+    "collection_name": "Katazun Fig. Pokémon",
+    "release_number": 5,
+    "name": null,
+    "release_date": "2024-05",
+    "official_name_jp": "肩ズンFig. ポケモン5",
+    "product_code": "Y078156"
+  },
+  {
+    "filename": "manpuku-pakupaku-mascot-vol-2.webp",
+    "collection_name": "Pokémon Manpuku Pakupaku Mascot",
+    "release_number": 2,
+    "name": "Okawari",
+    "release_date": "2020-07",
+    "official_name_jp": "ポケモン まんぷくぱくぱくマスコット おかわり",
+    "product_code": "Y884665"
+  },
+  {
+    "filename": "manpuku-pakupaku-mascot-vol-3.webp",
+    "collection_name": "Pokémon Manpuku Pakupaku Mascot",
+    "release_number": 3,
+    "name": null,
+    "release_date": "2025-04",
+    "official_name_jp": "ポケモン まんぷくぱくぱくマスコット3",
+    "product_code": "Y088469"
+  },
+  {
+    "filename": "mini-gacha-pok-machine-vol-1.webp",
+    "collection_name": "Pokémon Mini Gacha Machine",
+    "release_number": 1,
+    "name": "Sinnoh Region",
+    "release_date": "2022-02",
+    "official_name_jp": "ポケットモンスター ミニミニガチャポケマシン シンオウ地方のポケモン大集合",
+    "product_code": "Y052262"
+  },
+  {
+    "filename": "minna-de-awa-awa-mascot-vol-1.webp",
+    "collection_name": "Pokémon Minna de Awa Awa Mascot",
+    "release_number": 1,
+    "name": null,
+    "release_date": "2020-09",
+    "official_name_jp": "ポケモン みんなでアワアワマスコット",
+    "product_code": "Y885594"
+  },
+  {
+    "filename": "snap-move-vol-2.webp",
+    "collection_name": "Pokémon Snap Move",
+    "release_number": 2,
+    "name": "Various Moves",
+    "release_date": "2023-03",
+    "official_name_jp": "ポケモン わざすなっぷ いろいろなわざ",
+    "product_code": "Y066405",
+    "note": "Vol. 1 oficial fue 'しっぽをふる'; esta es la segunda entrega 'いろいろなわざ'."
+  },
+  {
+    "filename": "suri-suri-mascot-vol-1.webp",
+    "collection_name": "Pokémon Suri Suri Mascot",
+    "release_number": 1,
+    "name": null,
+    "release_date": "2024-04",
+    "official_name_jp": "ポケモン すりすりマスコット",
+    "product_code": "Y074516"
+  },
+  {
+    "filename": "yummy-sweets-mascot-vol-1.webp",
+    "collection_name": "Pokémon Yummy Sweets Mascot",
+    "release_number": 1,
+    "name": null,
+    "release_date": "2022-01",
+    "official_name_jp": "ポケモン Yummy!スイーツマスコット",
+    "product_code": "Y899799"
+  },
+  {
+    "filename": "yummy-sweets-mascot-vol-2.webp",
+    "collection_name": "Pokémon Yummy Sweets Mascot",
+    "release_number": 2,
+    "name": null,
+    "release_date": "2022-06",
+    "official_name_jp": "ポケモン Yummy!スイーツマスコット2",
+    "product_code": "Y899805"
+  },
+  {
+    "filename": "yummy-sweets-mascot-vol-3.webp",
+    "collection_name": "Pokémon Yummy Sweets Mascot",
+    "release_number": 3,
+    "name": null,
+    "release_date": "2023-05",
+    "official_name_jp": "ポケモン Yummy!スイーツマスコット3",
+    "product_code": "Y066245"
+  },
+  {
+    "filename": "yummy-sweets-mascot-vol-5.webp",
+    "collection_name": "Pokémon Yummy Sweets Mascot",
+    "release_number": 5,
+    "name": null,
+    "release_date": "2024-08",
+    "official_name_jp": "ポケモン Yummy!スイーツマスコット5",
+    "product_code": "Y078880"
+  },
+  {
+    "filename": "yummy-sweets-mascot-vol-6.webp",
+    "collection_name": "Pokémon Yummy Sweets Mascot",
+    "release_number": 6,
+    "name": null,
+    "release_date": "2024-12",
+    "official_name_jp": "ポケモン Yummy!スイーツマスコット6",
+    "product_code": "Y085888"
+  },
+  {
+    "filename": "yummy-sweets-mascot-vol-7.webp",
+    "collection_name": "Pokémon Yummy Sweets Mascot",
+    "release_number": 7,
+    "name": null,
+    "release_date": "2025-09",
+    "official_name_jp": "ポケモン Yummy!スイーツマスコット7",
+    "product_code": "Y094125"
+  }
+]

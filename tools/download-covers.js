@@ -9,39 +9,39 @@ const SERPAPI_KEY = 'xxx';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const OUTPUT_DIR = path.join(__dirname, 'public', 'volume-covers');
+const OUTPUT_DIR = path.join(__dirname, 'public', 'release-covers');
 
 const collectionsData = [
-  { name: "Yummy! Sweets Mascot", volumes: [{ num: 1 }, { num: 2 }, { num: 3 }, { num: 4 }, { num: 5 }, { num: 6 }, { num: 7 }] },
-  { name: "Katazun Pokémon", volumes: [{ num: 2 }, { num: 3 }, { num: 4 }, { num: 5 }] },
-  { name: "At Home! Relaxation Mascot", volumes: [{ num: 2 }, { num: 3 }, { num: 4 }] },
-  { name: "Forest Series", volumes: [{ num: 1 }, { num: 2 }] },
-  { name: "Funit Mascot", volumes: [{ num: 1 }, { num: 2, name: "Sinnoh" }] },
-  { name: "Minna de Awa Awa Mascot", volumes: [{ num: 1 }, { num: 2 }] },
-  { name: "Netsuke Mascot", volumes: [{ num: 1, name: "Side Legend Battle Side-A" }] },
-  { name: "Suri Suri Mascot", volumes: [{ num: 2 }] },
-  { name: "Gira Gira Sunshine", volumes: [{ num: 3 }] },
-  { name: "Snap Move", volumes: [{ num: 2 }] },
-  { name: "Capsule Act", volumes: [{ num: 1, name: "Sinnoh Regional" }] },
-  { name: "Battle Capsule Toys", volumes: [{ num: 3 }] },
-  { name: "Good Night Friends", volumes: [{ num: 1, name: "Everyone Sleeps" }] },
-  { name: "Minnade Taiyatobi Mascot", volumes: [{ num: 1 }] },
-  { name: "Minnade Hoka Hoka", volumes: [{ num: 1 }] },
-  { name: "Minna de Ouen", volumes: [{ num: 1, name: "Everyone Cheering Mascot" }] },
-  { name: "Harahara Fallen Leaves Play", volumes: [{ num: 1 }] },
-  { name: "Diorama Collect Fire & Grass", volumes: [{ num: 1 }] },
-  { name: "Kanto Full Collection", volumes: [{ num: 1 }] },
-  { name: "Manpuku Pakupaku Mascot", volumes: [{ num: 2 }] },
-  { name: "Petanko Mascot", volumes: [{ num: 1 }] },
-  { name: "Egg Pot", volumes: [{ num: 4 }] },
-  { name: "Nuku Nuku Time", volumes: [{ num: 2 }] },
-  { name: "Happy Halloween Mascot", volumes: [{ num: 1 }] },
-  { name: "Sprigatito Collection", volumes: [{ num: 1, name: "Various Gestures" }] },
-  { name: "Tomy Arts Tail", volumes: [{ num: 1 }] },
-  { name: "Coco Movie", volumes: [{ num: 1 }] },
-  { name: "Gengar Series", volumes: [{ num: 1 }] },
-  { name: "Mini Gacha Poké Machine", volumes: [{ num: 1 }] },
-  { name: "Moncolle Box", volumes: [{ num: 5 }] }
+  { name: "Yummy! Sweets Mascot", releases: [{ num: 1 }, { num: 2 }, { num: 3 }, { num: 4 }, { num: 5 }, { num: 6 }, { num: 7 }] },
+  { name: "Katazun Pokémon", releases: [{ num: 2 }, { num: 3 }, { num: 4 }, { num: 5 }] },
+  { name: "At Home! Relaxation Mascot", releases: [{ num: 2 }, { num: 3 }, { num: 4 }] },
+  { name: "Forest Series", releases: [{ num: 1 }, { num: 2 }] },
+  { name: "Funit Mascot", releases: [{ num: 1 }, { num: 2, name: "Sinnoh" }] },
+  { name: "Minna de Awa Awa Mascot", releases: [{ num: 1 }, { num: 2 }] },
+  { name: "Netsuke Mascot", releases: [{ num: 1, name: "Side Legend Battle Side-A" }] },
+  { name: "Suri Suri Mascot", releases: [{ num: 2 }] },
+  { name: "Gira Gira Sunshine", releases: [{ num: 3 }] },
+  { name: "Snap Move", releases: [{ num: 2 }] },
+  { name: "Capsule Act", releases: [{ num: 1, name: "Sinnoh Regional" }] },
+  { name: "Battle Capsule Toys", releases: [{ num: 3 }] },
+  { name: "Good Night Friends", releases: [{ num: 1, name: "Everyone Sleeps" }] },
+  { name: "Minnade Taiyatobi Mascot", releases: [{ num: 1 }] },
+  { name: "Minnade Hoka Hoka", releases: [{ num: 1 }] },
+  { name: "Minna de Ouen", releases: [{ num: 1, name: "Everyone Cheering Mascot" }] },
+  { name: "Harahara Fallen Leaves Play", releases: [{ num: 1 }] },
+  { name: "Diorama Collect Fire & Grass", releases: [{ num: 1 }] },
+  { name: "Kanto Full Collection", releases: [{ num: 1 }] },
+  { name: "Manpuku Pakupaku Mascot", releases: [{ num: 2 }] },
+  { name: "Petanko Mascot", releases: [{ num: 1 }] },
+  { name: "Egg Pot", releases: [{ num: 4 }] },
+  { name: "Nuku Nuku Time", releases: [{ num: 2 }] },
+  { name: "Happy Halloween Mascot", releases: [{ num: 1 }] },
+  { name: "Sprigatito Collection", releases: [{ num: 1, name: "Various Gestures" }] },
+  { name: "Tomy Arts Tail", releases: [{ num: 1 }] },
+  { name: "Coco Movie", releases: [{ num: 1 }] },
+  { name: "Gengar Series", releases: [{ num: 1 }] },
+  { name: "Mini Gacha Poké Machine", releases: [{ num: 1 }] },
+  { name: "Moncolle Box", releases: [{ num: 5 }] }
 ];
 
 function slugify(text) {
@@ -108,11 +108,11 @@ async function main() {
   console.log('--- Iniciando descarga de portadas EN ALTA CALIDAD ---');
 
   for (const collection of collectionsData) {
-    for (const vol of collection.volumes || []) {
-      const volumeStr = vol.name ? `Vol ${vol.num} ${vol.name}` : `Vol ${vol.num}`;
-      const searchQuery = `Takara Tomy Arts Pokémon ${collection.name} ${volumeStr} capsule toy`;
+    for (const release of collection.releases || []) {
+      const releaseStr = release.name ? `Release ${release.num} ${release.name}` : `Release ${release.num}`;
+      const searchQuery = `Takara Tomy Arts Pokémon ${collection.name} ${releaseStr} capsule toy`;
       
-      const fileSlug = slugify(`${collection.name} ${volumeStr}`);
+      const fileSlug = slugify(`${collection.name} ${releaseStr}`);
       const outputFilename = `${fileSlug}.webp`;
 
       console.log(`Buscando: "${searchQuery}"...`);

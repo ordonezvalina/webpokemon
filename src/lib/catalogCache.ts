@@ -1,4 +1,5 @@
 import { supabase } from "./supabaseClient";
+import { getCoverImageUrl } from "./coverImage";
 
 export interface Catalog {
   figures: any[];
@@ -9,6 +10,20 @@ export interface Catalog {
 }
 
 let catalogPromise: Promise<Catalog> | null = null;
+
+function normalizeReleaseCover(release: any): any {
+  if (!release) return release;
+  return {
+    ...release,
+    cover_image: getCoverImageUrl(release.cover_image),
+  };
+}
+
+function normalizeFigureReleases(releases: any): any {
+  if (!releases) return releases;
+  if (Array.isArray(releases)) return releases.map(normalizeReleaseCover);
+  return normalizeReleaseCover(releases);
+}
 
 export async function getCatalog(): Promise<Catalog> {
   if (catalogPromise) {
@@ -46,9 +61,12 @@ export async function getCatalog(): Promise<Catalog> {
       if (figureTagsRes.error) throw figureTagsRes.error;
 
       return {
-        figures: figuresRes.data ?? [],
+        figures: (figuresRes.data ?? []).map((figure: any) => ({
+          ...figure,
+          releases: normalizeFigureReleases(figure.releases),
+        })),
         collections: collectionsRes.data ?? [],
-        releases: releasesRes.data ?? [],
+        releases: (releasesRes.data ?? []).map(normalizeReleaseCover),
         tags: tagsRes.data ?? [],
         figureTags: figureTagsRes.data ?? []
       };
