@@ -4,6 +4,7 @@ import Breadcrumb from "../../../../components/Breadcrumb.astro";
 import BackLink from "../../../../components/BackLink.astro";
 import FigureCard from "../../../../components/FigureCard.astro";
 import EmptyState from "../../../../components/EmptyState.astro";
+import PrevNextNav from "../../../../components/PrevNextNav.astro";
 import { getCatalog, getTagsForFigure } from "../../../../lib/catalogCache";
 import { createSlug } from "../../../../lib/slug";
 import { releaseMeta, collectionSchema, breadcrumbSchema, absoluteImageUrl, addImage } from "../../../../lib/seo";
@@ -62,6 +63,19 @@ const figuresWithTags = releaseFigures.map((f: any) => ({
   tags: getTagsForFigure(f.id, figureTags)
 }));
 
+const siblingReleases = releases
+  .filter((r: any) => r.collection_id === collection.id)
+  .sort((a: any, b: any) => (a.number ?? 0) - (b.number ?? 0));
+const currentReleaseIndex = siblingReleases.findIndex((r: any) => r.id === release.id);
+const prevRelease = currentReleaseIndex > 0 ? siblingReleases[currentReleaseIndex - 1] : null;
+const nextRelease = currentReleaseIndex >= 0 && currentReleaseIndex < siblingReleases.length - 1
+  ? siblingReleases[currentReleaseIndex + 1]
+  : null;
+
+const releaseHref = (r: any) => `/collection/${slug}/release/${r.name ? createSlug(r.name) : String(r.number ?? "")}/`;
+const prevNav = prevRelease ? { href: releaseHref(prevRelease), label: releaseLabel(prevRelease) } : null;
+const nextNav = nextRelease ? { href: releaseHref(nextRelease), label: releaseLabel(nextRelease) } : null;
+
 const siteUrl = Astro.site?.toString() || "https://example.com";
 const coverImageUrl = release.cover_image ? absoluteImageUrl(siteUrl, release.cover_image) : undefined;
 const breadcrumbItems = [
@@ -94,15 +108,34 @@ const schemas = [
       </div>
     </header>
 
+    {release.product_code && (
+      <section class="mb-5">
+        <div class="rounded-xl border border-zinc-200 bg-zinc-50/70 p-4 dark:border-zinc-800 dark:bg-zinc-900/40">
+          <div class="flex justify-between items-center text-sm">
+            <span class="text-zinc-500 font-medium dark:text-zinc-500">Official site</span>
+            <a
+              href={`https://www.takaratomy-arts.co.jp/items/item.html?n=${release.product_code}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-amber-700 hover:underline font-mono text-xs dark:text-amber-300"
+            >
+              {release.product_code} ↗
+            </a>
+          </div>
+        </div>
+      </section>
+    )}
+
     {/* Release cover image */}
     {release.cover_image && (
       <section class="mb-8">
-        <div class="max-w-xs overflow-hidden rounded-xl border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
+        <div class="max-w-md lg:max-w-lg overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-xl shadow-zinc-900/10 cursor-zoom-in dark:border-zinc-800 dark:bg-zinc-900 dark:shadow-black/20">
           <img
+            id="release-cover"
             class="h-full w-full object-cover"
             src={release.cover_image}
             alt={`Cover of ${releaseLabel(release)}`}
-            loading="lazy"
+            fetchpriority="high"
             decoding="async"
           />
         </div>
@@ -123,5 +156,50 @@ const schemas = [
       )}
     </section>
 
+    {/* Previous / next release navigation */}
+    <div class="mt-10">
+      <PrevNextNav prev={prevNav} next={nextNav} />
+    </div>
+
   </main>
+
+  {/* Lightbox */}
+  <div
+    id="lightbox"
+    class="hidden fixed inset-0 z-50 overflow-auto bg-black/95 p-4 cursor-zoom-out flex"
+  >
+    <button class="fixed top-4 right-4 text-zinc-900 text-4xl font-light active:scale-95 z-50 bg-white/80 rounded-full w-12 h-12 flex items-center justify-center dark:text-white dark:bg-black/40" aria-label="Close modal">&times;</button>
+    <img
+      id="lightbox-img"
+      class="max-w-none max-h-none rounded-lg shadow-2xl m-auto"
+      src=""
+      alt="Full screen view"
+    />
+  </div>
+
+  <script>
+    const releaseCover = document.getElementById("release-cover") as HTMLImageElement | null;
+    const lightbox = document.getElementById("lightbox");
+    const lightboxImg = document.getElementById("lightbox-img") as HTMLImageElement | null;
+
+    if (releaseCover && lightbox && lightboxImg) {
+      releaseCover.addEventListener("click", () => {
+        lightboxImg.src = releaseCover.src;
+        lightbox.classList.remove("hidden");
+        document.body.classList.add("overflow-hidden");
+      });
+    }
+
+    lightbox?.addEventListener("click", () => {
+      lightbox.classList.add("hidden");
+      document.body.classList.remove("overflow-hidden");
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && lightbox && !lightbox.classList.contains("hidden")) {
+        lightbox.classList.add("hidden");
+        document.body.classList.remove("overflow-hidden");
+      }
+    });
+  </script>
 </BaseLayout>
