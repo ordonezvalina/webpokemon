@@ -19,6 +19,13 @@ function releaseLabel(release: any): string {
   return "Release";
 }
 
+function formatReleaseDate(date: string | null | undefined): string | null {
+  if (!date) return null;
+  const d = new Date(date);
+  if (Number.isNaN(d.getTime())) return null;
+  return d.toLocaleDateString("es-ES", { year: "numeric", month: "long", day: "numeric" });
+}
+
 export async function getStaticPaths() {
   const { collections, releases } = await getCatalog();
 
@@ -108,20 +115,29 @@ const schemas = [
       </div>
     </header>
 
-    {release.product_code && (
+    {(release.product_code || release.release_date) && (
       <section class="mb-5">
-        <div class="rounded-xl border border-zinc-200 bg-zinc-50/70 p-4 dark:border-zinc-800 dark:bg-zinc-900/40">
-          <div class="flex justify-between items-center text-sm">
-            <span class="text-zinc-500 font-medium dark:text-zinc-500">Official site</span>
-            <a
-              href={`https://www.takaratomy-arts.co.jp/items/item.html?n=${release.product_code}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="text-amber-700 hover:underline font-mono text-xs dark:text-amber-300"
-            >
-              {release.product_code} ↗
-            </a>
-          </div>
+        <div class="rounded-xl border border-zinc-200 bg-zinc-50/70 p-4 space-y-3 dark:border-zinc-800 dark:bg-zinc-900/40">
+          {release.release_date && (
+            <div class="flex justify-between items-center text-sm border-b border-zinc-200/80 pb-2 dark:border-zinc-800/60">
+              <span class="text-zinc-500 font-medium dark:text-zinc-500">Release date</span>
+              <span class="text-zinc-800 font-semibold dark:text-zinc-200">{formatReleaseDate(release.release_date)}</span>
+            </div>
+          )}
+
+          {release.product_code && (
+            <div class="flex justify-between items-center text-sm">
+              <span class="text-zinc-500 font-medium dark:text-zinc-500">Official site</span>
+              <a
+                href={`https://www.takaratomy-arts.co.jp/items/item.html?n=${release.product_code}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="text-amber-700 hover:underline font-mono text-xs dark:text-amber-300"
+              >
+                {release.product_code} ↗
+              </a>
+            </div>
+          )}
         </div>
       </section>
     )}
