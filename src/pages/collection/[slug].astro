@@ -65,7 +65,10 @@ const coverImageUrls = collectionReleases
   .map((url) => absoluteImageUrl(siteUrl, url))
   .filter((url): url is string => typeof url === "string");
 
-const breadcrumbItems = [{ label: collection.name }];
+const breadcrumbItems = [
+  { label: "Collections", href: "/collections/" },
+  { label: collection.name },
+];
 const seo = collectionMeta(collection, collectionReleases.length, figuresWithTags.length, siteUrl);
 const imageSeo = coverImageUrls.length > 0 ? addImage(seo, coverImageUrls[0]) : seo;
 const schemas = [
@@ -81,7 +84,7 @@ const schemas = [
 
     <header class="mb-5 flex flex-col gap-4 sm:mb-8 sm:flex-row sm:items-end sm:justify-between">
       <div class="space-y-2">
-        <BackLink href="/" text="Back to catalogue" />
+        <BackLink href="/collections/" text="Back to collections" />
         <h1 class="max-w-3xl text-4xl font-semibold leading-tight text-zinc-900 sm:text-6xl dark:text-white">
           {collection.name}
         </h1>

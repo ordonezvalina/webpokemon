@@ -86,6 +86,7 @@ const nextNav = nextRelease ? { href: releaseHref(nextRelease), label: releaseLa
 const siteUrl = Astro.site?.toString() || "https://example.com";
 const coverImageUrl = release.cover_image ? absoluteImageUrl(siteUrl, release.cover_image) : undefined;
 const breadcrumbItems = [
+  { label: "Collections", href: "/collections/" },
   { label: collection.name, href: `/collection/${slug}/` },
   { label: releaseLabel(release) }
 ];
