@@ -18,7 +18,7 @@ const sortedCollections = sortCollections(collections, releases).map((collection
   const collectionSlug = createSlug(collection.name);
   const collectionReleases = releases
     .filter((release) => release.collection_id === collection.id)
-    .sort((a, b) => (a.number ?? 0) - (b.number ?? 0));
+    .sort((a, b) => (a.number || Number.MAX_SAFE_INTEGER) - (b.number || Number.MAX_SAFE_INTEGER));
 
   const releaseIds = new Set(collectionReleases.map((release) => release.id));
   const collectionFigures = figures.filter((figure) => releaseIds.has(figure.release_id));

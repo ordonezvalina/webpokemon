@@ -45,7 +45,7 @@ const nextNav = nextCollection
 
 const collectionReleases = releases
   .filter((r: any) => r.collection_id === collection.id)
-  .sort((a: any, b: any) => (a.number ?? 0) - (b.number ?? 0));
+  .sort((a: any, b: any) => (a.number || Number.MAX_SAFE_INTEGER) - (b.number || Number.MAX_SAFE_INTEGER));
 
 const releaseIds = new Set(collectionReleases.map((r: any) => r.id));
 

@@ -72,7 +72,7 @@ const figuresWithTags = releaseFigures.map((f: any) => ({
 
 const siblingReleases = releases
   .filter((r: any) => r.collection_id === collection.id)
-  .sort((a: any, b: any) => (a.number ?? 0) - (b.number ?? 0));
+  .sort((a: any, b: any) => (a.number || Number.MAX_SAFE_INTEGER) - (b.number || Number.MAX_SAFE_INTEGER));
 const currentReleaseIndex = siblingReleases.findIndex((r: any) => r.id === release.id);
 const prevRelease = currentReleaseIndex > 0 ? siblingReleases[currentReleaseIndex - 1] : null;
 const nextRelease = currentReleaseIndex >= 0 && currentReleaseIndex < siblingReleases.length - 1
