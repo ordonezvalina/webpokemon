@@ -23,7 +23,7 @@ function formatReleaseDate(date: string | null | undefined): string | null {
   if (!date) return null;
   const d = new Date(date);
   if (Number.isNaN(d.getTime())) return null;
-  return d.toLocaleDateString("es-ES", { year: "numeric", month: "long", day: "numeric" });
+  return d.toLocaleDateString("es-ES", { year: "numeric", month: "long" });
 }
 
 export async function getStaticPaths() {
@@ -146,7 +146,7 @@ const schemas = [
     {/* Release cover image */}
     {release.cover_image && (
       <section class="mb-8">
-        <div class="max-w-md lg:max-w-lg overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-xl shadow-zinc-900/10 cursor-zoom-in dark:border-zinc-800 dark:bg-zinc-900 dark:shadow-black/20">
+        <div class="max-w-md lg:max-w-lg lg:mx-auto overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-xl shadow-zinc-900/10 cursor-zoom-in dark:border-zinc-800 dark:bg-zinc-900 dark:shadow-black/20">
           <img
             id="release-cover"
             class="h-full w-full object-cover"
@@ -158,6 +158,13 @@ const schemas = [
         </div>
       </section>
     )}
+
+    {/* Previous / next release navigation - desktop */}
+    <div class="hidden lg:block mb-8">
+      <div class="max-w-md lg:max-w-lg mx-auto">
+        <PrevNextNav prev={prevNav} next={nextNav} />
+      </div>
+    </div>
 
     {/* Release figures */}
     <section>
@@ -173,8 +180,8 @@ const schemas = [
       )}
     </section>
 
-    {/* Previous / next release navigation */}
-    <div class="mt-10">
+    {/* Previous / next release navigation - mobile */}
+    <div class="mt-10 lg:hidden">
       <PrevNextNav prev={prevNav} next={nextNav} />
     </div>
 
