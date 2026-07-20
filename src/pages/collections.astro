@@ -24,7 +24,7 @@ const sortedCollections = sortCollections(collections, releases).map((collection
   const collectionFigures = figures.filter((figure) => releaseIds.has(figure.release_id));
   const figureCount = collectionFigures.length;
   const releaseCount = collectionReleases.length;
-  const coverImage = collectionReleases[0]?.cover_image;
+  const coverImage = collectionReleases.find((release) => release.cover_image)?.cover_image;
   const dateLabel = formatCollectionDate(collection.id, releases, monthNames);
 
   const lineValues = new Set(
