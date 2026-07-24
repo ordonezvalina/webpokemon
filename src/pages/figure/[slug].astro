@@ -235,30 +235,54 @@ const schemas = [
     {/* Lightbox */}
     <div
       id="lightbox"
-      class="hidden fixed inset-0 z-50 overflow-hidden bg-black/95 cursor-zoom-out"
+      class="hidden fixed inset-0 z-50 overflow-auto bg-black/95 cursor-zoom-out"
     >
       <button class="fixed top-4 right-4 text-zinc-900 text-4xl font-light active:scale-95 z-50 bg-white/80 rounded-full w-12 h-12 flex items-center justify-center dark:text-white dark:bg-black/40" aria-label="Close modal">&times;</button>
-      <img
-        id="lightbox-img"
-        class="h-full w-full rounded-lg object-none object-center shadow-2xl"
-        src=""
-        alt="Full screen view"
-      />
+      <div
+        id="lightbox-frame"
+        class="flex min-w-full min-h-full w-[max-content] h-[max-content] items-center justify-center"
+      >
+        <img
+          id="lightbox-img"
+          class="shrink-0 max-w-none max-h-none rounded-lg shadow-2xl"
+          src=""
+          alt="Full screen view"
+        />
+      </div>
     </div>
 
 <script>
   const mainPhoto = document.getElementById("main-photo") as HTMLImageElement | null;
   const thumbnails = document.querySelectorAll(".thumbnail-photo");
-  
+
   const lightbox = document.getElementById("lightbox");
   const lightboxImg = document.getElementById("lightbox-img") as HTMLImageElement | null;
 
+  function centerLightboxScroll() {
+    if (!lightbox || !lightboxImg) return;
+    const imgWidth = lightboxImg.naturalWidth || lightboxImg.offsetWidth;
+    const imgHeight = lightboxImg.naturalHeight || lightboxImg.offsetHeight;
+    const x = (imgWidth - lightbox.clientWidth) / 2;
+    const y = (imgHeight - lightbox.clientHeight) / 2;
+    lightbox.scrollLeft = Math.max(0, x);
+    lightbox.scrollTop = Math.max(0, y);
+  }
+
+  function openLightbox(src: string) {
+    if (!lightbox || !lightboxImg) return;
+    lightboxImg.src = src;
+    lightbox.classList.remove("hidden");
+    document.body.classList.add("overflow-hidden");
+    const center = () => requestAnimationFrame(centerLightboxScroll);
+    if (lightboxImg.complete && lightboxImg.naturalWidth > 0) {
+      center();
+    } else {
+      lightboxImg.onload = center;
+    }
+  }
+
   if (mainPhoto && lightbox && lightboxImg) {
-    mainPhoto.addEventListener("click", () => {
-      lightboxImg.src = mainPhoto.src;
-      lightbox.classList.remove("hidden");
-      document.body.classList.add("overflow-hidden");
-    });
+    mainPhoto.addEventListener("click", () => openLightbox(mainPhoto.src));
   }
 
   // Close lightbox when clicking the dark background
