@@ -8,6 +8,7 @@ import EmptyState from "../../components/EmptyState.astro";
 import { getCatalog, getTagsForFigure } from "../../lib/catalogCache";
 import { createSlug } from "../../lib/slug";
 import { sortCollections } from "../../lib/collectionSort";
+import { compareFigures } from "../../lib/sortFigures";
 import PrevNextNav from "../../components/PrevNextNav.astro";
 import { collectionMeta, collectionSchema, breadcrumbSchema, absoluteImageUrl, addImage } from "../../lib/seo";
 
@@ -51,7 +52,12 @@ const releaseIds = new Set(collectionReleases.map((r: any) => r.id));
 
 const collectionFigures = figures
   .filter((f: any) => releaseIds.has(f.release_id))
-  .sort((a: any, b: any) => (a.visual_order ?? 0) - (b.visual_order ?? 0));
+  .sort((a: any, b: any) => {
+    const releaseA = a.releases?.number ?? Number.MAX_SAFE_INTEGER;
+    const releaseB = b.releases?.number ?? Number.MAX_SAFE_INTEGER;
+    if (releaseA !== releaseB) return releaseA - releaseB;
+    return compareFigures(a, b);
+  });
 
 const figuresWithTags = collectionFigures.map((f: any) => ({
   ...f,
