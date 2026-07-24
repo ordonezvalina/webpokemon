@@ -318,10 +318,10 @@ const schemas = [
 
 <script>
   (function () {
-    const backLink = document.getElementById("back-link");
+    const backLink = document.getElementById("back-link") as HTMLAnchorElement | null;
     if (!backLink) return;
 
-    function parseBackInfo(urlString) {
+    function parseBackInfo(urlString: string) {
       try {
         const url = new URL(urlString, window.location.href);
         if (url.origin !== window.location.origin) return null;
