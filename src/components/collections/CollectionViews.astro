@@ -93,39 +93,44 @@ const viewIds = viewRegistry.map((view) => view.id).join(",");
       });
     }
 
-    function swapTo(view) {
+    function saveCurrentAsTemplate(current) {
+      if (!current) return;
+      const view = current.dataset.view;
+      if (!view || document.getElementById("view-template-" + view)) return;
+
+      const template = document.createElement("template");
+      template.id = "view-template-" + view;
+      template.content.appendChild(current.cloneNode(true));
+      root.appendChild(template);
+    }
+
+    function doSwap(target) {
       const current = container.querySelector('.view[data-view]');
-      const template = document.getElementById('view-template-' + view);
+      const template = document.getElementById('view-template-' + target);
 
-      if (!current || !template || current.dataset.view === view) return;
+      if (!current || !template || current.dataset.view === target) return;
 
-      const next = template.content.querySelector('[data-view="' + view + '"]').cloneNode(true);
+      saveCurrentAsTemplate(current);
 
-      function commit() {
-        container.replaceChild(next, current);
-        updateToggle(view);
-        saveView(view);
-      }
+      const next = template.content.querySelector('[data-view="' + target + '"]').cloneNode(true);
 
+      container.replaceChild(next, current);
+      updateToggle(target);
+      saveView(target);
+    }
+
+    function swapTo(view) {
       if (document.startViewTransition) {
-        document.startViewTransition(commit);
+        document.startViewTransition(() => doSwap(view));
       } else {
-        commit();
+        doSwap(view);
       }
     }
 
     // Initialize the active view without animation on first load.
     const initialView = getInitialView();
     if (initialView !== defaultView) {
-      const current = container.querySelector('.view[data-view]');
-      const template = document.getElementById('view-template-' + initialView);
-
-      if (current && template) {
-        const next = template.content.querySelector('[data-view="' + initialView + '"]').cloneNode(true);
-        container.replaceChild(next, current);
-        updateToggle(initialView);
-        updateUrl(initialView);
-      }
+      doSwap(initialView);
     }
 
     root.querySelectorAll("[data-view][aria-pressed]").forEach((button) => {
