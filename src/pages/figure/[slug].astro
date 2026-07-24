@@ -80,7 +80,7 @@ const schemas = [
   <main class="mx-auto min-h-screen w-full max-w-6xl px-4 pb-12 pt-4 sm:px-6 lg:px-8">
 
     <header class="mb-4 flex items-center justify-between border-b border-zinc-200 pb-4 dark:border-zinc-800">
-      <BackLink href="/" text="Back to catalogue" />
+      <BackLink id="back-link" href="/" text="Back to catalogue" />
     </header>
 
     <Breadcrumb items={breadcrumbItems} />
@@ -314,5 +314,63 @@ const schemas = [
       });
     });
   }
+</script>
+
+<script>
+  (function () {
+    const backLink = document.getElementById("back-link");
+    if (!backLink) return;
+
+    function parseBackInfo(urlString) {
+      try {
+        const url = new URL(urlString, window.location.href);
+        if (url.origin !== window.location.origin) return null;
+
+        const path = url.pathname;
+        const params = new URLSearchParams(url.search);
+
+        if (path === "/") {
+          const gen = params.get("gen") ?? "all";
+          if (gen !== "all") return { url: url.href, label: `Gen ${gen}` };
+          if (params.get("q")) return { url: url.href, label: "Search results" };
+          return { url: url.href, label: "catalogue" };
+        }
+
+        if (path === "/collections/") return { url: url.href, label: "Collections" };
+        if (path.startsWith("/attribute/")) return { url: url.href, label: "attribute" };
+        if (path.startsWith("/collection/")) {
+          if (path.includes("/release/")) return { url: url.href, label: "release" };
+          return { url: url.href, label: "collection" };
+        }
+      } catch (e) {}
+      return null;
+    }
+
+    let backUrl = "/";
+    let backLabel = "catalogue";
+
+    try {
+      const stored = sessionStorage.getItem("catalogBack");
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        const info = parseBackInfo(parsed.url);
+        if (info) {
+          backUrl = info.url;
+          backLabel = parsed.label || info.label;
+        }
+      } else if (document.referrer) {
+        const info = parseBackInfo(document.referrer);
+        if (info) {
+          backUrl = info.url;
+          backLabel = info.label;
+        }
+      }
+    } catch (e) {
+      // ignore
+    }
+
+    backLink.href = backUrl;
+    backLink.textContent = `← Back to ${backLabel}`;
+  })();
 </script>
 </BaseLayout>

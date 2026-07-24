@@ -91,6 +91,49 @@ const twitterImage = twitter?.image ?? defaultOgImage;
           console.error("Service worker registration failed:", error);
         });
       }
+
+      // Remember the listing view the user came from when clicking a figure.
+      (function () {
+        const path = window.location.pathname;
+        if (path.startsWith("/figure/")) return;
+
+        function getListingLabel() {
+          const params = new URLSearchParams(window.location.search);
+          const gen = params.get("gen") ?? "all";
+
+          if (path === "/") {
+            if (gen !== "all") return `Gen ${gen}`;
+            if (params.get("q")) return "Search results";
+            return "catalogue";
+          }
+
+          if (path === "/collections/") return "Collections";
+          if (path.startsWith("/attribute/")) return "attribute";
+          if (path.startsWith("/collection/")) {
+            if (path.includes("/release/")) return "release";
+            return "collection";
+          }
+
+          return "catalogue";
+        }
+
+        document.addEventListener("click", (event) => {
+          const link = event.target.closest('a[href^="/figure/"]');
+          if (!link) return;
+
+          try {
+            const label = getListingLabel();
+            const h1 = document.querySelector("h1")?.textContent?.trim();
+            const finalLabel = path === "/" ? label : (h1 || label);
+            sessionStorage.setItem(
+              "catalogBack",
+              JSON.stringify({ url: window.location.href, label: finalLabel })
+            );
+          } catch (e) {
+            // ignore sessionStorage errors
+          }
+        });
+      })();
     </script>
   </body>
 </html>
