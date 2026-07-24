@@ -1,0 +1,26 @@
+---
+import CollectionCard from "../../CollectionCard.astro";
+import type { CollectionViewItem } from "../../../lib/collectionViews";
+
+interface Props {
+  items: CollectionViewItem[];
+}
+
+const { items } = Astro.props;
+---
+
+<section class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+  {
+    items.map((item) => (
+      <CollectionCard
+        collection={item.collection}
+        collectionSlug={item.slug}
+        figureCount={item.figureCount}
+        releaseCount={item.releaseCount}
+        coverImage={item.coverImage}
+        dateLabel={item.dateLabel}
+        lines={item.lines}
+      />
+    ))
+  }
+</section>

@@ -1,6 +1,6 @@
 ---
 import BaseLayout from "../components/BaseLayout.astro";
-import CollectionCard from "../components/CollectionCard.astro";
+import CollectionViews from "../components/collections/CollectionViews.astro";
 import { getCatalog } from "../lib/catalogCache";
 import { createSlug } from "../lib/slug";
 import { sortCollections, formatCollectionDate } from "../lib/collectionSort";
@@ -14,8 +14,8 @@ const monthNames = [
 
 const { figures, collections, releases } = await getCatalog();
 
-const sortedCollections = sortCollections(collections, releases).map((collection) => {
-  const collectionSlug = createSlug(collection.name);
+const viewItems = sortCollections(collections, releases).map((collection) => {
+  const slug = createSlug(collection.name);
   const collectionReleases = releases
     .filter((release) => release.collection_id === collection.id)
     .sort((a, b) => (a.number || Number.MAX_SAFE_INTEGER) - (b.number || Number.MAX_SAFE_INTEGER));
@@ -27,32 +27,41 @@ const sortedCollections = sortCollections(collections, releases).map((collection
   const coverImage = collectionReleases.find((release) => release.cover_image)?.cover_image;
   const dateLabel = formatCollectionDate(collection.id, releases, monthNames);
 
-  const lineValues = new Set(
-    collectionFigures
-      .map((figure) => normalizeLine(figure.line))
-      .filter(Boolean)
-  );
-  const lines = Array.from(lineValues).sort();
+  const lineCounts: Record<string, number> = {};
+  collectionFigures.forEach((figure) => {
+    if (!figure.line) return;
+    const line = normalizeLine(figure.line);
+    lineCounts[line] = (lineCounts[line] || 0) + 1;
+  });
+  const lines = Object.keys(lineCounts).sort();
+
+  const releaseDates = collectionReleases
+    .map((release) => release.release_date)
+    .filter((date): date is string => Boolean(date))
+    .sort();
 
   return {
     collection,
-    collectionSlug,
+    slug,
     figureCount,
     releaseCount,
     coverImage,
     dateLabel,
     lines,
+    lineCounts,
+    firstReleaseDate: releaseDates[0],
+    lastReleaseDate: releaseDates[releaseDates.length - 1],
   };
 });
 
-const totalFigures = sortedCollections.reduce((sum, item) => sum + item.figureCount, 0);
+const totalFigures = viewItems.reduce((sum, item) => sum + item.figureCount, 0);
 const siteUrl = Astro.site?.toString() || "https://example.com";
-const seo = collectionsMeta(sortedCollections.length, totalFigures, siteUrl);
+const seo = collectionsMeta(viewItems.length, totalFigures, siteUrl);
 const schemas = [
   collectionsListSchema(
-    sortedCollections.map((item) => ({
+    viewItems.map((item) => ({
       name: item.collection.name,
-      slug: item.collectionSlug,
+      slug: item.slug,
       figuresCount: item.figureCount,
       coverImage: item.coverImage ? absoluteImageUrl(siteUrl, item.coverImage) : undefined,
     })),
@@ -70,24 +79,12 @@ const schemas = [
         Collections
       </h1>
       <p class="max-w-2xl text-base text-zinc-600 dark:text-zinc-400">
-        {sortedCollections.length} collections · {totalFigures} figures, organised chronologically.
+        {viewItems.length} collections · {totalFigures} figures, organised chronologically.
       </p>
     </header>
 
-    {sortedCollections.length > 0 ? (
-      <section class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {sortedCollections.map((item) => (
-          <CollectionCard
-            collection={item.collection}
-            collectionSlug={item.collectionSlug}
-            figureCount={item.figureCount}
-            releaseCount={item.releaseCount}
-            coverImage={item.coverImage}
-            dateLabel={item.dateLabel}
-            lines={item.lines}
-          />
-        ))}
-      </section>
+    {viewItems.length > 0 ? (
+      <CollectionViews items={viewItems} />
     ) : (
       <p class="rounded-xl border border-zinc-200 bg-zinc-50 p-6 text-center text-zinc-600 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-400">
         No collections found.

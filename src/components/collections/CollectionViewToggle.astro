@@ -1,0 +1,31 @@
+---
+import type { ViewDefinition, CollectionViewId } from "../../lib/collectionViews";
+
+interface Props {
+  views: ViewDefinition[];
+  activeView: CollectionViewId;
+}
+
+const { views, activeView } = Astro.props;
+---
+
+<div
+  class="collection-view-toggle inline-flex items-center gap-1 rounded-lg border border-zinc-200 bg-white p-1 shadow-sm dark:border-zinc-700 dark:bg-zinc-900"
+  role="group"
+  aria-label="Collection views"
+>
+  {
+    views.map((view) => (
+      <button
+        type="button"
+        data-view={view.id}
+        aria-pressed={view.id === activeView}
+        aria-label={view.label}
+        title={view.label}
+        class="inline-flex h-8 w-8 items-center justify-center rounded-md text-zinc-500 transition-colors hover:bg-zinc-100 hover:text-zinc-900 focus:outline-none focus:ring-2 focus:ring-amber-400 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-white aria-pressed:bg-amber-100 aria-pressed:text-amber-700 dark:aria-pressed:bg-amber-900 dark:aria-pressed:text-amber-300"
+      >
+        <Fragment set:html={view.icon} />
+      </button>
+    ))
+  }
+</div>

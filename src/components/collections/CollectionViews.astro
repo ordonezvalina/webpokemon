@@ -1,0 +1,140 @@
+---
+import CollectionViewToggle from "./CollectionViewToggle.astro";
+import CollectionGridView from "./views/CollectionGridView.astro";
+import CollectionListView from "./views/CollectionListView.astro";
+import { viewRegistry, defaultView } from "../../lib/collectionViews";
+import type { CollectionViewItem } from "../../lib/collectionViews";
+
+interface Props {
+  items: CollectionViewItem[];
+}
+
+const { items } = Astro.props;
+const viewIds = viewRegistry.map((view) => view.id).join(",");
+---
+
+<div class="collection-views" data-views={viewIds} data-default-view={defaultView}>
+  <div class="mb-4 flex items-center justify-end">
+    <CollectionViewToggle views={viewRegistry} activeView={defaultView} />
+  </div>
+
+  <div
+    class="view-container"
+    role="region"
+    aria-live="polite"
+    aria-label="Collections list"
+  >
+    <div class="view" data-view="grid">
+      <CollectionGridView items={items} />
+    </div>
+
+    <template id="view-template-list">
+      <div class="view" data-view="list">
+        <CollectionListView items={items} />
+      </div>
+    </template>
+
+  </div>
+</div>
+
+<script is:inline>
+  (function () {
+    const STORAGE_KEY = "tomy-collections-view";
+
+    const root = document.querySelector(".collection-views");
+    if (!root) return;
+
+    const defaultView = root.dataset.defaultView || "grid";
+    const views = (root.dataset.views || defaultView).split(",");
+    const container = root.querySelector(".view-container");
+
+    function isValid(view) {
+      return views.includes(view);
+    }
+
+    function getInitialView() {
+      const params = new URLSearchParams(location.search);
+      const fromUrl = params.get("view");
+      if (isValid(fromUrl)) return fromUrl;
+
+      try {
+        const fromStorage = localStorage.getItem(STORAGE_KEY);
+        if (isValid(fromStorage)) return fromStorage;
+      } catch {
+        // ignore localStorage errors
+      }
+
+      return defaultView;
+    }
+
+    function updateUrl(view) {
+      const url = new URL(location.href);
+      if (view === defaultView) {
+        url.searchParams.delete("view");
+      } else {
+        url.searchParams.set("view", view);
+      }
+      history.replaceState({}, "", url.toString());
+    }
+
+    function saveView(view) {
+      try {
+        localStorage.setItem(STORAGE_KEY, view);
+      } catch {
+        // ignore localStorage errors
+      }
+      updateUrl(view);
+    }
+
+    function updateToggle(view) {
+      root.querySelectorAll("[data-view][aria-pressed]").forEach((button) => {
+        const active = button.dataset.view === view;
+        button.setAttribute("aria-pressed", String(active));
+      });
+    }
+
+    function swapTo(view) {
+      const current = container.querySelector('.view[data-view]');
+      const template = document.getElementById('view-template-' + view);
+
+      if (!current || !template || current.dataset.view === view) return;
+
+      const next = template.content.querySelector('[data-view="' + view + '"]').cloneNode(true);
+
+      function commit() {
+        container.replaceChild(next, current);
+        updateToggle(view);
+        saveView(view);
+      }
+
+      if (document.startViewTransition) {
+        document.startViewTransition(commit);
+      } else {
+        commit();
+      }
+    }
+
+    // Initialize the active view without animation on first load.
+    const initialView = getInitialView();
+    if (initialView !== defaultView) {
+      const current = container.querySelector('.view[data-view]');
+      const template = document.getElementById('view-template-' + initialView);
+
+      if (current && template) {
+        const next = template.content.querySelector('[data-view="' + initialView + '"]').cloneNode(true);
+        container.replaceChild(next, current);
+        updateToggle(initialView);
+        updateUrl(initialView);
+      }
+    }
+
+    root.querySelectorAll("[data-view][aria-pressed]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const view = button.dataset.view;
+        if (isValid(view)) {
+          swapTo(view);
+        }
+      });
+    });
+  })();
+</script>
