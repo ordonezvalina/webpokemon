@@ -1,0 +1,45 @@
+---
+import BaseLayout from "../components/BaseLayout.astro";
+
+const title = "About";
+const description = "About this catalogue and its creator.";
+---
+
+<BaseLayout title={title} description={description}>
+  <main class="mx-auto min-h-screen w-full max-w-3xl px-4 pb-24 pt-8 sm:px-6 lg:px-8">
+    <header class="mb-8 space-y-3">
+      <h1 class="text-4xl font-semibold leading-tight text-zinc-900 sm:text-5xl dark:text-white">
+        About
+      </h1>
+      <p class="text-base text-zinc-600 dark:text-zinc-400">
+        {description}
+      </p>
+    </header>
+
+    <section class="space-y-6 rounded-2xl border border-zinc-200/80 bg-white p-6 shadow-lg shadow-zinc-900/10 dark:border-zinc-800/50 dark:bg-zinc-900 dark:shadow-black/40 sm:p-8">
+      <div>
+        <h2 class="mb-3 text-lg font-semibold text-zinc-900 dark:text-white">Description</h2>
+        <p class="text-zinc-600 dark:text-zinc-400">
+          This section will be updated soon with more information about the project.
+        </p>
+      </div>
+
+      <div class="border-t border-zinc-200/80 pt-6 dark:border-zinc-800/50">
+        <h2 class="mb-3 text-lg font-semibold text-zinc-900 dark:text-white">Contact</h2>
+        <a
+          href="https://www.instagram.com/tomy_pkmn/"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center gap-3 rounded-xl border border-zinc-200/80 bg-white px-5 py-3 text-zinc-900 shadow-sm transition hover:border-amber-300 hover:bg-amber-50 dark:border-zinc-700/80 dark:bg-zinc-900 dark:text-white dark:hover:border-amber-500/50 dark:hover:bg-zinc-800"
+        >
+          <svg class="h-6 w-6 shrink-0 text-pink-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+          </svg>
+          <span class="font-semibold">@tomy_pkmn</span>
+        </a>
+      </div>
+    </section>
+  </main>
+</BaseLayout>
